@@ -8,6 +8,7 @@ import TrackingScripts from "@/components/TrackingScripts";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import { Analytics } from "@vercel/analytics/next";
 
 const inter = Inter({
   variable: "--font-geist-sans",
@@ -35,6 +36,7 @@ export default function RootLayout({
               <NotificationToast />
               <PageTracker />
               <TrackingScripts />
+              <Analytics />
             </NotificationProvider>
           </AuthProvider>
         </LanguageProvider>
