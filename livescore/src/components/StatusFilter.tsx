@@ -32,7 +32,7 @@ export default function StatusFilter({ status, onChange, liveCounts }: StatusFil
               ${isActive
                 ? key === "live"
                   ? "bg-primary/10 text-primary border border-primary/30"
-                  : "bg-white text-text border border-border shadow-sm"
+                  : "bg-card text-text border border-border shadow-sm"
                 : "text-text-muted hover:text-text-secondary"
               }
             `}

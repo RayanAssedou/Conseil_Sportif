@@ -34,7 +34,7 @@ export default function SummaryTab({ events, fixture }: SummaryTabProps) {
 
   if (events.length === 0) {
     return (
-      <div className="bg-white rounded-2xl border border-border p-8 text-center shadow-sm">
+      <div className="bg-card rounded-2xl border border-border p-8 text-center shadow-sm">
         {isMatchLive ? (
           <>
             <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
@@ -75,7 +75,7 @@ export default function SummaryTab({ events, fixture }: SummaryTabProps) {
   const homeId = fixture.teams.home.id;
 
   return (
-    <div className="bg-white rounded-2xl border border-border overflow-hidden shadow-sm">
+    <div className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm">
       <div className="px-4 py-3 border-b border-border">
         <h3 className="text-sm font-semibold text-text">Match Events</h3>
       </div>

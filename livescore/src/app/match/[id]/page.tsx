@@ -114,7 +114,7 @@ export default function MatchPage({ params }: { params: Promise<{ id: string }> 
         <span className="text-xs text-text-muted">{fixture.league.round}</span>
       </div>
 
-      <div className={`relative bg-white rounded-2xl border overflow-hidden shadow-sm ${
+      <div className={`relative bg-card rounded-2xl border overflow-hidden shadow-sm ${
         live ? "border-primary/30" : "border-border"
       }`}>
         {live && (

@@ -134,7 +134,7 @@ export default function ArticleDetailPage() {
         </div>
 
         {article.summary && !hasRichContent && (
-          <div className="bg-white rounded-xl border border-border p-6">
+          <div className="bg-card rounded-xl border border-border p-6">
             <p className="text-base text-text leading-relaxed whitespace-pre-line">
               {article.summary}
             </p>
@@ -143,7 +143,7 @@ export default function ArticleDetailPage() {
 
         {hasRichContent && (
           <div
-            className="article-content bg-white rounded-xl border border-border p-6 md:p-8"
+            className="article-content bg-card rounded-xl border border-border p-6 md:p-8"
             dangerouslySetInnerHTML={{ __html: article.content! }}
           />
         )}

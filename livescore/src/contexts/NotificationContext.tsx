@@ -2,8 +2,9 @@
 
 import { createContext, useContext, useState, useEffect, useCallback, useRef, ReactNode } from "react";
 import { Fixture } from "@/lib/types";
-import { translate, Locale } from "@/lib/i18n";
+import { translate } from "@/lib/i18n";
 import { isLive, isFinished, getDateOffset } from "@/lib/utils";
+import { useTranslation } from "@/contexts/LanguageContext";
 
 interface ReminderData {
   fixtureId: number;
@@ -94,6 +95,10 @@ function sendBrowserNotif(title: string, body: string) {
 }
 
 export function NotificationProvider({ children }: { children: ReactNode }) {
+  const { locale } = useTranslation();
+  const localeRef = useRef(locale);
+  localeRef.current = locale;
+
   const [reminders, setReminders] = useState<Map<number, ReminderData>>(new Map());
   const [goalAlerts, setGoalAlerts] = useState<Map<number, GoalAlertData>>(new Map());
   const [toasts, setToasts] = useState<NotifToast[]>([]);
@@ -200,8 +205,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
         ) {
           const isHomeGoal = newHome !== alert.lastHomeGoals;
           const scorer = isHomeGoal ? alert.homeTeam : alert.awayTeam;
-          const savedLocale = (typeof window !== "undefined" ? localStorage.getItem("site-lang") : "en") as Locale || "en";
-          const title = translate(savedLocale, "notif.goal", { scorer });
+          const title = translate(localeRef.current, "notif.goal", { scorer });
           const body = `${alert.homeTeam} ${newHome} - ${newAway} ${alert.awayTeam}`;
 
           sendBrowserNotif(title, body);
@@ -230,9 +234,8 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
         if (!reminder) continue;
 
         if (isLive(f.fixture.status.short)) {
-          const savedLocale = (typeof window !== "undefined" ? localStorage.getItem("site-lang") : "en") as Locale || "en";
-          const title = translate(savedLocale, "notif.matchStarted");
-          const body = translate(savedLocale, "notif.matchLive", { homeTeam: reminder.homeTeam, awayTeam: reminder.awayTeam });
+          const title = translate(localeRef.current, "notif.matchStarted");
+          const body = translate(localeRef.current, "notif.matchLive", { homeTeam: reminder.homeTeam, awayTeam: reminder.awayTeam });
           sendBrowserNotif(title, body);
           addToast({ type: "kickoff", title, body, fixtureId: f.fixture.id });
           promoted.push(f);
@@ -270,7 +273,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!mounted) return;
-    const hasAny = () => remindersRef.current.size > 0;
+    const hasAny = () => remindersRef.current.size > 0 || goalAlertsRef.current.size > 0;
     if (!hasAny()) return;
 
     const poll = async () => {
@@ -280,7 +283,8 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
         const res = await fetch(`/api/fixtures?date=${today}`);
         const data = await res.json();
         if (data.response) {
-          checkReminders(data.response);
+          if (remindersRef.current.size > 0) checkReminders(data.response);
+          if (goalAlertsRef.current.size > 0) checkGoalUpdates(data.response);
         }
       } catch { /* silent */ }
     };
@@ -288,7 +292,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
     const interval = setInterval(poll, 30000);
     poll();
     return () => clearInterval(interval);
-  }, [mounted, checkReminders]);
+  }, [mounted, checkReminders, checkGoalUpdates]);
 
   return (
     <NotificationContext.Provider

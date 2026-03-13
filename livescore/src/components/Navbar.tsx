@@ -7,6 +7,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNotifications } from "@/contexts/NotificationContext";
 import { useTranslation } from "@/contexts/LanguageContext";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const navKeys = [
   { href: "/", labelKey: "nav.home", icon: "home" },
@@ -22,14 +23,29 @@ export default function Navbar() {
   const { user, loading: authLoading, signOut } = useAuth();
   const { reminders, goalAlerts } = useNotifications();
   const { t, locale, setLocale } = useTranslation();
+  const { theme, toggleTheme } = useTheme();
   const [showMenu, setShowMenu] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [showLangMenu, setShowLangMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const langRef = useRef<HTMLDivElement>(null);
+  const langRefMobile = useRef<HTMLDivElement>(null);
   const notifCount = reminders.size + goalAlerts.size;
+
+  const langOptions = [
+    { code: "en" as const, label: "EN", flag: "🇬🇧" },
+    { code: "he" as const, label: "עב", flag: "🇮🇱" },
+    { code: "ar" as const, label: "عر", flag: "🇸🇦" },
+    { code: "ru" as const, label: "РУ", flag: "🇷🇺" },
+  ];
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) setShowMenu(false);
+      const target = e.target as Node;
+      const inDesktopLang = langRef.current?.contains(target);
+      const inMobileLang = langRefMobile.current?.contains(target);
+      if (!inDesktopLang && !inMobileLang) setShowLangMenu(false);
     };
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
@@ -45,7 +61,7 @@ export default function Navbar() {
     return pathname.startsWith(href) || (href === "/scores" && pathname.startsWith("/match"));
   }
 
-  const toggleLang = () => setLocale(locale === "en" ? "he" : "en");
+  const currentLang = langOptions.find((l) => l.code === locale) || langOptions[0];
 
   function NavIcon({ icon, active }: { icon: string; active: boolean }) {
     if (icon === "home") return (
@@ -138,7 +154,7 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-border shadow-sm">
+    <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-border shadow-sm transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between h-14 sm:h-16">
           {/* Logo */}
@@ -149,9 +165,9 @@ export default function Navbar() {
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 2c1.93 0 3.68.69 5.05 1.83L14.5 8.5l-2.5-1-2.5 1-2.55-2.67A7.956 7.956 0 0 1 12 4zm-8 8c0-1.62.5-3.13 1.33-4.38L8 10.5v3l2.5 2.5-1 3.5A7.98 7.98 0 0 1 4 12zm8 8c-1.35 0-2.62-.35-3.73-.96L9.5 15.5 12 13l4 1v3.5l-1.32 1.98A7.89 7.89 0 0 1 12 20zm5.67-2.87L16 15.5V14l2.93-3.07c.04.35.07.71.07 1.07a7.95 7.95 0 0 1-1.33 4.13z" />
               </svg>
             </div>
-            <div className="flex items-baseline gap-0.5">
-              <span className="text-lg sm:text-xl font-bold text-text tracking-tight group-hover:text-primary transition-colors">Live</span>
-              <span className="text-lg sm:text-xl font-bold text-primary tracking-tight">Score</span>
+            <div className="flex items-baseline gap-1">
+              <span className="text-lg sm:text-xl font-bold text-text tracking-tight group-hover:text-primary transition-colors">ספורט</span>
+              <span className="text-lg sm:text-xl font-bold text-primary tracking-tight">חמייל</span>
             </div>
           </Link>
 
@@ -159,12 +175,51 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-1.5">
             {navKeys.map((n) => renderNavItem(n))}
 
+            <div className="relative" ref={langRef}>
+              <button
+                onClick={() => setShowLangMenu(!showLangMenu)}
+                className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold border border-border hover:bg-surface-light transition-colors text-text-secondary"
+              >
+                <span>{currentLang.flag}</span>
+                <span>{currentLang.label}</span>
+                <svg className={`w-3 h-3 transition-transform ${showLangMenu ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                </svg>
+              </button>
+              {showLangMenu && (
+                <div className="absolute right-0 top-full mt-1.5 w-32 bg-card rounded-xl border border-border shadow-xl py-1 z-50">
+                  {langOptions.map((lang) => (
+                    <button
+                      key={lang.code}
+                      onClick={() => { setLocale(lang.code); setShowLangMenu(false); }}
+                      className={`w-full flex items-center gap-2 px-3 py-2 text-xs font-medium transition-colors ${
+                        locale === lang.code
+                          ? "bg-primary/10 text-primary"
+                          : "text-text-secondary hover:bg-surface-light hover:text-text"
+                      }`}
+                    >
+                      <span className="text-sm">{lang.flag}</span>
+                      <span>{lang.label}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
             <button
-              onClick={toggleLang}
-              className="px-2.5 py-1.5 rounded-lg text-xs font-bold border border-border hover:bg-surface-light transition-colors text-text-secondary"
-              title={locale === "en" ? "עברית" : "English"}
+              onClick={toggleTheme}
+              className="p-2 rounded-lg text-text-secondary hover:bg-surface-light hover:text-text transition-all"
+              title={theme === "light" ? "Dark mode" : "Light mode"}
             >
-              {locale === "en" ? "עב" : "EN"}
+              {theme === "light" ? (
+                <svg className="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              ) : (
+                <svg className="w-4.5 h-4.5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+                </svg>
+              )}
             </button>
 
             {user && (
@@ -181,7 +236,7 @@ export default function Navbar() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
                 </svg>
                 {notifCount > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] flex items-center justify-center px-1 text-[10px] font-bold text-white bg-primary rounded-full ring-2 ring-white">
+                  <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] flex items-center justify-center px-1 text-[10px] font-bold text-white bg-primary rounded-full ring-2 ring-background">
                     {notifCount > 9 ? "9+" : notifCount}
                   </span>
                 )}
@@ -204,14 +259,14 @@ export default function Navbar() {
                     )}
                   </button>
                   {showMenu && (
-                    <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl border border-border shadow-xl py-2 z-50">
+                    <div className="absolute right-0 top-full mt-2 w-56 bg-background rounded-xl border border-border shadow-xl py-2 z-50">
                       <div className="px-4 py-2 border-b border-border">
                         <p className="text-sm font-medium text-text truncate">{user.user_metadata?.full_name || t("nav.user")}</p>
                         <p className="text-xs text-text-muted truncate">{user.email}</p>
                       </div>
                       <button
                         onClick={() => { signOut(); setShowMenu(false); }}
-                        className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2"
+                        className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-950 transition-colors flex items-center gap-2"
                       >
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
@@ -242,11 +297,48 @@ export default function Navbar() {
 
           {/* Mobile right side */}
           <div className="flex md:hidden items-center gap-1">
+            <div className="relative" ref={langRefMobile}>
+              <button
+                onClick={() => setShowLangMenu(!showLangMenu)}
+                className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-xs font-bold border border-border hover:bg-surface-light transition-colors text-text-secondary"
+              >
+                <span>{currentLang.flag}</span>
+                <span>{currentLang.label}</span>
+              </button>
+              {showLangMenu && (
+                <div className="absolute right-0 top-full mt-1.5 w-28 bg-card rounded-xl border border-border shadow-xl py-1 z-50">
+                  {langOptions.map((lang) => (
+                    <button
+                      key={lang.code}
+                      onClick={() => { setLocale(lang.code); setShowLangMenu(false); }}
+                      className={`w-full flex items-center gap-2 px-3 py-2 text-xs font-medium transition-colors ${
+                        locale === lang.code
+                          ? "bg-primary/10 text-primary"
+                          : "text-text-secondary hover:bg-surface-light hover:text-text"
+                      }`}
+                    >
+                      <span className="text-sm">{lang.flag}</span>
+                      <span>{lang.label}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
             <button
-              onClick={toggleLang}
-              className="px-2 py-1.5 rounded-lg text-xs font-bold border border-border hover:bg-surface-light transition-colors text-text-secondary"
+              onClick={toggleTheme}
+              className="p-1.5 rounded-lg text-text-secondary hover:bg-surface-light transition-all"
+              aria-label={theme === "light" ? "Dark mode" : "Light mode"}
             >
-              {locale === "en" ? "עב" : "EN"}
+              {theme === "light" ? (
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              ) : (
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+                </svg>
+              )}
             </button>
 
             {user && (
@@ -260,7 +352,7 @@ export default function Navbar() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
                 </svg>
                 {notifCount > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-[16px] flex items-center justify-center px-0.5 text-[9px] font-bold text-white bg-primary rounded-full ring-2 ring-white">
+                  <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-[16px] flex items-center justify-center px-0.5 text-[9px] font-bold text-white bg-primary rounded-full ring-2 ring-background">
                     {notifCount > 9 ? "9+" : notifCount}
                   </span>
                 )}
@@ -288,7 +380,7 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="md:hidden border-t border-border bg-white shadow-lg">
+        <div className="md:hidden border-t border-border bg-background shadow-lg">
           <div className="px-4 py-3 space-y-1">
             {navKeys.map((n) => renderNavItem(n, true))}
           </div>
@@ -312,7 +404,7 @@ export default function Navbar() {
                   </div>
                   <button
                     onClick={() => { signOut(); setMobileOpen(false); }}
-                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
+                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-950 transition-colors"
                   >
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />

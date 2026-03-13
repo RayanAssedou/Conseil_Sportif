@@ -98,7 +98,7 @@ function SignInContent() {
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl border border-border p-6 shadow-sm">
+        <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
           <form onSubmit={handleSubmit} className="space-y-4">
             {mode === "signup" && (
               <div>

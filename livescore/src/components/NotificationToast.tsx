@@ -42,8 +42,8 @@ function ToastItem({ toast, onDismiss }: { toast: NotifToast; onDismiss: () => v
         transform transition-all duration-300 ease-out
         animate-slide-in-right hover:scale-[1.02]
         ${isGoal
-          ? "bg-gradient-to-r from-emerald-50 to-white border-emerald-200"
-          : "bg-gradient-to-r from-amber-50 to-white border-amber-200"
+          ? "bg-gradient-to-r from-emerald-50 to-white dark:from-emerald-950 dark:to-surface border-emerald-200 dark:border-emerald-800"
+          : "bg-gradient-to-r from-amber-50 to-white dark:from-amber-950 dark:to-surface border-amber-200 dark:border-amber-800"
         }
       `}
       style={{ minWidth: 300, maxWidth: 380 }}
@@ -65,10 +65,10 @@ function ToastItem({ toast, onDismiss }: { toast: NotifToast; onDismiss: () => v
         </div>
 
         <div className="flex-1 min-w-0">
-          <p className={`text-sm font-bold ${isGoal ? "text-emerald-800" : "text-amber-800"}`}>
+          <p className={`text-sm font-bold ${isGoal ? "text-emerald-800 dark:text-emerald-300" : "text-amber-800 dark:text-amber-300"}`}>
             {toast.title}
           </p>
-          <p className="text-sm text-slate-600 mt-0.5">{toast.body}</p>
+          <p className="text-sm text-slate-600 dark:text-slate-300 mt-0.5">{toast.body}</p>
           <p className="text-[10px] text-slate-400 mt-1 uppercase tracking-wider font-medium">
             {t("toast.clickToView")}
           </p>

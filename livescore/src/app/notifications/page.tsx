@@ -169,7 +169,7 @@ export default function NotificationsPage() {
       )}
 
       {totalFollowed === 0 && toasts.length === 0 ? (
-        <div className="bg-white rounded-2xl border border-border p-12 text-center">
+        <div className="bg-card rounded-2xl border border-border p-12 text-center">
           <div className="w-16 h-16 rounded-full bg-surface flex items-center justify-center mx-auto mb-4">
             <svg className="w-8 h-8 text-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
@@ -242,7 +242,7 @@ export default function NotificationsPage() {
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {pendingReminders.map((r) => (
-                  <div key={r.fixtureId} className="bg-white rounded-xl border border-border overflow-hidden hover:shadow-md transition-shadow">
+                  <div key={r.fixtureId} className="bg-card rounded-xl border border-border overflow-hidden hover:shadow-md transition-shadow">
                     <Link href={`/pronostics/${r.fixtureId}`} className="block p-4">
                       <div className="flex items-center gap-3">
                         <div className="relative w-8 h-8 flex-shrink-0">
@@ -326,7 +326,7 @@ function FollowedMatchCard({
   const detailHref = live || finished ? `/match/${fixture.fixture.id}` : `/pronostics/${fixture.fixture.id}`;
 
   return (
-    <div className={`relative bg-white rounded-xl border overflow-hidden transition-shadow hover:shadow-md cursor-pointer ${
+    <div className={`relative bg-card rounded-xl border overflow-hidden transition-shadow hover:shadow-md cursor-pointer ${
       live ? "border-primary/30 ring-1 ring-primary/10" : "border-border"
     }`}>
       {live && <div className="absolute top-0 left-0 right-0 h-0.5 bg-primary" />}

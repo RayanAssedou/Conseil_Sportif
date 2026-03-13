@@ -43,12 +43,12 @@ export default function ArticlesPage() {
 
       {loading ? (
         <div className="space-y-4">
-          <div className="bg-white rounded-2xl border border-border overflow-hidden animate-pulse">
+          <div className="bg-card rounded-2xl border border-border overflow-hidden animate-pulse">
             <div className="h-64 bg-surface-light" />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {[...Array(8)].map((_, i) => (
-              <div key={i} className="bg-white rounded-xl border border-border overflow-hidden animate-pulse">
+              <div key={i} className="bg-card rounded-xl border border-border overflow-hidden animate-pulse">
                 <div className="h-40 bg-surface-light" />
                 <div className="p-4 space-y-2">
                   <div className="h-3 w-16 bg-surface-light rounded" />
@@ -77,7 +77,7 @@ export default function ArticlesPage() {
           {featured && (
             <Link
               href={`/articles/${featured.id}`}
-              className="block bg-white rounded-2xl border border-border overflow-hidden hover:shadow-xl transition-shadow group"
+              className="block bg-card rounded-2xl border border-border overflow-hidden hover:shadow-xl transition-shadow group"
             >
               <div className="relative h-64 md:h-80 bg-surface-light overflow-hidden">
                 {featured.image_url ? (
@@ -126,7 +126,7 @@ export default function ArticlesPage() {
                 <Link
                   key={article.id}
                   href={`/articles/${article.id}`}
-                  className="bg-white rounded-xl border border-border overflow-hidden hover:shadow-lg transition-shadow group flex flex-col"
+                  className="bg-card rounded-xl border border-border overflow-hidden hover:shadow-lg transition-shadow group flex flex-col"
                 >
                   {article.image_url ? (
                     <div className="relative h-40 bg-surface-light overflow-hidden flex-shrink-0">

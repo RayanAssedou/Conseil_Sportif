@@ -73,7 +73,7 @@ export default function LeagueSection({ group }: LeagueSectionProps) {
       </button>
 
       {expanded && (
-        <div className="bg-white border-x border-b border-border rounded-b-xl overflow-hidden">
+        <div className="bg-card border-x border-b border-border rounded-b-xl overflow-hidden">
           {group.fixtures.map((fixture) => (
             <MatchCard key={fixture.fixture.id} fixture={fixture} />
           ))}

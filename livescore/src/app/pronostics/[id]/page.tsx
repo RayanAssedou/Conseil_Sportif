@@ -120,7 +120,7 @@ export default function PredictionDetailPage({ params }: { params: Promise<{ id:
           <Link href="/auth/signin" className="px-6 py-2.5 bg-primary text-white font-semibold text-sm rounded-lg hover:bg-primary-dark transition-colors shadow-lg">
             {t("predictions.signIn")}
           </Link>
-          <Link href="/auth/signin?mode=signup" className="px-6 py-2.5 bg-white text-primary font-semibold text-sm rounded-lg border-2 border-primary hover:bg-primary/5 transition-colors">
+          <Link href="/auth/signin?mode=signup" className="px-6 py-2.5 bg-card text-primary font-semibold text-sm rounded-lg border-2 border-primary hover:bg-primary/5 transition-colors">
             {t("predictions.signUp")}
           </Link>
         </div>
@@ -201,10 +201,28 @@ export default function PredictionDetailPage({ params }: { params: Promise<{ id:
         </div>
       </div>
 
+      {/* HAML AI Banner */}
+      <div className="relative overflow-hidden rounded-xl border border-violet-500/20 bg-gradient-to-r from-violet-500/5 via-blue-500/5 to-violet-500/5">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-violet-500/10 via-transparent to-transparent" />
+        <div className="relative flex items-center gap-3 px-4 py-3">
+          <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-gradient-to-br from-violet-500 to-blue-600 flex items-center justify-center shadow-lg shadow-violet-500/20">
+            <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18 7.5l.442 1.381a2.25 2.25 0 001.427 1.427L21.25 10.75l-1.381.442a2.25 2.25 0 00-1.427 1.427L18 14l-.442-1.381a2.25 2.25 0 00-1.427-1.427L14.75 10.75l1.381-.442a2.25 2.25 0 001.427-1.427L18 7.5z" />
+            </svg>
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-bold bg-gradient-to-r from-violet-600 to-blue-600 bg-clip-text text-transparent">{t("ai.poweredBy")}</span>
+            </div>
+            <p className="text-xs text-text-muted mt-0.5 leading-relaxed">{t("ai.description")}</p>
+          </div>
+        </div>
+      </div>
+
       {/* Row 1: Match header + Score + Probability side by side */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Match header + Predicted Score (2/3) */}
-        <div className="lg:col-span-2 bg-white rounded-2xl border border-border overflow-hidden shadow-sm">
+        <div className="lg:col-span-2 bg-card rounded-2xl border border-border overflow-hidden shadow-sm">
           <div className="p-5">
             <div className="flex items-center justify-between mb-5">
               <div className="flex flex-col items-center gap-2 flex-1">
@@ -234,8 +252,14 @@ export default function PredictionDetailPage({ params }: { params: Promise<{ id:
 
             {/* Predicted score */}
             <div className="bg-surface rounded-xl p-4 mb-3">
-              <div className="text-center mb-2">
+              <div className="text-center mb-2 flex items-center justify-center gap-2">
                 <span className="text-xs font-bold text-primary uppercase tracking-wider">{t("predictionDetail.predictedScore")}</span>
+                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-gradient-to-r from-violet-500/10 to-blue-500/10 border border-violet-500/20">
+                  <svg className="w-2.5 h-2.5 text-violet-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+                  </svg>
+                  <span className="text-[9px] font-bold bg-gradient-to-r from-violet-600 to-blue-600 bg-clip-text text-transparent">{t("ai.badge")}</span>
+                </span>
               </div>
               <div className="flex items-center justify-center gap-4">
                 <span className="text-4xl font-black text-text">{adminPred ? adminPred.predicted_home : (pred.goals.home || "?")}</span>
@@ -257,8 +281,16 @@ export default function PredictionDetailPage({ params }: { params: Promise<{ id:
         {/* Probability + Quick Stats (1/3) */}
         <div className="space-y-4">
           {/* Win probability */}
-          <div className="bg-white rounded-2xl border border-border overflow-hidden shadow-sm p-5">
-            <div className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-4">{t("predictionDetail.winProbability")}</div>
+          <div className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm p-5">
+            <div className="flex items-center gap-2 mb-4">
+              <span className="text-xs font-semibold text-text-muted uppercase tracking-wider">{t("predictionDetail.winProbability")}</span>
+              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-violet-500/10 border border-violet-500/20">
+                <svg className="w-2 h-2 text-violet-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+                </svg>
+                <span className="text-[8px] font-bold text-violet-500">AI</span>
+              </span>
+            </div>
             <div className="space-y-3">
               <ProbBar label={t("predictionDetail.home")} value={pHome} color="bg-primary" />
               <ProbBar label={t("predictionDetail.draw")} value={pDraw} color="bg-text-muted/40" />
@@ -268,7 +300,7 @@ export default function PredictionDetailPage({ params }: { params: Promise<{ id:
 
           {/* Goal stats */}
           {homeGoalsFor && awayGoalsFor && (
-            <div className="bg-white rounded-2xl border border-border overflow-hidden shadow-sm p-5">
+            <div className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm p-5">
               <div className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">{t("predictionDetail.goalsLast5")}</div>
               <div className="grid grid-cols-2 gap-3">
                 <StatCard label={prediction.teams.home.name} subLabel={t("predictionDetail.scored")} value={homeGoalsFor.total} avg={homeGoalsFor.average} perMatch={t("predictionDetail.perMatch")} />
@@ -284,7 +316,7 @@ export default function PredictionDetailPage({ params }: { params: Promise<{ id:
       {/* Row 2: Form + Comparison side by side */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Recent form */}
-        <div className="bg-white rounded-2xl border border-border overflow-hidden shadow-sm">
+        <div className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm">
           <div className="px-4 py-3 border-b border-border">
             <h3 className="text-sm font-semibold text-text">{t("predictionDetail.recentForm")}</h3>
           </div>
@@ -296,7 +328,7 @@ export default function PredictionDetailPage({ params }: { params: Promise<{ id:
 
         {/* Comparison */}
         {comparisonKeys.length > 0 && (
-          <div className="bg-white rounded-2xl border border-border overflow-hidden shadow-sm">
+          <div className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm">
             <div className="px-4 py-3 border-b border-border">
               <h3 className="text-sm font-semibold text-text">{t("predictionDetail.teamComparison")}</h3>
             </div>
@@ -358,7 +390,7 @@ export default function PredictionDetailPage({ params }: { params: Promise<{ id:
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Head to Head */}
         {prediction.h2h && prediction.h2h.length > 0 && (
-          <div className="lg:col-span-1 bg-white rounded-2xl border border-border overflow-hidden shadow-sm">
+          <div className="lg:col-span-1 bg-card rounded-2xl border border-border overflow-hidden shadow-sm">
             <div className="px-4 py-3 border-b border-border">
               <h3 className="text-sm font-semibold text-text">{t("predictionDetail.headToHead")}</h3>
             </div>
@@ -462,7 +494,7 @@ function FormRow({ teamName, teamLogo, form }: { teamName: string; teamLogo: str
 function LastMatchesCard({ teamName, teamLogo, matches, lastMatchesLabel, locale }: { teamName: string; teamLogo: string; matches: Fixture[]; lastMatchesLabel: string; locale: string }) {
   const dateLocale = locale === "he" ? "he-IL" : "en-US";
   return (
-    <div className="bg-white rounded-2xl border border-border overflow-hidden shadow-sm">
+    <div className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm">
       <div className="flex items-center gap-2 px-4 py-3 border-b border-border">
         <div className="relative w-5 h-5">
           <Image src={teamLogo} alt={teamName} fill className="object-contain" sizes="20px" unoptimized />
