@@ -4,9 +4,10 @@ import { useState, useEffect, use } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslation } from "@/contexts/LanguageContext";
-import { Fixture, FixtureEvent } from "@/lib/types";
+import { Fixture, FixtureEvent, FixtureLineup } from "@/lib/types";
 import { isLive, getStatusDisplay } from "@/lib/utils";
 import SummaryTab from "@/components/match/SummaryTab";
+import LineupsTab from "@/components/match/LineupsTab";
 
 interface PredictionData {
   predictions: {
@@ -39,25 +40,29 @@ export default function MatchPage({ params }: { params: Promise<{ id: string }> 
   const [prediction, setPrediction] = useState<PredictionData | null>(null);
   const [lastHome, setLastHome] = useState<Fixture[]>([]);
   const [lastAway, setLastAway] = useState<Fixture[]>([]);
+  const [lineups, setLineups] = useState<FixtureLineup[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchAll() {
       try {
-        const [fixtureRes, eventsRes, predRes] = await Promise.all([
+        const [fixtureRes, eventsRes, predRes, lineupsRes] = await Promise.all([
           fetch(`/api/fixtures/${id}`),
           fetch(`/api/fixtures/${id}/events`),
           fetch(`/api/predictions/${id}`),
+          fetch(`/api/fixtures/${id}/lineups`),
         ]);
 
-        const [fixtureData, eventsData, predData] = await Promise.all([
+        const [fixtureData, eventsData, predData, lineupsData] = await Promise.all([
           fixtureRes.json(),
           eventsRes.json(),
           predRes.json().catch(() => ({ response: [] })),
+          lineupsRes.json().catch(() => ({ response: [] })),
         ]);
 
         if (fixtureData.response?.[0]) setFixture(fixtureData.response[0]);
         if (eventsData.response) setEvents(eventsData.response);
+        if (lineupsData.response) setLineups(lineupsData.response);
 
         if (predData.response?.[0]) {
           const pred = predData.response[0];
@@ -233,6 +238,9 @@ export default function MatchPage({ params }: { params: Promise<{ id: string }> 
 
       {/* Summary (events) */}
       <SummaryTab events={events} fixture={fixture} />
+
+      {/* Lineups */}
+      {lineups.length >= 2 && <LineupsTab lineups={lineups} />}
 
       {/* Analysis statistics */}
       <AnalysisSection prediction={prediction} lastHome={lastHome} lastAway={lastAway} t={t} locale={locale} />
