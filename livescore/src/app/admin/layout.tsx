@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import Sidebar from "@/components/admin/Sidebar";
 
 const API = (path: string) => `/api${path}`;
@@ -69,16 +70,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   if (!authed) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-900 px-4">
+      <div className="min-h-screen flex items-center justify-center bg-slate-900 px-4 text-slate-900">
         <div className="w-full max-w-sm">
           <div className="bg-white rounded-2xl shadow-2xl p-8">
             <div className="text-center mb-8">
-              <div className="w-16 h-16 bg-red-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-red-600/25">
-                <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none" />
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 2c1.93 0 3.68.69 5.05 1.83L14.5 8.5l-2.5-1-2.5 1-2.55-2.67A7.956 7.956 0 0 1 12 4z" />
-                </svg>
-              </div>
+              <Image src="/logo.png" alt="חמ״ל" width={64} height={64} className="w-16 h-16 object-contain mx-auto mb-4" priority />
               <h1 className="text-2xl font-bold text-slate-900">LiveScore Admin</h1>
               <p className="text-sm text-slate-500 mt-1">Sign in to manage your site</p>
             </div>
@@ -129,7 +125,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50 text-slate-900">
       <Sidebar currentUser={currentUser} onLogout={handleLogout} />
       <div className="ml-64">
         <main className="p-6 lg:p-8">{children}</main>

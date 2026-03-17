@@ -49,6 +49,11 @@ const ru: Record<string, string> = {
   "scores.noResultsFor": "По запросу \"{query}\" ничего не найдено. Попробуйте другую команду или лигу.",
   "scores.noLiveNow": "Сейчас нет матчей в прямом эфире. Загляните позже!",
   "scores.noMatchesDate": "На эту дату матчей не запланировано.",
+  "scores.allLeagues": "Все лиги",
+  "scores.allTeams": "Все команды",
+  "scores.leagues": "Лиги",
+  "scores.teams": "Команды",
+  "scores.clearFilters": "Сбросить фильтры",
 
   // Status filter
   "filter.all": "Все",
@@ -66,7 +71,7 @@ const ru: Record<string, string> = {
 
   // Predictions page
   "predictions.title": "Прогнозы",
-  "predictions.subtitle": "Экспертная аналитика и точные прогнозы на ближайшие матчи",
+  "predictions.subtitle": "Прогнозы на базе ИИ HAML — специализированный движок анализа футбола, обрабатывающий тысячи данных по каждому матчу",
   "predictions.today": "Сегодня",
   "predictions.tomorrow": "Завтра",
   "predictions.yesterday": "Вчера",
@@ -77,10 +82,10 @@ const ru: Record<string, string> = {
   "predictions.removeReminder": "Удалить напоминание",
   "predictions.remindKickoff": "Напомнить о начале матча",
   "predictions.noPredictions": "Прогнозов пока нет",
-  "predictions.noPredictionsDesc": "Экспертные прогнозы появятся здесь сразу после публикации. Будьте первыми!",
+  "predictions.noPredictionsDesc": "Прогнозы HAML AI появятся здесь, как только будут сгенерированы. Наш ИИ анализирует тысячи данных по каждому матчу.",
   "predictions.unknownLeague": "Другое",
   "predictions.locked": "Прогнозы заблокированы",
-  "predictions.lockedDesc": "Войдите или создайте аккаунт, чтобы получить доступ к экспертным прогнозам, ожидаемым результатам и продвинутой аналитике.",
+  "predictions.lockedDesc": "Войдите или создайте аккаунт, чтобы получить доступ к прогнозам HAML AI, ожидаемым результатам и продвинутой аналитике матчей.",
   "predictions.signIn": "Войти",
   "predictions.signUp": "Бесплатная регистрация",
   "predictions.lockedBadge": "Закрыто",
@@ -171,7 +176,9 @@ const ru: Record<string, string> = {
   "matchDetail.summary": "Обзор",
   "matchDetail.statistics": "Статистика",
   "matchDetail.lineups": "Составы",
+  "matchDetail.analysis": "Анализ",
   "matchDetail.halfTime": "Первый тайм:",
+  "matchDetail.analysisUnavailable": "Данные анализа недоступны для этого матча",
 
   // Match summary tab
   "summary.noEvents": "Событий по этому матчу нет",
@@ -240,6 +247,12 @@ const ru: Record<string, string> = {
   "vip.premiumTips": "Премиум советы",
   "vip.earlyAccess": "Ранний доступ",
   "vip.insiderAnalysis": "Инсайд-аналитика",
+  "vip.carouselTitle": "VIP Премиум",
+  "vip.carouselDesc": "Эксклюзивные советы, ранние прогнозы и выигрышная аналитика от наших экспертов — ежедневно в WhatsApp.",
+  "vip.joinNow": "Вступить",
+  "vip.benefit1": "Ежедневные прогнозы экспертов",
+  "vip.benefit2": "Ранний доступ к аналитике",
+  "vip.benefit3": "Инсайдерские советы",
 
   // AI branding
   "ai.poweredBy": "На базе HAML AI",
@@ -249,7 +262,7 @@ const ru: Record<string, string> = {
   "ai.dataSource": "Данные и анализ HAML AI",
 
   // Footer
-  "footer.brand": "Спорт Хамиэль",
+  "footer.brand": "Спорт Хамаль",
   "footer.tagline": "Ваш главный источник live-результатов, экспертных прогнозов и детального анализа каждого матча.",
   "footer.navigation": "Навигация",
   "footer.features": "Возможности",

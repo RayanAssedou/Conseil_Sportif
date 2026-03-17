@@ -158,16 +158,11 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between h-14 sm:h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 sm:gap-3 group flex-shrink-0">
-            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-primary flex items-center justify-center">
-              <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none" />
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 2c1.93 0 3.68.69 5.05 1.83L14.5 8.5l-2.5-1-2.5 1-2.55-2.67A7.956 7.956 0 0 1 12 4zm-8 8c0-1.62.5-3.13 1.33-4.38L8 10.5v3l2.5 2.5-1 3.5A7.98 7.98 0 0 1 4 12zm8 8c-1.35 0-2.62-.35-3.73-.96L9.5 15.5 12 13l4 1v3.5l-1.32 1.98A7.89 7.89 0 0 1 12 20zm5.67-2.87L16 15.5V14l2.93-3.07c.04.35.07.71.07 1.07a7.95 7.95 0 0 1-1.33 4.13z" />
-              </svg>
-            </div>
+          <Link href="/" className="flex items-center gap-1.5 sm:gap-2 group flex-shrink-0">
+            <Image src="/logo.png" alt="חמ״ל" width={40} height={40} className="w-9 h-9 sm:w-10 sm:h-10 object-contain" priority />
             <div className="flex items-baseline gap-1">
+              <span className="text-lg sm:text-xl font-bold text-primary tracking-tight">חמ״ל</span>
               <span className="text-lg sm:text-xl font-bold text-text tracking-tight group-hover:text-primary transition-colors">ספורט</span>
-              <span className="text-lg sm:text-xl font-bold text-primary tracking-tight">חמייל</span>
             </div>
           </Link>
 

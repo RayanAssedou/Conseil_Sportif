@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Fixture } from "@/lib/types";
-import { isLive, getStatusDisplay, getDateOffset } from "@/lib/utils";
+import { isLive, getStatusDisplay, getDateOffset, sortFixturesByLeaguePriority } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNotifications } from "@/contexts/NotificationContext";
 import { useTranslation } from "@/contexts/LanguageContext";
@@ -143,8 +143,9 @@ export default function HomePage() {
     ? fixtures.filter((f) => allowedLeagues.has(f.league.id))
     : fixtures;
 
-  const liveMatches = filtered.filter((f) => isLive(f.fixture.status.short));
-  const previewMatches = [...liveMatches, ...filtered.filter((f) => !isLive(f.fixture.status.short))].slice(0, 10);
+  const liveMatches = sortFixturesByLeaguePriority(filtered.filter((f) => isLive(f.fixture.status.short)));
+  const upcomingByPriority = sortFixturesByLeaguePriority(filtered.filter((f) => !isLive(f.fixture.status.short)));
+  const previewMatches = [...liveMatches, ...upcomingByPriority].slice(0, 10);
   const predictionPreview = adminPredictions.slice(0, 10);
 
   const heroStyle = hero.background_type === "image" && hero.background_value
@@ -297,13 +298,13 @@ export default function HomePage() {
       </section>
 
       {/* Social Links - Mobile Infinite Carousel */}
-      <section className="md:hidden -mx-4 overflow-hidden">
+      <section className="md:hidden -mx-4 overflow-hidden" dir="ltr">
         <style>{`
           @keyframes socialLoop {
             0% { transform: translateX(0); }
             100% { transform: translateX(-50%); }
           }
-          .social-infinite { animation: socialLoop 18s linear infinite; }
+          .social-infinite { animation: socialLoop 24s linear infinite; }
           .social-infinite:hover, .social-infinite:active { animation-play-state: paused; }
         `}</style>
         <div className="social-infinite flex gap-3 px-4 pb-2 w-max">
@@ -354,82 +355,27 @@ export default function HomePage() {
                   </span>
                 </div>
               </a>
+              <a href={vipLink || whatsappLink || "https://wa.me/"} target="_blank" rel="noopener noreferrer" className="flex-shrink-0 bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl p-3.5 text-white" style={{ width: "80vw" }}>
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 bg-white/15 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
+                    </svg>
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-sm font-bold">{t("vip.carouselTitle")}</h3>
+                    <p className="text-white/70 text-[11px] leading-tight">{t("vip.carouselDesc")}</p>
+                  </div>
+                  <span className="flex-shrink-0 inline-flex items-center gap-1 px-2.5 py-1.5 bg-white/20 rounded-lg text-[11px] font-semibold">
+                    {t("vip.joinNow")}
+                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
+                  </span>
+                </div>
+              </a>
             </div>
           ))}
         </div>
       </section>
-
-      {/* VIP Community Banner - Slow Carousel */}
-      {vipLink && (
-        <section className="-mx-4 md:mx-0 overflow-hidden">
-          <style>{`
-            @keyframes vipSlide {
-              0% { transform: translateX(0); }
-              100% { transform: translateX(-50%); }
-            }
-            .vip-carousel { animation: vipSlide 35s linear infinite; }
-            .vip-carousel:hover, .vip-carousel:active { animation-play-state: paused; }
-          `}</style>
-          <div className="vip-carousel flex gap-4 px-4 md:px-0 w-max">
-            {[0, 1].map((dup) => (
-              <div key={dup} className="flex gap-4 flex-shrink-0" aria-hidden={dup === 1 ? "true" : undefined}>
-                <a
-                  href={vipLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex-shrink-0 relative overflow-hidden rounded-2xl border border-amber-300/30 bg-gradient-to-r from-amber-50 via-amber-100/50 to-amber-50 dark:from-amber-950 dark:via-amber-900/30 dark:to-amber-950 hover:shadow-lg hover:shadow-amber-500/10 transition-shadow"
-                  style={{ width: "min(420px, 85vw)" }}
-                >
-                  <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-amber-400/10 via-transparent to-transparent" />
-                  <div className="relative flex items-center gap-4 p-4 md:p-5">
-                    <div className="flex-shrink-0 w-12 h-12 md:w-14 md:h-14 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/20">
-                      <svg className="w-6 h-6 md:w-7 md:h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
-                      </svg>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-sm md:text-base font-bold text-amber-800 dark:text-amber-300">{t("vip.title")}</span>
-                        <span className="px-1.5 py-0.5 text-[9px] font-bold bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded uppercase tracking-wider">{t("vip.badge")}</span>
-                      </div>
-                      <p className="text-xs text-amber-700/70 dark:text-amber-400/70 leading-snug line-clamp-2">{t("vip.desc")}</p>
-                    </div>
-                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-amber-500/10 flex items-center justify-center">
-                      <svg className="w-4 h-4 text-amber-600 dark:text-amber-400 rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                      </svg>
-                    </div>
-                  </div>
-                </a>
-
-                <a
-                  href={vipLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex-shrink-0 relative overflow-hidden rounded-2xl border border-amber-300/30 bg-gradient-to-r from-amber-50 via-white to-amber-50 dark:from-amber-950 dark:via-surface dark:to-amber-950 hover:shadow-lg hover:shadow-amber-500/10 transition-shadow"
-                  style={{ width: "min(420px, 85vw)" }}
-                >
-                  <div className="relative flex items-center gap-3 p-4 md:p-5">
-                    <div className="flex gap-2">
-                      {[t("vip.premiumTips"), t("vip.earlyAccess"), t("vip.insiderAnalysis")].map((feat, i) => (
-                        <div key={i} className="flex items-center gap-1.5 px-2.5 py-1.5 bg-amber-500/10 dark:bg-amber-500/15 rounded-lg">
-                          <svg className="w-3 h-3 text-amber-500 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                          <span className="text-[11px] font-semibold text-amber-700 dark:text-amber-300 whitespace-nowrap">{feat}</span>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="flex-shrink-0 px-3 py-1.5 bg-gradient-to-r from-amber-500 to-amber-600 text-white text-xs font-bold rounded-lg whitespace-nowrap shadow-md shadow-amber-500/20">
-                      {t("vip.join")} →
-                    </div>
-                  </div>
-                </a>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
 
       {/* Today's Predictions */}
       <section>
@@ -657,7 +603,7 @@ export default function HomePage() {
       <div className="h-8" />
 
       {/* Social Links - Desktop Grid */}
-      <section className="hidden md:grid grid-cols-3 gap-4">
+      <section className="hidden md:grid gap-4 grid-cols-2 lg:grid-cols-4">
         <a
           href={telegramLink || "https://t.me/"}
           target="_blank"
@@ -727,6 +673,41 @@ export default function HomePage() {
           </div>
           <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-white/20 rounded-lg text-sm font-semibold group-hover:bg-white/30 transition-colors">
             {t("home.followInstagram")}
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+            </svg>
+          </span>
+        </a>
+
+        <a
+          href={vipLink || whatsappLink || "https://wa.me/"}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="bg-gradient-to-br from-amber-500 to-amber-600 rounded-2xl p-5 text-white hover:shadow-lg hover:scale-[1.02] transition-all group"
+        >
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-12 h-12 bg-white/15 rounded-xl flex items-center justify-center">
+              <svg className="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
+              </svg>
+            </div>
+            <div>
+              <h3 className="text-lg font-bold">{t("vip.carouselTitle")}</h3>
+              <p className="text-white/70 text-xs">{t("vip.carouselDesc")}</p>
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-1.5 mb-3">
+            {[t("vip.benefit1"), t("vip.benefit2"), t("vip.benefit3")].map((b, i) => (
+              <span key={i} className="inline-flex items-center gap-1 px-2 py-1 bg-white/15 rounded-md text-[11px] font-medium">
+                <svg className="w-3 h-3 text-white/80 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {b}
+              </span>
+            ))}
+          </div>
+          <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-white/20 rounded-lg text-sm font-semibold group-hover:bg-white/30 transition-colors">
+            {t("vip.joinNow")}
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
             </svg>

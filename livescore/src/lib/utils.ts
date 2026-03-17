@@ -1,6 +1,38 @@
 import { Fixture, LeagueGroup } from "./types";
 import { translate, Locale } from "./i18n";
 
+export const PRIORITY_LEAGUES = [
+  2,    // UEFA Champions League
+  3,    // UEFA Europa League
+  848,  // UEFA Conference League
+  39,   // Premier League (England)
+  140,  // La Liga (Spain)
+  135,  // Serie A (Italy)
+  78,   // Bundesliga (Germany)
+  61,   // Ligue 1 (France)
+  94,   // Primeira Liga (Portugal)
+  88,   // Eredivisie (Netherlands)
+  203,  // Süper Lig (Turkey)
+  144,  // Belgian Pro League
+  235,  // Russian Premier League
+  307,  // Saudi Pro League
+  1,    // FIFA World Cup
+  4,    // UEFA Euro
+  9,    // Copa America
+  15,   // Africa Cup of Nations
+  253,  // MLS (USA)
+  71,   // Serie A (Brazil)
+];
+
+function getLeaguePriority(leagueId: number): number {
+  const idx = PRIORITY_LEAGUES.indexOf(leagueId);
+  return idx === -1 ? PRIORITY_LEAGUES.length : idx;
+}
+
+export function sortFixturesByLeaguePriority(fixtures: Fixture[]): Fixture[] {
+  return [...fixtures].sort((a, b) => getLeaguePriority(a.league.id) - getLeaguePriority(b.league.id));
+}
+
 export function groupFixturesByLeague(fixtures: Fixture[]): LeagueGroup[] {
   const map = new Map<number, LeagueGroup>();
 
@@ -23,12 +55,9 @@ export function groupFixturesByLeague(fixtures: Fixture[]): LeagueGroup[] {
 
   const groups = Array.from(map.values());
   groups.sort((a, b) => {
-    const priorityLeagues = [39, 140, 135, 78, 61, 2, 3, 848, 1];
-    const aIdx = priorityLeagues.indexOf(a.league.id);
-    const bIdx = priorityLeagues.indexOf(b.league.id);
-    if (aIdx !== -1 && bIdx !== -1) return aIdx - bIdx;
-    if (aIdx !== -1) return -1;
-    if (bIdx !== -1) return 1;
+    const aPri = getLeaguePriority(a.league.id);
+    const bPri = getLeaguePriority(b.league.id);
+    if (aPri !== bPri) return aPri - bPri;
     return a.league.country.localeCompare(b.league.country);
   });
 

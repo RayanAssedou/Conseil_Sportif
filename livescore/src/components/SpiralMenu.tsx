@@ -17,54 +17,80 @@ const menuItems = [
 
 function HexIcon({ icon, active, desktop }: { icon: string; active: boolean; desktop?: boolean }) {
   const cls = desktop ? "w-8 h-8" : "w-6 h-6";
-  const color = active ? "#ffffff" : "#64748b";
+  const pri = active ? "#ffffff" : "#dc2626";
+  const sec = active ? "rgba(255,255,255,0.5)" : "#94a3b8";
+  const fill = active ? "#ffffff" : "#334155";
+  const fillSoft = active ? "rgba(255,255,255,0.25)" : "rgba(100,116,139,0.15)";
 
   if (icon === "home")
     return (
-      <svg className={cls} viewBox="0 0 24 24" fill={active ? "#dc2626" : "none"} stroke={active ? "#fff" : color} strokeWidth={1.6}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1h-4.5v-5.5a1.5 1.5 0 00-1.5-1.5h-2a1.5 1.5 0 00-1.5 1.5V21H6a1 1 0 01-1-1V9.5z" />
+      <svg className={cls} viewBox="0 0 24 24" fill="none">
+        <path d="M3.5 10.25L12 3l8.5 7.25V20.5a1 1 0 01-1 1H4.5a1 1 0 01-1-1V10.25z" fill={fillSoft} />
+        <path d="M4 10.5L12 3.5l8 7v10a.5.5 0 01-.5.5h-5v-5a2.5 2.5 0 00-5 0v5h-5a.5.5 0 01-.5-.5v-10z" stroke={fill} strokeWidth={1.4} strokeLinejoin="round" />
+        <path d="M9.5 21v-5a2.5 2.5 0 015 0v5" stroke={pri} strokeWidth={1.4} strokeLinecap="round" />
+        <path d="M2 11l10-8.5L22 11" stroke={fill} strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" />
+        <circle cx="12" cy="3" r="1" fill={pri} />
       </svg>
     );
 
   if (icon === "live")
     return (
       <svg className={cls} viewBox="0 0 24 24" fill="none">
-        <rect x="2" y="4" width="20" height="14" rx="2" stroke={active ? "#fff" : color} strokeWidth={1.6} fill={active ? "#dc2626" : "none"} />
-        <path d="M10 9l5 3-5 3V9z" fill={active ? "#fff" : color} />
-        <path d="M8 21h8M12 18v3" stroke={active ? "#dc2626" : color} strokeWidth={1.6} strokeLinecap="round" />
+        <rect x="1.5" y="3.5" width="21" height="14" rx="2.5" fill={fillSoft} />
+        <rect x="2" y="4" width="20" height="13" rx="2" stroke={fill} strokeWidth={1.3} />
+        <path d="M9.5 8v7l6.5-3.5L9.5 8z" fill={pri} />
+        <circle cx="5" cy="7" r="0.8" fill={pri} opacity={0.8}>
+          <animate attributeName="opacity" values="1;0.3;1" dur="1.5s" repeatCount="indefinite" />
+        </circle>
+        <path d="M7.5 20h9M12 17v3" stroke={sec} strokeWidth={1.3} strokeLinecap="round" />
+        <path d="M8 20.5h8" stroke={fill} strokeWidth={1.6} strokeLinecap="round" />
       </svg>
     );
 
   if (icon === "star")
     return (
-      <svg className={cls} viewBox="0 0 24 24" fill={active ? "#dc2626" : "none"} stroke={active ? "#fff" : color} strokeWidth={1.6}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z" />
+      <svg className={cls} viewBox="0 0 24 24" fill="none">
+        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.86L12 17.77 5.82 21l1.18-6.86-5-4.87 6.91-1.01L12 2z" fill={fillSoft} />
+        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.86L12 17.77 5.82 21l1.18-6.86-5-4.87 6.91-1.01L12 2z" stroke={fill} strokeWidth={1.3} strokeLinejoin="round" />
+        <path d="M12 5.5l2 4.1 4.5.65-3.25 3.17.77 4.47L12 15.47l-4.02 2.42.77-4.47L5.5 10.25l4.5-.65L12 5.5z" fill={pri} opacity={0.9} />
+        <path d="M12 7l1.3 2.65 2.92.42-2.11 2.06.5 2.9L12 13.3l-2.61 1.73.5-2.9-2.11-2.06 2.92-.42L12 7z" fill={active ? "#fff" : "#dc2626"} opacity={0.4} />
       </svg>
     );
 
   if (icon === "article")
     return (
-      <svg className={cls} viewBox="0 0 24 24" fill={active ? "#dc2626" : "none"} stroke={active ? "#fff" : color} strokeWidth={1.6}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M4 4h16a1 1 0 011 1v14a1 1 0 01-1 1H4a1 1 0 01-1-1V5a1 1 0 011-1z" />
-        <path strokeLinecap="round" d="M7 8h4M7 12h10M7 16h10" stroke={active ? "#fff" : color} strokeWidth={1.6} />
+      <svg className={cls} viewBox="0 0 24 24" fill="none">
+        <rect x="3.5" y="2.5" width="15" height="19" rx="2" fill={fillSoft} />
+        <rect x="4" y="3" width="14" height="18" rx="1.5" stroke={fill} strokeWidth={1.3} />
+        <path d="M7.5 7h7" stroke={pri} strokeWidth={1.6} strokeLinecap="round" />
+        <path d="M7.5 10.5h9M7.5 13.5h9M7.5 16.5h5.5" stroke={sec} strokeWidth={1.2} strokeLinecap="round" />
+        <rect x="16" y="2" width="5" height="7" rx="1" fill={pri} opacity={0.2} />
+        <path d="M17 3.5v4.5l1.5-1.2L20 8V3.5a.5.5 0 00-.5-.5h-2a.5.5 0 00-.5.5z" fill={pri} opacity={0.7} />
       </svg>
     );
 
   if (icon === "watch")
     return (
       <svg className={cls} viewBox="0 0 24 24" fill="none">
-        <circle cx="12" cy="12" r="10" stroke={active ? "#fff" : color} strokeWidth={1.6} fill={active ? "#dc2626" : "none"} />
-        <path d="M10 8.5l6 3.5-6 3.5V8.5z" fill={active ? "#fff" : color} />
+        <circle cx="12" cy="12" r="10" fill={fillSoft} />
+        <circle cx="12" cy="12" r="9.5" stroke={fill} strokeWidth={1.3} />
+        <circle cx="12" cy="12" r="7" stroke={sec} strokeWidth={0.7} strokeDasharray="2 2" />
+        <path d="M10 8l7 4-7 4V8z" fill={pri} />
+        <path d="M10 8l7 4-7 4V8z" stroke={fill} strokeWidth={0.5} opacity={0.3} />
+        <circle cx="12" cy="12" r="1.2" fill={active ? "#fff" : "#dc2626"} opacity={0.35} />
+        <circle cx="4.5" cy="7" r="0.6" fill={pri} opacity={0.5} />
+        <circle cx="19.5" cy="17" r="0.6" fill={pri} opacity={0.5} />
       </svg>
     );
 
   if (icon === "vip")
     return (
       <svg className={cls} viewBox="0 0 24 24" fill="none">
-        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z"
-          stroke={active ? "#fff" : "#f59e0b"} strokeWidth={1.6}
-          fill={active ? "#f59e0b" : "none"} />
-        <circle cx="12" cy="12" r="3" fill={active ? "#fff" : "#f59e0b"} opacity={0.6} />
+        <path d="M12 1l3.5 7.1L23 9.2l-5.65 5.5L18.7 23 12 19.3 5.3 23l1.35-8.3L1 9.2l7.5-1.1L12 1z" fill={active ? "rgba(255,255,255,0.2)" : "rgba(245,158,11,0.15)"} />
+        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.86L12 17.77 5.82 21l1.18-6.86-5-4.87 6.91-1.01L12 2z" stroke={active ? "#fff" : "#f59e0b"} strokeWidth={1.3} strokeLinejoin="round" />
+        <path d="M12 5.5l2 4.1 4.5.65-3.25 3.17.77 4.47L12 15.47l-4.02 2.42.77-4.47L5.5 10.25l4.5-.65L12 5.5z" fill={active ? "#fff" : "#f59e0b"} opacity={0.7} />
+        <circle cx="12" cy="11.5" r="2.8" fill={active ? "rgba(255,255,255,0.4)" : "rgba(245,158,11,0.3)"} />
+        <text x="12" y="13.2" textAnchor="middle" fontSize="4.5" fontWeight="900" fontFamily="Arial" fill={active ? "#f59e0b" : "#92400e"} opacity={0.9}>V</text>
       </svg>
     );
 

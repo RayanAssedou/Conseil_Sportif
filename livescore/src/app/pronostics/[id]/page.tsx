@@ -159,8 +159,6 @@ export default function PredictionDetailPage({ params }: { params: Promise<{ id:
   }
 
   const pred = prediction.predictions;
-  const homeForm = prediction.teams.home.last_5?.form || "";
-  const awayForm = prediction.teams.away.last_5?.form || "";
   const kickoff = new Date(fixture.fixture.date);
   const comparisonKeys = prediction.comparison ? Object.keys(prediction.comparison) : [];
 
@@ -316,15 +314,17 @@ export default function PredictionDetailPage({ params }: { params: Promise<{ id:
       {/* Row 2: Form + Comparison side by side */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Recent form */}
+        {(lastHome.length > 0 || lastAway.length > 0) && (
         <div className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm">
           <div className="px-4 py-3 border-b border-border">
             <h3 className="text-sm font-semibold text-text">{t("predictionDetail.recentForm")}</h3>
           </div>
           <div className="p-4 space-y-4">
-            <FormRow teamName={prediction.teams.home.name} teamLogo={prediction.teams.home.logo} form={homeForm} />
-            <FormRow teamName={prediction.teams.away.name} teamLogo={prediction.teams.away.logo} form={awayForm} />
+            <FormRow teamName={prediction.teams.home.name} teamLogo={prediction.teams.home.logo} results={deriveForm(lastHome, prediction.teams.home.id)} />
+            <FormRow teamName={prediction.teams.away.name} teamLogo={prediction.teams.away.logo} results={deriveForm(lastAway, prediction.teams.away.id)} />
           </div>
         </div>
+        )}
 
         {/* Comparison */}
         {comparisonKeys.length > 0 && (
@@ -465,10 +465,21 @@ function StatCard({ label, subLabel, value, avg, perMatch }: { label: string; su
   );
 }
 
-function FormRow({ teamName, teamLogo, form }: { teamName: string; teamLogo: string; form: string }) {
-  const results = form.split("");
+function deriveForm(matches: Fixture[], teamId: number): string[] {
+  return matches.slice(0, 5).map((m) => {
+    const isHome = m.teams.home.id === teamId;
+    const goalsFor = isHome ? m.goals.home : m.goals.away;
+    const goalsAgainst = isHome ? m.goals.away : m.goals.home;
+    if (goalsFor == null || goalsAgainst == null) return "D";
+    if (goalsFor > goalsAgainst) return "W";
+    if (goalsFor < goalsAgainst) return "L";
+    return "D";
+  });
+}
+
+function FormRow({ teamName, teamLogo, results }: { teamName: string; teamLogo: string; results: string[] }) {
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-3" dir="ltr">
       <div className="flex items-center gap-2 min-w-0 w-36">
         <div className="relative w-6 h-6 flex-shrink-0">
           <Image src={teamLogo} alt={teamName} fill className="object-contain" sizes="24px" unoptimized />

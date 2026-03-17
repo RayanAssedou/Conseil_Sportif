@@ -49,6 +49,11 @@ const en: Record<string, string> = {
   "scores.noResultsFor": "No results for \"{query}\". Try a different team or league.",
   "scores.noLiveNow": "No live matches at the moment. Check back soon!",
   "scores.noMatchesDate": "No matches scheduled for this date.",
+  "scores.allLeagues": "All Leagues",
+  "scores.allTeams": "All Teams",
+  "scores.leagues": "Leagues",
+  "scores.teams": "Teams",
+  "scores.clearFilters": "Clear filters",
 
   // Status filter
   "filter.all": "All",
@@ -66,7 +71,7 @@ const en: Record<string, string> = {
 
   // Predictions page
   "predictions.title": "Predictions",
-  "predictions.subtitle": "Expert analysis and predictions for upcoming matches",
+  "predictions.subtitle": "AI-powered match predictions by HAML, our specialized football analysis engine",
   "predictions.today": "Today",
   "predictions.tomorrow": "Tomorrow",
   "predictions.yesterday": "Yesterday",
@@ -77,10 +82,10 @@ const en: Record<string, string> = {
   "predictions.removeReminder": "Remove reminder",
   "predictions.remindKickoff": "Remind me at kickoff",
   "predictions.noPredictions": "No predictions yet",
-  "predictions.noPredictionsDesc": "Expert predictions will appear here once they are published.",
+  "predictions.noPredictionsDesc": "HAML AI predictions will appear here once they are generated. Our AI analyzes thousands of data points for each match.",
   "predictions.unknownLeague": "Other",
   "predictions.locked": "Predictions are locked",
-  "predictions.lockedDesc": "Sign in or create an account to unlock expert predictions, predicted scores, and match analysis.",
+  "predictions.lockedDesc": "Sign in or create an account to unlock HAML AI predictions, predicted scores, and advanced match analysis.",
   "predictions.signIn": "Sign In",
   "predictions.signUp": "Sign Up",
   "predictions.lockedBadge": "Locked",
@@ -171,7 +176,9 @@ const en: Record<string, string> = {
   "matchDetail.summary": "Summary",
   "matchDetail.statistics": "Statistics",
   "matchDetail.lineups": "Lineups",
+  "matchDetail.analysis": "Analysis",
   "matchDetail.halfTime": "HT:",
+  "matchDetail.analysisUnavailable": "Analysis data is not available for this match",
 
   // Match summary tab
   "summary.noEvents": "No events available for this match",
@@ -240,6 +247,12 @@ const en: Record<string, string> = {
   "vip.premiumTips": "Premium Tips",
   "vip.earlyAccess": "Early Access",
   "vip.insiderAnalysis": "Insider Analysis",
+  "vip.carouselTitle": "VIP Premium",
+  "vip.carouselDesc": "Exclusive tips, early predictions & winning analysis from our experts — delivered daily to your WhatsApp.",
+  "vip.joinNow": "Join Now",
+  "vip.benefit1": "Expert daily predictions",
+  "vip.benefit2": "Early access to analysis",
+  "vip.benefit3": "Insider winning tips",
 
   // AI branding
   "ai.poweredBy": "Powered by HAML AI",
@@ -249,7 +262,7 @@ const en: Record<string, string> = {
   "ai.dataSource": "Data & analysis by HAML AI",
 
   // Footer
-  "footer.brand": "Sport Hamiel",
+  "footer.brand": "Sport Hamal",
   "footer.tagline": "Your ultimate destination for live football scores, expert predictions, and in-depth match analysis.",
   "footer.navigation": "Navigation",
   "footer.features": "Features",

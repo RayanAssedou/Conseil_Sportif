@@ -49,6 +49,11 @@ const ar: Record<string, string> = {
   "scores.noResultsFor": "لا توجد نتائج لـ \"{query}\". جرّب فريقاً أو دورياً آخر.",
   "scores.noLiveNow": "لا توجد مباريات مباشرة الآن. عُد قريباً!",
   "scores.noMatchesDate": "لا توجد مباريات مجدولة لهذا التاريخ.",
+  "scores.allLeagues": "كل الدوريات",
+  "scores.allTeams": "كل الفرق",
+  "scores.leagues": "الدوريات",
+  "scores.teams": "الفرق",
+  "scores.clearFilters": "مسح الفلاتر",
 
   // Status filter
   "filter.all": "الكل",
@@ -66,7 +71,7 @@ const ar: Record<string, string> = {
 
   // Predictions page
   "predictions.title": "التحليلات",
-  "predictions.subtitle": "تحليلات الخبراء وتوقعات دقيقة للمباريات القادمة",
+  "predictions.subtitle": "توقعات مدعومة بالذكاء الاصطناعي HAML – محرك تحليل كرة قدم متقدم يحلّل آلاف البيانات لكل مباراة",
   "predictions.today": "اليوم",
   "predictions.tomorrow": "غداً",
   "predictions.yesterday": "أمس",
@@ -77,10 +82,10 @@ const ar: Record<string, string> = {
   "predictions.removeReminder": "إزالة التذكير",
   "predictions.remindKickoff": "ذكّرني عند بداية المباراة",
   "predictions.noPredictions": "لا توجد تحليلات بعد",
-  "predictions.noPredictionsDesc": "ستظهر تحليلات الخبراء هنا فور نشرها. كن أول من يعرف!",
+  "predictions.noPredictionsDesc": "توقعات HAML AI ستظهر هنا فور إنشائها. ذكاؤنا الاصطناعي يحلّل آلاف نقاط البيانات لكل مباراة.",
   "predictions.unknownLeague": "أخرى",
   "predictions.locked": "التحليلات مقفلة",
-  "predictions.lockedDesc": "سجّل دخولك أو أنشئ حساباً للوصول إلى تحليلات الخبراء، النتائج المتوقعة والإحصائيات المتقدمة.",
+  "predictions.lockedDesc": "سجّل دخولك أو أنشئ حساباً للوصول إلى توقعات HAML AI، النتائج المتوقعة وتحليلات المباريات المتقدمة.",
   "predictions.signIn": "تسجيل دخول",
   "predictions.signUp": "حساب مجاني",
   "predictions.lockedBadge": "مقفل",
@@ -171,7 +176,9 @@ const ar: Record<string, string> = {
   "matchDetail.summary": "ملخص",
   "matchDetail.statistics": "إحصائيات",
   "matchDetail.lineups": "التشكيلة",
+  "matchDetail.analysis": "تحليل",
   "matchDetail.halfTime": "الشوط الأول:",
+  "matchDetail.analysisUnavailable": "بيانات التحليل غير متاحة لهذه المباراة",
 
   // Match summary tab
   "summary.noEvents": "لا توجد أحداث لهذه المباراة",
@@ -240,6 +247,12 @@ const ar: Record<string, string> = {
   "vip.premiumTips": "نصائح مميزة",
   "vip.earlyAccess": "وصول مبكر",
   "vip.insiderAnalysis": "تحليل داخلي",
+  "vip.carouselTitle": "VIP بريميوم",
+  "vip.carouselDesc": "نصائح حصرية، توقعات مبكرة وتحليلات رابحة من خبرائنا — تصلك يومياً على واتساب.",
+  "vip.joinNow": "انضم الآن",
+  "vip.benefit1": "توقعات خبراء يومية",
+  "vip.benefit2": "وصول مبكر للتحليلات",
+  "vip.benefit3": "نصائح رابحة من الداخل",
 
   // AI branding
   "ai.poweredBy": "مدعوم بذكاء HAML الاصطناعي",
@@ -249,7 +262,7 @@ const ar: Record<string, string> = {
   "ai.dataSource": "البيانات والتحليل بواسطة HAML AI",
 
   // Footer
-  "footer.brand": "سبورت حمييل",
+  "footer.brand": "سبورت حمال",
   "footer.tagline": "وجهتك المثالية لنتائج كرة القدم المباشرة والتحليلات الاحترافية ومتابعة كل تفاصيل المباريات.",
   "footer.navigation": "التنقل",
   "footer.features": "المزايا",
