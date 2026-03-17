@@ -18,8 +18,10 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "LiveScore - Live Football Results & Predictions",
+  title: "Sport Hamal - Live Football Results & Predictions",
   description: "Follow all live football scores, results, statistics and predictions from every league worldwide.",
+  manifest: "/manifest.json",
+  themeColor: "#dc2626",
 };
 
 export default function RootLayout({

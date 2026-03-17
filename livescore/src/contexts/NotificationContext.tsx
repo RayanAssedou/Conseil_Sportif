@@ -5,6 +5,7 @@ import { Fixture } from "@/lib/types";
 import { translate } from "@/lib/i18n";
 import { isLive, isFinished, getDateOffset } from "@/lib/utils";
 import { useTranslation } from "@/contexts/LanguageContext";
+import { registerServiceWorker, subscribeToPush, sendSubscriptionToServer, syncFollowToServer } from "@/lib/push";
 
 interface ReminderData {
   fixtureId: number;
@@ -109,6 +110,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
   remindersRef.current = reminders;
   const goalAlertsRef = useRef(goalAlerts);
   goalAlertsRef.current = goalAlerts;
+  const pushEndpointRef = useRef<string | null>(null);
 
   useEffect(() => {
     const remindersLoaded = loadMap<ReminderData>(LS_REMINDERS);
@@ -137,6 +139,22 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
 
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+    (async () => {
+      try {
+        const reg = await registerServiceWorker();
+        if (!reg) return;
+        const permission = await requestPermission();
+        if (!permission) return;
+        const sub = await subscribeToPush(reg);
+        if (!sub) return;
+        pushEndpointRef.current = sub.endpoint;
+        await sendSubscriptionToServer(sub, undefined, localeRef.current);
+      } catch { /* silent */ }
+    })();
+  }, [mounted]);
 
   useEffect(() => {
     if (mounted) saveMap(LS_REMINDERS, reminders);
@@ -169,6 +187,9 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
       });
       return next;
     });
+    if (pushEndpointRef.current) {
+      syncFollowToServer(pushEndpointRef.current, fixture.fixture.id, "reminder", "add");
+    }
   }, []);
 
   const removeReminder = useCallback((fixtureId: number) => {
@@ -177,12 +198,16 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
       next.delete(fixtureId);
       return next;
     });
+    if (pushEndpointRef.current) {
+      syncFollowToServer(pushEndpointRef.current, fixtureId, "reminder", "remove");
+    }
   }, []);
 
   const hasReminder = useCallback((fixtureId: number) => reminders.has(fixtureId), [reminders]);
 
   const toggleGoalAlert = useCallback(async (fixture: Fixture) => {
     await requestPermission();
+    const wasFollowing = goalAlertsRef.current.has(fixture.fixture.id);
     setGoalAlerts((prev) => {
       const next = new Map(prev);
       if (next.has(fixture.fixture.id)) {
@@ -201,6 +226,14 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
       }
       return next;
     });
+    if (pushEndpointRef.current) {
+      syncFollowToServer(
+        pushEndpointRef.current,
+        fixture.fixture.id,
+        "goal_alert",
+        wasFollowing ? "remove" : "add"
+      );
+    }
   }, []);
 
   const hasGoalAlert = useCallback((fixtureId: number) => goalAlerts.has(fixtureId), [goalAlerts]);
