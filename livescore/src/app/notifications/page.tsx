@@ -72,6 +72,10 @@ export default function NotificationsPage() {
     (r) => !fixtures.some((f) => f.fixture.id === r.fixtureId)
   );
 
+  const pendingGoalAlerts = Array.from(goalAlerts.values()).filter(
+    (a) => !fixtures.some((f) => f.fixture.id === a.fixtureId)
+  );
+
   if (authLoading) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-12">
@@ -97,7 +101,7 @@ export default function NotificationsPage() {
     );
   }
 
-  const totalFollowed = followedIds.size + pendingReminders.length;
+  const totalFollowed = followedIds.size;
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-6">
@@ -265,6 +269,41 @@ export default function NotificationsPage() {
                         </button>
                       </div>
                     </Link>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Pending goal alerts (matches not in today's fixtures) */}
+          {pendingGoalAlerts.length > 0 && (
+            <section>
+              <h2 className="text-sm font-semibold text-text-muted uppercase tracking-wider mb-3">
+                {t("notifications.scheduledReminders")} ({pendingGoalAlerts.length})
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {pendingGoalAlerts.map((a) => (
+                  <div key={a.fixtureId} className="bg-card rounded-xl border border-border overflow-hidden hover:shadow-md transition-shadow">
+                    <div className="block p-4">
+                      <div className="flex items-center gap-3">
+                        <div className="relative w-8 h-8 flex-shrink-0">
+                          <Image src={a.homeLogo} alt="" fill className="object-contain" sizes="32px" unoptimized />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-text truncate">{a.homeTeam} vs {a.awayTeam}</p>
+                          <p className="text-xs text-text-muted">{t("notifications.finished")}</p>
+                        </div>
+                        <button
+                          onClick={() => toggleGoalAlert({ fixture: { id: a.fixtureId } } as Fixture)}
+                          className="p-1.5 rounded-md text-red-500 bg-red-50 hover:bg-red-100 transition-colors flex-shrink-0"
+                          title={t("notifications.unfollow")}
+                        >
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>

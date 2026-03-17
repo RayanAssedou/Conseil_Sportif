@@ -23,6 +23,7 @@ interface GoalAlertData {
   awayLogo: string;
   lastHomeGoals: number | null;
   lastAwayGoals: number | null;
+  createdAt?: number;
 }
 
 export interface NotifToast {
@@ -110,8 +111,30 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
   goalAlertsRef.current = goalAlerts;
 
   useEffect(() => {
-    setReminders(loadMap<ReminderData>(LS_REMINDERS));
-    setGoalAlerts(loadMap<GoalAlertData>(LS_GOAL_ALERTS));
+    const remindersLoaded = loadMap<ReminderData>(LS_REMINDERS);
+    const now = Date.now();
+    const STALE_MS = 48 * 60 * 60 * 1000;
+    let remindersChanged = false;
+    for (const [id, r] of remindersLoaded) {
+      if (r.kickoffISO && now - new Date(r.kickoffISO).getTime() > STALE_MS) {
+        remindersLoaded.delete(id);
+        remindersChanged = true;
+      }
+    }
+    if (remindersChanged) saveMap(LS_REMINDERS, remindersLoaded);
+    setReminders(remindersLoaded);
+
+    const alerts = loadMap<GoalAlertData>(LS_GOAL_ALERTS);
+    let cleaned = false;
+    for (const [id, alert] of alerts) {
+      if (!alert.createdAt || now - alert.createdAt > STALE_MS) {
+        alerts.delete(id);
+        cleaned = true;
+      }
+    }
+    if (cleaned) saveMap(LS_GOAL_ALERTS, alerts);
+    setGoalAlerts(alerts);
+
     setMounted(true);
   }, []);
 
@@ -173,6 +196,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
           awayLogo: fixture.teams.away.logo,
           lastHomeGoals: fixture.goals.home,
           lastAwayGoals: fixture.goals.away,
+          createdAt: Date.now(),
         });
       }
       return next;
@@ -263,6 +287,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
               awayLogo: f.teams.away.logo,
               lastHomeGoals: f.goals.home,
               lastAwayGoals: f.goals.away,
+              createdAt: Date.now(),
             });
           }
         }

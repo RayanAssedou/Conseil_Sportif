@@ -3,7 +3,7 @@ const ru: Record<string, string> = {
   "nav.home": "Главная",
   "nav.liveScores": "Онлайн",
   "nav.predictions": "Прогнозы",
-  "nav.articles": "Статьи",
+  "nav.articles": "Спортивные статьи",
   "nav.watchLive": "Смотреть",
   "nav.signInToWatch": "Войдите, чтобы смотреть прямой эфир",
   "nav.myNotifications": "Мои уведомления",

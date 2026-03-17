@@ -3,7 +3,7 @@ const en: Record<string, string> = {
   "nav.home": "Home",
   "nav.liveScores": "Live Scores",
   "nav.predictions": "Predictions",
-  "nav.articles": "Articles",
+  "nav.articles": "Sport Articles",
   "nav.watchLive": "Watch Live",
   "nav.signInToWatch": "Sign in to access Watch Live",
   "nav.myNotifications": "My Notifications",

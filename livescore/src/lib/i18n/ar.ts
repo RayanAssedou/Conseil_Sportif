@@ -3,7 +3,7 @@ const ar: Record<string, string> = {
   "nav.home": "الرئيسية",
   "nav.liveScores": "مباشر",
   "nav.predictions": "تحليلات",
-  "nav.articles": "مقالات",
+  "nav.articles": "مقالات رياضية",
   "nav.watchLive": "بث مباشر",
   "nav.signInToWatch": "سجّل دخولك لمشاهدة البث المباشر",
   "nav.myNotifications": "إشعاراتي",

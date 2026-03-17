@@ -3,7 +3,7 @@ const he: Record<string, string> = {
   "nav.home": "ראשי",
   "nav.liveScores": "לייב",
   "nav.predictions": "המלצות",
-  "nav.articles": "המלצות ספורט",
+  "nav.articles": "כתבות ספורט",
   "nav.watchLive": "שידור חי",
   "nav.signInToWatch": "התחברו כדי לצפות בשידור חי",
   "nav.myNotifications": "ההתראות שלי",
