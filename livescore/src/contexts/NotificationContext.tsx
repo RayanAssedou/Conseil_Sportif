@@ -370,7 +370,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
       } catch { /* silent */ }
     };
 
-    const interval = setInterval(poll, 30000);
+    const interval = setInterval(poll, 8000);
     poll();
     return () => clearInterval(interval);
   }, [mounted, checkReminders, checkGoalUpdates]);

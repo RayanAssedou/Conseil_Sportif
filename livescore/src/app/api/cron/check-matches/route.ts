@@ -47,6 +47,13 @@ const PUSH_TEXTS: Record<string, Record<string, string>> = {
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
+const CHECK_INTERVAL_MS = 8_000;
+const MAX_ROUNDS = 6;
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export async function GET(request: NextRequest) {
   if (CRON_SECRET) {
     const authHeader = request.headers.get("authorization");
@@ -55,152 +62,162 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  try {
-    const { data: follows, error: followsErr } = await supabase
-      .from("push_follows")
-      .select("fixture_id, follow_type, push_subscriptions(id, endpoint, p256dh, auth, locale)");
+  let totalPushesSent = 0;
+  let totalCleaned = 0;
+  let totalChecked = 0;
+  let rounds = 0;
 
-    if (followsErr || !follows || follows.length === 0) {
-      return NextResponse.json({ message: "No active follows", checked: 0 });
+  for (let round = 0; round < MAX_ROUNDS; round++) {
+    if (round > 0) await sleep(CHECK_INTERVAL_MS);
+    rounds++;
+
+    try {
+      const result = await runCheck();
+      totalPushesSent += result.pushesSent;
+      totalCleaned += result.cleaned;
+      totalChecked = result.checked;
+
+      if (result.checked === 0) break;
+    } catch (error) {
+      console.error(`Cron round ${round} error:`, error);
     }
+  }
 
-    const uniqueFixtureIds = [...new Set((follows as unknown as FollowRow[]).map((f) => f.fixture_id))];
+  return NextResponse.json({
+    rounds,
+    checked: totalChecked,
+    pushesSent: totalPushesSent,
+    cleaned: totalCleaned,
+  });
+}
 
-    const { data: existingStates } = await supabase
-      .from("match_push_states")
-      .select("*")
-      .in("fixture_id", uniqueFixtureIds);
+async function runCheck() {
+  const { data: follows, error: followsErr } = await supabase
+    .from("push_follows")
+    .select("fixture_id, follow_type, push_subscriptions(id, endpoint, p256dh, auth, locale)");
 
-    const stateMap = new Map<number, MatchState>();
-    if (existingStates) {
-      for (const s of existingStates) {
-        stateMap.set(s.fixture_id, s);
-      }
+  if (followsErr || !follows || follows.length === 0) {
+    return { checked: 0, pushesSent: 0, cleaned: 0 };
+  }
+
+  const uniqueFixtureIds = [...new Set((follows as unknown as FollowRow[]).map((f) => f.fixture_id))];
+
+  const { data: existingStates } = await supabase
+    .from("match_push_states")
+    .select("*")
+    .in("fixture_id", uniqueFixtureIds);
+
+  const stateMap = new Map<number, MatchState>();
+  if (existingStates) {
+    for (const s of existingStates) {
+      stateMap.set(s.fixture_id, s);
     }
+  }
 
-    let pushesSent = 0;
-    const finishedFixtures: number[] = [];
-    const stateUpdates: MatchState[] = [];
+  let pushesSent = 0;
+  const finishedFixtures: number[] = [];
+  const stateUpdates: MatchState[] = [];
 
-    for (const fixtureId of uniqueFixtureIds) {
-      try {
-        const data = await fetchFixtureById(String(fixtureId));
-        const fixture = data?.response?.[0];
-        if (!fixture) continue;
+  for (const fixtureId of uniqueFixtureIds) {
+    try {
+      const data = await fetchFixtureById(String(fixtureId), { skipCache: true });
+      const fixture = data?.response?.[0];
+      if (!fixture) continue;
 
-        const currentStatus = fixture.fixture.status.short;
-        const homeGoals = fixture.goals.home ?? 0;
-        const awayGoals = fixture.goals.away ?? 0;
-        const homeTeam = fixture.teams.home.name;
-        const awayTeam = fixture.teams.away.name;
+      const currentStatus = fixture.fixture.status.short;
+      const homeGoals = fixture.goals.home ?? 0;
+      const awayGoals = fixture.goals.away ?? 0;
+      const homeTeam = fixture.teams.home.name;
+      const awayTeam = fixture.teams.away.name;
 
-        const prev = stateMap.get(fixtureId);
+      const prev = stateMap.get(fixtureId);
 
-        const subscribers = (follows as unknown as FollowRow[]).filter(
-          (f) => f.fixture_id === fixtureId
-        );
+      const subscribers = (follows as unknown as FollowRow[]).filter(
+        (f) => f.fixture_id === fixtureId
+      );
 
-        if (!prev && isLive(currentStatus)) {
-          for (const sub of subscribers) {
-            if (sub.follow_type === "reminder") {
-              const loc = sub.push_subscriptions.locale || "en";
-              await sendPush(sub.push_subscriptions, {
-                title: PUSH_TEXTS.matchStarting[loc] || PUSH_TEXTS.matchStarting.en,
-                body: `${homeTeam} vs ${awayTeam}`,
-                url: `/match/${fixtureId}`,
-                tag: `kickoff-${fixtureId}`,
-                fixtureId,
-              });
-              pushesSent++;
-            }
+      const justStarted = (!prev && isLive(currentStatus)) ||
+        (prev && !isLive(prev.status) && isLive(currentStatus));
+
+      if (justStarted) {
+        for (const sub of subscribers) {
+          if (sub.follow_type === "reminder") {
+            const loc = sub.push_subscriptions.locale || "en";
+            await sendPush(sub.push_subscriptions, {
+              title: PUSH_TEXTS.matchStarting[loc] || PUSH_TEXTS.matchStarting.en,
+              body: `${homeTeam} vs ${awayTeam}`,
+              url: `/match/${fixtureId}`,
+              tag: `kickoff-${fixtureId}`,
+              fixtureId,
+            });
+            pushesSent++;
           }
         }
+      }
 
-        if (prev) {
-          const wasLive = isLive(prev.status);
-          const nowLive = isLive(currentStatus);
-
-          if (!wasLive && nowLive) {
-            for (const sub of subscribers) {
-              if (sub.follow_type === "reminder") {
-                const loc = sub.push_subscriptions.locale || "en";
-                await sendPush(sub.push_subscriptions, {
-                  title: PUSH_TEXTS.matchStarting[loc] || PUSH_TEXTS.matchStarting.en,
-                  body: `${homeTeam} vs ${awayTeam}`,
-                  url: `/match/${fixtureId}`,
-                  tag: `kickoff-${fixtureId}`,
-                  fixtureId,
-                });
-                pushesSent++;
-              }
-            }
-          }
-
-          if (homeGoals !== prev.home_goals || awayGoals !== prev.away_goals) {
-            for (const sub of subscribers) {
-              if (sub.follow_type === "goal_alert") {
-                const loc = sub.push_subscriptions.locale || "en";
-                const goalLabel = PUSH_TEXTS.goalScored[loc] || PUSH_TEXTS.goalScored.en;
-                await sendPush(sub.push_subscriptions, {
-                  title: `${goalLabel} — ${homeTeam} ${homeGoals}-${awayGoals} ${awayTeam}`,
-                  body: `${homeTeam} ${homeGoals} - ${awayGoals} ${awayTeam}`,
-                  url: `/match/${fixtureId}`,
-                  tag: `goal-${fixtureId}-${homeGoals}-${awayGoals}`,
-                  fixtureId,
-                });
-                pushesSent++;
-              }
-            }
+      if (prev && (homeGoals !== prev.home_goals || awayGoals !== prev.away_goals)) {
+        for (const sub of subscribers) {
+          if (sub.follow_type === "goal_alert") {
+            const loc = sub.push_subscriptions.locale || "en";
+            const goalLabel = PUSH_TEXTS.goalScored[loc] || PUSH_TEXTS.goalScored.en;
+            await sendPush(sub.push_subscriptions, {
+              title: `${goalLabel} — ${homeTeam} ${homeGoals}-${awayGoals} ${awayTeam}`,
+              body: `${homeTeam} ${homeGoals} - ${awayGoals} ${awayTeam}`,
+              url: `/match/${fixtureId}`,
+              tag: `goal-${fixtureId}-${homeGoals}-${awayGoals}`,
+              fixtureId,
+            });
+            pushesSent++;
           }
         }
-
-        if (isFinished(currentStatus)) {
-          finishedFixtures.push(fixtureId);
-        }
-
-        stateUpdates.push({
-          fixture_id: fixtureId,
-          home_goals: homeGoals,
-          away_goals: awayGoals,
-          status: currentStatus,
-        });
-      } catch (e) {
-        console.error(`Error checking fixture ${fixtureId}:`, e);
       }
-    }
 
-    if (stateUpdates.length > 0) {
-      for (const state of stateUpdates) {
-        await supabase
-          .from("match_push_states")
-          .upsert(
-            { ...state, updated_at: new Date().toISOString() },
-            { onConflict: "fixture_id" }
-          );
+      if (isFinished(currentStatus)) {
+        finishedFixtures.push(fixtureId);
       }
+
+      stateUpdates.push({
+        fixture_id: fixtureId,
+        home_goals: homeGoals,
+        away_goals: awayGoals,
+        status: currentStatus,
+      });
+
+      stateMap.set(fixtureId, {
+        fixture_id: fixtureId,
+        home_goals: homeGoals,
+        away_goals: awayGoals,
+        status: currentStatus,
+      });
+    } catch (e) {
+      console.error(`Error checking fixture ${fixtureId}:`, e);
     }
+  }
 
-    if (finishedFixtures.length > 0) {
-      await supabase
-        .from("push_follows")
-        .delete()
-        .in("fixture_id", finishedFixtures);
-
+  if (stateUpdates.length > 0) {
+    for (const state of stateUpdates) {
       await supabase
         .from("match_push_states")
-        .delete()
-        .in("fixture_id", finishedFixtures);
+        .upsert(
+          { ...state, updated_at: new Date().toISOString() },
+          { onConflict: "fixture_id" }
+        );
     }
-
-    return NextResponse.json({
-      checked: uniqueFixtureIds.length,
-      pushesSent,
-      cleaned: finishedFixtures.length,
-    });
-  } catch (error) {
-    console.error("Cron check-matches error:", error);
-    return NextResponse.json({ error: "Internal error" }, { status: 500 });
   }
+
+  if (finishedFixtures.length > 0) {
+    await supabase
+      .from("push_follows")
+      .delete()
+      .in("fixture_id", finishedFixtures);
+
+    await supabase
+      .from("match_push_states")
+      .delete()
+      .in("fixture_id", finishedFixtures);
+  }
+
+  return { checked: uniqueFixtureIds.length, pushesSent, cleaned: finishedFixtures.length };
 }
 
 async function sendPush(
