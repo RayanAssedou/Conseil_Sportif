@@ -111,6 +111,35 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
   const goalAlertsRef = useRef(goalAlerts);
   goalAlertsRef.current = goalAlerts;
   const pushEndpointRef = useRef<string | null>(null);
+  const swRegistrationRef = useRef<ServiceWorkerRegistration | null>(null);
+
+  const ensurePushSubscription = useCallback(async (): Promise<string | null> => {
+    if (pushEndpointRef.current) return pushEndpointRef.current;
+
+    try {
+      let reg = swRegistrationRef.current;
+      if (!reg) {
+        reg = await registerServiceWorker();
+        if (!reg) { console.warn("[Push] Service Worker registration failed"); return null; }
+        swRegistrationRef.current = reg;
+      }
+
+      const permission = await requestPermission();
+      if (!permission) { console.warn("[Push] Notification permission denied"); return null; }
+
+      const sub = await subscribeToPush(reg);
+      if (!sub) { console.warn("[Push] Push subscription failed"); return null; }
+
+      pushEndpointRef.current = sub.endpoint;
+      const sent = await sendSubscriptionToServer(sub, undefined, localeRef.current);
+      if (!sent) console.warn("[Push] Failed to sync subscription to server");
+
+      return sub.endpoint;
+    } catch (err) {
+      console.error("[Push] Setup error:", err);
+      return null;
+    }
+  }, []);
 
   useEffect(() => {
     const remindersLoaded = loadMap<ReminderData>(LS_REMINDERS);
@@ -142,19 +171,13 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!mounted) return;
-    (async () => {
-      try {
-        const reg = await registerServiceWorker();
-        if (!reg) return;
-        const permission = await requestPermission();
-        if (!permission) return;
-        const sub = await subscribeToPush(reg);
-        if (!sub) return;
-        pushEndpointRef.current = sub.endpoint;
-        await sendSubscriptionToServer(sub, undefined, localeRef.current);
-      } catch { /* silent */ }
-    })();
-  }, [mounted]);
+    registerServiceWorker().then((reg) => {
+      if (reg) swRegistrationRef.current = reg;
+    });
+    if (Notification.permission === "granted") {
+      ensurePushSubscription();
+    }
+  }, [mounted, ensurePushSubscription]);
 
   useEffect(() => {
     if (mounted) saveMap(LS_REMINDERS, reminders);
@@ -174,7 +197,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const addReminder = useCallback(async (fixture: Fixture) => {
-    await requestPermission();
+    const endpoint = await ensurePushSubscription();
     setReminders((prev) => {
       const next = new Map(prev);
       next.set(fixture.fixture.id, {
@@ -187,10 +210,10 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
       });
       return next;
     });
-    if (pushEndpointRef.current) {
-      syncFollowToServer(pushEndpointRef.current, fixture.fixture.id, "reminder", "add");
+    if (endpoint) {
+      syncFollowToServer(endpoint, fixture.fixture.id, "reminder", "add");
     }
-  }, []);
+  }, [ensurePushSubscription]);
 
   const removeReminder = useCallback((fixtureId: number) => {
     setReminders((prev) => {
@@ -206,7 +229,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
   const hasReminder = useCallback((fixtureId: number) => reminders.has(fixtureId), [reminders]);
 
   const toggleGoalAlert = useCallback(async (fixture: Fixture) => {
-    await requestPermission();
+    const endpoint = await ensurePushSubscription();
     const wasFollowing = goalAlertsRef.current.has(fixture.fixture.id);
     setGoalAlerts((prev) => {
       const next = new Map(prev);
@@ -226,15 +249,15 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
       }
       return next;
     });
-    if (pushEndpointRef.current) {
+    if (endpoint) {
       syncFollowToServer(
-        pushEndpointRef.current,
+        endpoint,
         fixture.fixture.id,
         "goal_alert",
         wasFollowing ? "remove" : "add"
       );
     }
-  }, []);
+  }, [ensurePushSubscription]);
 
   const hasGoalAlert = useCallback((fixtureId: number) => goalAlerts.has(fixtureId), [goalAlerts]);
 
