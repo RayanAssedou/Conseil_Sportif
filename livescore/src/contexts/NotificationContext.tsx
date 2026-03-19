@@ -29,7 +29,7 @@ interface GoalAlertData {
 
 export interface NotifToast {
   id: string;
-  type: "kickoff" | "goal";
+  type: "kickoff" | "goal" | "yellow_card" | "red_card" | "substitution";
   title: string;
   body: string;
   fixtureId: number;
@@ -112,6 +112,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
   goalAlertsRef.current = goalAlerts;
   const pushEndpointRef = useRef<string | null>(null);
   const swRegistrationRef = useRef<ServiceWorkerRegistration | null>(null);
+  const eventsCountRef = useRef<Map<number, number>>(new Map());
 
   const ensurePushSubscription = useCallback(async (): Promise<string | null> => {
     if (pushEndpointRef.current) return pushEndpointRef.current;
@@ -352,6 +353,52 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
     }
   }, [addToast]);
 
+  const checkMatchEvents = useCallback(async () => {
+    const followedIds = Array.from(goalAlertsRef.current.keys());
+    if (followedIds.length === 0) return;
+
+    for (const fixtureId of followedIds) {
+      try {
+        const res = await fetch(`/api/fixtures/${fixtureId}/events`);
+        if (!res.ok) continue;
+        const data = await res.json();
+        const events = data?.response || [];
+
+        const prevCount = eventsCountRef.current.get(fixtureId) ?? 0;
+        if (events.length <= prevCount) {
+          eventsCountRef.current.set(fixtureId, events.length);
+          continue;
+        }
+
+        const alert = goalAlertsRef.current.get(fixtureId);
+        if (!alert) continue;
+        const matchLabel = `${alert.homeTeam} vs ${alert.awayTeam}`;
+        const newEvents = events.slice(prevCount);
+
+        for (const evt of newEvents) {
+          if (evt.type === "Card" && evt.detail?.includes("Yellow")) {
+            const title = translate(localeRef.current, "notif.yellowCard", { player: evt.player?.name || "?" });
+            sendBrowserNotif(title, matchLabel);
+            addToast({ type: "yellow_card", title, body: matchLabel, fixtureId });
+          } else if (evt.type === "Card" && (evt.detail?.includes("Red") || evt.detail?.includes("Second Yellow"))) {
+            const title = translate(localeRef.current, "notif.redCard", { player: evt.player?.name || "?" });
+            sendBrowserNotif(title, matchLabel);
+            addToast({ type: "red_card", title, body: matchLabel, fixtureId });
+          } else if (evt.type === "subst") {
+            const title = translate(localeRef.current, "notif.substitution", {
+              playerOut: evt.player?.name || "?",
+              playerIn: evt.assist?.name || "?",
+            });
+            sendBrowserNotif(title, matchLabel);
+            addToast({ type: "substitution", title, body: matchLabel, fixtureId });
+          }
+        }
+
+        eventsCountRef.current.set(fixtureId, events.length);
+      } catch { /* silent */ }
+    }
+  }, [addToast]);
+
   useEffect(() => {
     if (!mounted) return;
     const hasAny = () => remindersRef.current.size > 0 || goalAlertsRef.current.size > 0;
@@ -365,7 +412,10 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
         const data = await res.json();
         if (data.response) {
           if (remindersRef.current.size > 0) checkReminders(data.response);
-          if (goalAlertsRef.current.size > 0) checkGoalUpdates(data.response);
+          if (goalAlertsRef.current.size > 0) {
+            checkGoalUpdates(data.response);
+            checkMatchEvents();
+          }
         }
       } catch { /* silent */ }
     };
@@ -373,7 +423,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
     const interval = setInterval(poll, 8000);
     poll();
     return () => clearInterval(interval);
-  }, [mounted, checkReminders, checkGoalUpdates]);
+  }, [mounted, checkReminders, checkGoalUpdates, checkMatchEvents]);
 
   return (
     <NotificationContext.Provider

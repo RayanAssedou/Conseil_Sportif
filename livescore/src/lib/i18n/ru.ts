@@ -233,6 +233,9 @@ const ru: Record<string, string> = {
   "notif.goal": "ГОЛ! {scorer}",
   "notif.matchStarted": "Матч начался!",
   "notif.matchLive": "{homeTeam} — {awayTeam} — сейчас в прямом эфире!",
+  "notif.yellowCard": "Жёлтая карточка — {player}",
+  "notif.redCard": "КРАСНАЯ КАРТОЧКА — {player}",
+  "notif.substitution": "Замена — {playerOut} ➜ {playerIn}",
 
   // Notification toast
   "toast.clickToView": "Нажмите, чтобы посмотреть матч",

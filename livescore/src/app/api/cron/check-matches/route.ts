@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import webpush from "web-push";
 import { supabase } from "@/lib/supabase";
-import { fetchFixtureById } from "@/lib/api";
+import { fetchFixtureById, fetchFixtureEvents } from "@/lib/api";
 import { isLive, isFinished } from "@/lib/utils";
 
 const VAPID_PUBLIC = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || "";
@@ -27,6 +27,16 @@ interface MatchState {
   home_goals: number;
   away_goals: number;
   status: string;
+  events_count: number;
+}
+
+interface MatchEvent {
+  time: { elapsed: number; extra: number | null };
+  team: { id: number; name: string; logo: string };
+  player: { id: number; name: string };
+  assist: { id: number | null; name: string | null };
+  type: string;
+  detail: string;
 }
 
 const PUSH_TEXTS: Record<string, Record<string, string>> = {
@@ -41,6 +51,24 @@ const PUSH_TEXTS: Record<string, Record<string, string>> = {
     he: "!המשחק התחיל",
     ar: "!بدأت المباراة",
     ru: "Матч начался!",
+  },
+  yellowCard: {
+    en: "🟨 Yellow Card",
+    he: "🟨 כרטיס צהוב",
+    ar: "🟨 بطاقة صفراء",
+    ru: "🟨 Жёлтая карточка",
+  },
+  redCard: {
+    en: "🟥 RED CARD",
+    he: "🟥 כרטיס אדום",
+    ar: "🟥 بطاقة حمراء",
+    ru: "🟥 КРАСНАЯ КАРТОЧКА",
+  },
+  substitution: {
+    en: "🔄 Substitution",
+    he: "🔄 חילוף",
+    ar: "🔄 تبديل",
+    ru: "🔄 Замена",
   },
 };
 
@@ -110,7 +138,7 @@ async function runCheck() {
   const stateMap = new Map<number, MatchState>();
   if (existingStates) {
     for (const s of existingStates) {
-      stateMap.set(s.fixture_id, s);
+      stateMap.set(s.fixture_id, { ...s, events_count: s.events_count ?? 0 });
     }
   }
 
@@ -120,54 +148,94 @@ async function runCheck() {
 
   for (const fixtureId of uniqueFixtureIds) {
     try {
-      const data = await fetchFixtureById(String(fixtureId), { skipCache: true });
-      const fixture = data?.response?.[0];
+      const [fixtureData, eventsData] = await Promise.all([
+        fetchFixtureById(String(fixtureId), { skipCache: true }),
+        fetchFixtureEvents(String(fixtureId), { skipCache: true }),
+      ]);
+
+      const fixture = fixtureData?.response?.[0];
       if (!fixture) continue;
 
+      const events: MatchEvent[] = eventsData?.response || [];
       const currentStatus = fixture.fixture.status.short;
       const homeGoals = fixture.goals.home ?? 0;
       const awayGoals = fixture.goals.away ?? 0;
       const homeTeam = fixture.teams.home.name;
       const awayTeam = fixture.teams.away.name;
+      const matchLabel = `${homeTeam} vs ${awayTeam}`;
 
       const prev = stateMap.get(fixtureId);
 
-      const subscribers = (follows as unknown as FollowRow[]).filter(
-        (f) => f.fixture_id === fixtureId
+      const goalAlertSubs = (follows as unknown as FollowRow[]).filter(
+        (f) => f.fixture_id === fixtureId && f.follow_type === "goal_alert"
+      );
+      const reminderSubs = (follows as unknown as FollowRow[]).filter(
+        (f) => f.fixture_id === fixtureId && f.follow_type === "reminder"
       );
 
       const justStarted = (!prev && isLive(currentStatus)) ||
         (prev && !isLive(prev.status) && isLive(currentStatus));
 
       if (justStarted) {
-        for (const sub of subscribers) {
-          if (sub.follow_type === "reminder") {
-            const loc = sub.push_subscriptions.locale || "en";
-            await sendPush(sub.push_subscriptions, {
-              title: PUSH_TEXTS.matchStarting[loc] || PUSH_TEXTS.matchStarting.en,
-              body: `${homeTeam} vs ${awayTeam}`,
-              url: `/match/${fixtureId}`,
-              tag: `kickoff-${fixtureId}`,
-              fixtureId,
-            });
-            pushesSent++;
-          }
+        for (const sub of reminderSubs) {
+          const loc = sub.push_subscriptions.locale || "en";
+          await sendPush(sub.push_subscriptions, {
+            title: PUSH_TEXTS.matchStarting[loc] || PUSH_TEXTS.matchStarting.en,
+            body: matchLabel,
+            url: `/match/${fixtureId}`,
+            tag: `kickoff-${fixtureId}`,
+            fixtureId,
+          });
+          pushesSent++;
         }
       }
 
       if (prev && (homeGoals !== prev.home_goals || awayGoals !== prev.away_goals)) {
-        for (const sub of subscribers) {
-          if (sub.follow_type === "goal_alert") {
-            const loc = sub.push_subscriptions.locale || "en";
-            const goalLabel = PUSH_TEXTS.goalScored[loc] || PUSH_TEXTS.goalScored.en;
-            await sendPush(sub.push_subscriptions, {
-              title: `${goalLabel} — ${homeTeam} ${homeGoals}-${awayGoals} ${awayTeam}`,
-              body: `${homeTeam} ${homeGoals} - ${awayGoals} ${awayTeam}`,
-              url: `/match/${fixtureId}`,
-              tag: `goal-${fixtureId}-${homeGoals}-${awayGoals}`,
-              fixtureId,
-            });
-            pushesSent++;
+        for (const sub of goalAlertSubs) {
+          const loc = sub.push_subscriptions.locale || "en";
+          const goalLabel = PUSH_TEXTS.goalScored[loc] || PUSH_TEXTS.goalScored.en;
+          await sendPush(sub.push_subscriptions, {
+            title: `${goalLabel} — ${homeTeam} ${homeGoals}-${awayGoals} ${awayTeam}`,
+            body: `${homeTeam} ${homeGoals} - ${awayGoals} ${awayTeam}`,
+            url: `/match/${fixtureId}`,
+            tag: `goal-${fixtureId}-${homeGoals}-${awayGoals}`,
+            fixtureId,
+          });
+          pushesSent++;
+        }
+      }
+
+      const prevEventsCount = prev?.events_count ?? 0;
+      if (events.length > prevEventsCount && goalAlertSubs.length > 0) {
+        const newEvents = events.slice(prevEventsCount);
+        for (const evt of newEvents) {
+          let titleKey: string | null = null;
+          let body = "";
+
+          if (evt.type === "Card" && evt.detail?.includes("Yellow")) {
+            titleKey = "yellowCard";
+            body = `${evt.player?.name || "?"} — ${evt.team?.name || ""} (${evt.time?.elapsed || "?"}\')`;
+          } else if (evt.type === "Card" && (evt.detail?.includes("Red") || evt.detail?.includes("Second Yellow"))) {
+            titleKey = "redCard";
+            body = `${evt.player?.name || "?"} — ${evt.team?.name || ""} (${evt.time?.elapsed || "?"}\')`;
+          } else if (evt.type === "subst") {
+            titleKey = "substitution";
+            body = `${evt.player?.name || "?"} ➜ ${evt.assist?.name || "?"} — ${evt.team?.name || ""} (${evt.time?.elapsed || "?"}\')`;
+          }
+
+          if (titleKey) {
+            for (const sub of goalAlertSubs) {
+              const loc = sub.push_subscriptions.locale || "en";
+              const label = PUSH_TEXTS[titleKey]?.[loc] || PUSH_TEXTS[titleKey]?.en || titleKey;
+              await sendPush(sub.push_subscriptions, {
+                title: `${label} — ${matchLabel}`,
+                body,
+                url: `/match/${fixtureId}`,
+                tag: `${titleKey}-${fixtureId}-${events.length}`,
+                fixtureId,
+              });
+              pushesSent++;
+            }
           }
         }
       }
@@ -176,19 +244,15 @@ async function runCheck() {
         finishedFixtures.push(fixtureId);
       }
 
-      stateUpdates.push({
+      const newState: MatchState = {
         fixture_id: fixtureId,
         home_goals: homeGoals,
         away_goals: awayGoals,
         status: currentStatus,
-      });
-
-      stateMap.set(fixtureId, {
-        fixture_id: fixtureId,
-        home_goals: homeGoals,
-        away_goals: awayGoals,
-        status: currentStatus,
-      });
+        events_count: events.length,
+      };
+      stateUpdates.push(newState);
+      stateMap.set(fixtureId, newState);
     } catch (e) {
       console.error(`Error checking fixture ${fixtureId}:`, e);
     }

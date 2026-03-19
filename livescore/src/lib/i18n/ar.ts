@@ -233,6 +233,9 @@ const ar: Record<string, string> = {
   "notif.goal": "هدف! {scorer}",
   "notif.matchStarted": "بدأت المباراة!",
   "notif.matchLive": "{homeTeam} ضد {awayTeam} – مباشر الآن!",
+  "notif.yellowCard": "بطاقة صفراء — {player}",
+  "notif.redCard": "بطاقة حمراء — {player}",
+  "notif.substitution": "تبديل — {playerOut} ➜ {playerIn}",
 
   // Notification toast
   "toast.clickToView": "اضغط لمشاهدة المباراة",

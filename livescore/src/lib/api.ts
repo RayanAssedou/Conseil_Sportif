@@ -62,8 +62,8 @@ export async function fetchFixtureStatistics(fixtureId: string) {
   return fetchFromAPI("fixtures/statistics", { fixture: fixtureId });
 }
 
-export async function fetchFixtureEvents(fixtureId: string) {
-  return fetchFromAPI("fixtures/events", { fixture: fixtureId });
+export async function fetchFixtureEvents(fixtureId: string, options?: { skipCache?: boolean }) {
+  return fetchFromAPI("fixtures/events", { fixture: fixtureId }, options);
 }
 
 export async function fetchFixtureLineups(fixtureId: string) {

@@ -233,6 +233,9 @@ const en: Record<string, string> = {
   "notif.goal": "GOAL! {scorer}",
   "notif.matchStarted": "Match Started!",
   "notif.matchLive": "{homeTeam} vs {awayTeam} is now live!",
+  "notif.yellowCard": "Yellow Card — {player}",
+  "notif.redCard": "RED CARD — {player}",
+  "notif.substitution": "Substitution — {playerOut} ➜ {playerIn}",
 
   // Notification toast
   "toast.clickToView": "Click to view match",

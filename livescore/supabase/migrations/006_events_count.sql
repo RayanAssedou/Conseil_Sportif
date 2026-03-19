@@ -1,0 +1,1 @@
+ALTER TABLE match_push_states ADD COLUMN IF NOT EXISTS events_count INTEGER DEFAULT 0;

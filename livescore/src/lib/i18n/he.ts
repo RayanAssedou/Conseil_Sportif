@@ -233,6 +233,9 @@ const he: Record<string, string> = {
   "notif.goal": "גוווול! {scorer}",
   "notif.matchStarted": "המשחק התחיל!",
   "notif.matchLive": "{homeTeam} נגד {awayTeam} – עכשיו בלייב!",
+  "notif.yellowCard": "כרטיס צהוב — {player}",
+  "notif.redCard": "כרטיס אדום — {player}",
+  "notif.substitution": "חילוף — {playerOut} ➜ {playerIn}",
 
   // Notification toast
   "toast.clickToView": "לחצו לצפייה במשחק",
