@@ -89,13 +89,6 @@ async function requestPermission(): Promise<boolean> {
   return result === "granted";
 }
 
-function sendBrowserNotif(title: string, body: string) {
-  if (typeof window === "undefined" || !("Notification" in window)) return;
-  if (Notification.permission === "granted") {
-    new Notification(title, { body, icon: "/favicon.ico" });
-  }
-}
-
 export function NotificationProvider({ children }: { children: ReactNode }) {
   const { locale } = useTranslation();
   const localeRef = useRef(locale);
@@ -175,7 +168,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
     registerServiceWorker().then((reg) => {
       if (reg) swRegistrationRef.current = reg;
     });
-    if (Notification.permission === "granted") {
+    if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "granted") {
       ensurePushSubscription();
     }
   }, [mounted, ensurePushSubscription]);
@@ -289,7 +282,6 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
           const title = translate(localeRef.current, "notif.goal", { scorer });
           const body = `${alert.homeTeam} ${newHome} - ${newAway} ${alert.awayTeam}`;
 
-          sendBrowserNotif(title, body);
           addToast({ type: "goal", title, body, fixtureId: f.fixture.id });
 
           alert.lastHomeGoals = newHome;
@@ -317,7 +309,6 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
         if (isLive(f.fixture.status.short)) {
           const title = translate(localeRef.current, "notif.matchStarted");
           const body = translate(localeRef.current, "notif.matchLive", { homeTeam: reminder.homeTeam, awayTeam: reminder.awayTeam });
-          sendBrowserNotif(title, body);
           addToast({ type: "kickoff", title, body, fixtureId: f.fixture.id });
           promoted.push(f);
           next.delete(f.fixture.id);
@@ -378,18 +369,15 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
         for (const evt of newEvents) {
           if (evt.type === "Card" && evt.detail?.includes("Yellow")) {
             const title = translate(localeRef.current, "notif.yellowCard", { player: evt.player?.name || "?" });
-            sendBrowserNotif(title, matchLabel);
             addToast({ type: "yellow_card", title, body: matchLabel, fixtureId });
           } else if (evt.type === "Card" && (evt.detail?.includes("Red") || evt.detail?.includes("Second Yellow"))) {
             const title = translate(localeRef.current, "notif.redCard", { player: evt.player?.name || "?" });
-            sendBrowserNotif(title, matchLabel);
             addToast({ type: "red_card", title, body: matchLabel, fixtureId });
           } else if (evt.type === "subst") {
             const title = translate(localeRef.current, "notif.substitution", {
               playerOut: evt.player?.name || "?",
               playerIn: evt.assist?.name || "?",
             });
-            sendBrowserNotif(title, matchLabel);
             addToast({ type: "substitution", title, body: matchLabel, fixtureId });
           }
         }

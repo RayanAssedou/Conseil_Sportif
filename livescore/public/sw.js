@@ -29,7 +29,13 @@ self.addEventListener("push", (event) => {
   };
 
   event.waitUntil(
-    self.registration.showNotification(data.title || "Sport Hamal", options)
+    self.clients
+      .matchAll({ type: "window", includeUncontrolled: true })
+      .then((clients) => {
+        const hasFocused = clients.some((c) => c.visibilityState === "visible");
+        if (hasFocused) return;
+        return self.registration.showNotification(data.title || "Sport Hamal", options);
+      })
   );
 });
 
