@@ -280,7 +280,7 @@ const ar: Record<string, string> = {
   "proPlus.plan2.line4": "👉 الفرق الوحيد بين الخطة الأسبوعية والشهرية هو السعر الأفضل — المحتوى متطابق.",
   "proPlus.plan2.line5": "كل شيء يُرسل إليك مباشرة بخصوصية تامة عبر مجتمع واتساب مغلق.",
   "proPlus.plan2.line6": "👉 ثقتك تستحق كل قرش.",
-  "proPlus.plan3.name": "خطة 3",
+  "proPlus.plan3.name": "Pro+ خطة",
   "proPlus.plan3.subtitle": "تدريب شخصي",
   "proPlus.plan3.line1": "تدريب شخصي: إرشاد وتوجيه مباشر",
   "proPlus.plan3.line2": "تشمل الخدمة إرشاداً مباشراً وتوجيهاً شخصياً بخصوص كمية ومبلغ الاستثمارات.",

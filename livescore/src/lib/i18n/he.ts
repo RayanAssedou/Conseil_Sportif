@@ -280,7 +280,7 @@ const he: Record<string, string> = {
   "proPlus.plan2.line4": "👉 ההבדל בין המסלול השבועי לחודשי הוא רק במחיר המשתלם יותר – התוכן זהה.",
   "proPlus.plan2.line5": "הכל נשלח ישירות אליך בפרטיות מלאה דרך קהילת וואטסאפ סגורה.",
   "proPlus.plan2.line6": "👉 הביטחון שלך שווה כל שקל.",
-  "proPlus.plan3.name": "מסלול 3",
+  "proPlus.plan3.name": "מסלול +Pro",
   "proPlus.plan3.subtitle": "ליווי אישי",
   "proPlus.plan3.line1": "מסלול ליווי אישי: הדרכה והכוונה צמודה",
   "proPlus.plan3.line2": "השירות כולל הדרכה צמודה והכוונה אישית בנוגע לכמות וסכום ההשקעות.",

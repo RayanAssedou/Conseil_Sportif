@@ -280,7 +280,7 @@ const en: Record<string, string> = {
   "proPlus.plan2.line4": "👉 The only difference between the weekly and monthly plan is the better price — the content is identical.",
   "proPlus.plan2.line5": "Everything is sent directly to you with full privacy through a closed WhatsApp community.",
   "proPlus.plan2.line6": "👉 Your confidence is worth every penny.",
-  "proPlus.plan3.name": "Plan 3",
+  "proPlus.plan3.name": "Pro+ Plan",
   "proPlus.plan3.subtitle": "Personal Coaching",
   "proPlus.plan3.line1": "Personal coaching: close guidance and direction",
   "proPlus.plan3.line2": "The service includes close guidance and personal direction regarding the quantity and amount of investments.",
