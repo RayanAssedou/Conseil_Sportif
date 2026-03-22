@@ -152,12 +152,12 @@ export default function HomePage() {
 
   const heroStyle = hero.background_type === "image" && hero.background_value
     ? { backgroundImage: `url(${hero.background_value})`, backgroundSize: "cover", backgroundPosition: "center" }
-    : { backgroundColor: "#111111" };
+    : {};
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6 space-y-8">
       {/* Hero */}
-      <div className="rounded-2xl p-6 md:p-8 border border-red-900/30" style={heroStyle}>
+      <div className="rounded-2xl p-6 md:p-8 border border-red-900/30 bg-white dark:bg-[#111111]" style={heroStyle}>
         <h1 className="text-3xl md:text-4xl font-black mb-2 text-red-500">
           {locale === "en" ? (hero.title || t("home.heroTitle")) : (hero.title_he || t("home.heroTitle"))}
         </h1>
@@ -174,8 +174,7 @@ export default function HomePage() {
           </Link>
           <Link
             href={hero.button2_link || "/pronostics"}
-            className="px-5 py-2.5 font-bold text-sm rounded-lg hover:opacity-90 transition-opacity border"
-            style={{ backgroundColor: hero.button2_bg_color || "rgba(220,38,38,0.15)", color: hero.button2_text_color || "#dc2626", borderColor: hero.button2_border_color || "rgba(220,38,38,0.3)" }}
+            className="px-5 py-2.5 font-bold text-sm rounded-lg hover:opacity-90 transition-opacity border-2 border-red-600 text-red-600 bg-red-600/10"
           >
             {locale === "en" ? (hero.button2_text || t("home.predictionsBtn")) : (hero.button2_text_he || t("home.predictionsBtn"))}
           </Link>

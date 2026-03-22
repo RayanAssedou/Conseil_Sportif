@@ -150,7 +150,7 @@ export default function ProPlusModal() {
             </svg>
           </div>
           <h2 className="text-3xl font-bold text-white tracking-tight">
-            <span className="text-red-500" style={{ textShadow: "0 0 20px rgba(220,38,38,0.5)" }} dir="ltr">Pro+</span>
+            <span className="text-blue-400" style={{ textShadow: "0 0 20px rgba(59,130,246,0.5)" }} dir="ltr">Pro+</span>
             {" "}
             <span>{t("proPlus.title")}</span>
           </h2>
@@ -209,8 +209,8 @@ export default function ProPlusModal() {
               <div className="flex-1 space-y-3 mb-6">
                 {plan.lines.map((line, i) => (
                   <div key={i} className="flex items-start gap-2.5">
-                    <div className={`flex-shrink-0 w-5 h-5 rounded-full ${plan.textColor === "text-white" ? "bg-white/20" : "bg-black/10"} flex items-center justify-center mt-0.5`}>
-                      <svg className={`w-3 h-3 ${plan.textColor}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                    <div className="flex-shrink-0 w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center mt-0.5">
+                      <svg className="w-3 h-3 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                       </svg>
                     </div>
