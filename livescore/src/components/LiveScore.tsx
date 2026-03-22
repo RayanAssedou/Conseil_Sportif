@@ -106,6 +106,7 @@ export default function LiveScore() {
       15: { name: "Africa Cup of Nations", country: "Africa" },
       253: { name: "MLS", country: "USA" },
       71: { name: "Serie A", country: "Brazil" },
+      383: { name: "Ligat Ha'al", country: "Israel" },
     };
     const logoUrl = (id: number) => `https://media.api-sports.io/football/leagues/${id}.png`;
 

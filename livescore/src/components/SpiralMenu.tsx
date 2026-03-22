@@ -26,11 +26,12 @@ function HexIcon({ icon, active, desktop }: { icon: string; active: boolean; des
   if (icon === "ticker")
     return (
       <svg className={cls} viewBox="0 0 24 24" fill="none">
-        <path d="M12 2C6.48 2 2 5.92 2 10.66c0 2.72 1.63 5.15 4.15 6.72l-.88 3.3a.5.5 0 00.73.55l3.84-2.07c.69.13 1.41.2 2.16.2 5.52 0 10-3.92 10-8.7S17.52 2 12 2z" fill={fillSoft} />
-        <path d="M12 3C7.03 3 3 6.47 3 10.66c0 2.4 1.42 4.56 3.65 6.02a.75.75 0 01.32.82l-.6 2.26 2.72-1.47a.75.75 0 01.58-.06c.73.16 1.5.24 2.33.24 4.97 0 9-3.47 9-7.81S16.97 3 12 3z" stroke={fill} strokeWidth={1.3} />
-        <circle cx="8" cy="10.5" r="1.2" fill={pri} />
-        <circle cx="12" cy="10.5" r="1.2" fill={pri} />
-        <circle cx="16" cy="10.5" r="1.2" fill={pri} />
+        <path d="M3 12a2.5 2.5 0 012.5-2.5h1A2.5 2.5 0 019 12v0a2.5 2.5 0 01-2.5 2.5h-1A2.5 2.5 0 013 12z" fill={fillSoft} />
+        <path d="M4 10h2.5a2 2 0 012 2v0a2 2 0 01-2 2H4a2 2 0 01-2-2v0a2 2 0 012-2z" stroke={fill} strokeWidth={1.3} />
+        <path d="M9 7.5L15.5 4v16L9 16.5" fill={fillSoft} />
+        <path d="M9 7.5L15.5 4v16L9 16.5V7.5z" stroke={fill} strokeWidth={1.3} strokeLinejoin="round" />
+        <path d="M18 8.5c1.2 1 2 2.1 2 3.5s-.8 2.5-2 3.5" stroke={pri} strokeWidth={1.5} strokeLinecap="round" />
+        <path d="M20 6c1.8 1.6 3 3.6 3 6s-1.2 4.4-3 6" stroke={pri} strokeWidth={1.3} strokeLinecap="round" opacity={0.6} />
       </svg>
     );
 

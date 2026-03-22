@@ -180,8 +180,7 @@ async function runCheck() {
 
       if (prev && (homeGoals !== prev.home_goals || awayGoals !== prev.away_goals)) {
         for (const sub of goalAlertSubs) {
-          const loc = sub.push_subscriptions.locale || "en";
-          const goalLabel = PUSH_TEXTS.goalScored[loc] || PUSH_TEXTS.goalScored.en;
+          const goalLabel = PUSH_TEXTS.goalScored.en;
           await sendPush(sub.push_subscriptions, {
             title: `${goalLabel} — ${homeTeam} ${homeGoals}-${awayGoals} ${awayTeam}`,
             body: `${homeTeam} ${homeGoals} - ${awayGoals} ${awayTeam}`,
@@ -200,8 +199,7 @@ async function runCheck() {
           if (evt.type === "Goal" && evt.detail === "Penalty") {
             const body = `${evt.player?.name || "?"} — ${evt.team?.name || ""} (${evt.time?.elapsed || "?"}\')`;
             for (const sub of goalAlertSubs) {
-              const loc = sub.push_subscriptions.locale || "en";
-              const label = PUSH_TEXTS.penalty[loc] || PUSH_TEXTS.penalty.en;
+              const label = PUSH_TEXTS.penalty.en;
               await sendPush(sub.push_subscriptions, {
                 title: `${label} — ${matchLabel}`,
                 body,

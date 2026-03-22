@@ -22,6 +22,7 @@ export const PRIORITY_LEAGUES = [
   15,   // Africa Cup of Nations
   253,  // MLS (USA)
   71,   // Serie A (Brazil)
+  383,  // Ligat Ha'al (Israel)
 ];
 
 function getLeaguePriority(leagueId: number): number {

@@ -279,7 +279,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
         ) {
           const isHomeGoal = newHome !== alert.lastHomeGoals;
           const scorer = isHomeGoal ? alert.homeTeam : alert.awayTeam;
-          const title = translate(localeRef.current, "notif.goal", { scorer });
+          const title = translate("en", "notif.goal", { scorer });
           const body = `${alert.homeTeam} ${newHome} - ${newAway} ${alert.awayTeam}`;
 
           addToast({ type: "goal", title, body, fixtureId: f.fixture.id });
@@ -368,7 +368,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
 
         for (const evt of newEvents) {
           if (evt.type === "Goal" && evt.detail === "Penalty") {
-            const title = translate(localeRef.current, "notif.penalty", { player: evt.player?.name || "?" });
+            const title = translate("en", "notif.penalty", { player: evt.player?.name || "?" });
             addToast({ type: "penalty", title, body: matchLabel, fixtureId });
           }
         }

@@ -5,7 +5,7 @@ const he: Record<string, string> = {
   "nav.liveScores": "תוצאות ספורט",
   "nav.predictions": "המלצות",
   "nav.articles": "כתבות ספורט",
-  "nav.watchLive": "ישיר",
+  "nav.watchLive": "שידור חי",
   "nav.signInToWatch": "התחברו כדי לצפות בשידור חי",
   "nav.myNotifications": "ההתראות שלי",
   "nav.signOut": "התנתקות",
