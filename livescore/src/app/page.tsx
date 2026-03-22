@@ -356,7 +356,7 @@ export default function HomePage() {
                   </span>
                 </div>
               </a>
-              <button onClick={() => openProPlus(vipLink || whatsappLink || "https://wa.me/")} className="flex-shrink-0 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-3.5 text-white shadow-[0_0_20px_rgba(59,130,246,0.4)] text-left" style={{ width: "80vw" }}>
+              <button onClick={() => openProPlus(vipLink || whatsappLink || "https://wa.me/")} className="flex-shrink-0 bg-gradient-to-br from-violet-500 to-blue-600 rounded-xl p-3.5 text-white shadow-[0_0_20px_rgba(139,92,246,0.4)] text-left" style={{ width: "80vw" }}>
                 <div className="flex items-center gap-2.5">
                   <div className="w-9 h-9 bg-white/15 rounded-lg flex items-center justify-center flex-shrink-0">
                     <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -682,7 +682,7 @@ export default function HomePage() {
 
         <button
           onClick={() => openProPlus(vipLink || whatsappLink || "https://wa.me/")}
-          className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-5 text-white hover:shadow-[0_0_24px_rgba(59,130,246,0.5)] hover:scale-[1.02] transition-all group shadow-[0_0_16px_rgba(59,130,246,0.3)] text-left w-full"
+          className="bg-gradient-to-br from-violet-500 to-blue-600 rounded-2xl p-5 text-white hover:shadow-[0_0_24px_rgba(139,92,246,0.5)] hover:scale-[1.02] transition-all group shadow-[0_0_16px_rgba(139,92,246,0.3)] text-left w-full"
         >
           <div className="flex items-center gap-3 mb-3">
             <div className="w-12 h-12 bg-white/15 rounded-xl flex items-center justify-center">

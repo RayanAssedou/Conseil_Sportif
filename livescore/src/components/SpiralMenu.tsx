@@ -157,7 +157,7 @@ export default function SpiralMenu() {
           <div
             className={`absolute inset-0 transition-all duration-300 ${
               isVip
-                ? "bg-gradient-to-b from-blue-400 to-blue-600"
+                ? "bg-gradient-to-b from-violet-500 to-blue-600"
                 : active
                   ? "bg-gradient-to-b from-red-500 to-red-600"
                   : "bg-gradient-to-b from-slate-200 to-slate-300 group-hover:from-red-300 group-hover:to-red-400"
@@ -166,7 +166,7 @@ export default function SpiralMenu() {
           <div
             className={`absolute inset-[2px] flex items-center justify-center transition-colors duration-300 ${
               isVip
-                ? "bg-blue-50 dark:bg-blue-950 group-hover:bg-blue-100 dark:group-hover:bg-blue-900"
+                ? "bg-violet-50 dark:bg-violet-950 group-hover:bg-violet-100 dark:group-hover:bg-violet-900"
                 : active ? "bg-red-600" : "bg-card group-hover:bg-red-50 dark:group-hover:bg-red-950"
             }`}
             style={{ clipPath: "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)" }}
@@ -183,7 +183,7 @@ export default function SpiralMenu() {
         </div>
         <span
           className={`${labelSize} font-semibold leading-tight text-center ${maxW} transition-colors duration-300 ${
-            isVip ? "text-blue-500 dark:text-blue-400 group-hover:text-blue-600"
+            isVip ? "text-violet-500 dark:text-violet-400 group-hover:text-violet-600"
               : active ? "text-red-600" : locked ? "text-slate-400" : "text-slate-500 group-hover:text-red-500"
           }`}
           {...(isVip ? { dir: "ltr" } : {})}
