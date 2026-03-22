@@ -152,30 +152,30 @@ export default function HomePage() {
 
   const heroStyle = hero.background_type === "image" && hero.background_value
     ? { backgroundImage: `url(${hero.background_value})`, backgroundSize: "cover", backgroundPosition: "center" }
-    : { backgroundColor: hero.background_value || "#dc2626" };
+    : { backgroundColor: "#111111" };
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6 space-y-8">
       {/* Hero */}
-      <div className="rounded-2xl p-6 md:p-8 text-white" style={heroStyle}>
-        <h1 className="text-3xl md:text-4xl font-black mb-2">
+      <div className="rounded-2xl p-6 md:p-8 border border-red-900/30" style={heroStyle}>
+        <h1 className="text-3xl md:text-4xl font-black mb-2 text-red-500">
           {locale === "en" ? (hero.title || t("home.heroTitle")) : (hero.title_he || t("home.heroTitle"))}
         </h1>
-        <p className="text-white/80 text-sm md:text-base max-w-lg">
+        <p className="text-red-400/70 text-sm md:text-base max-w-lg">
           {locale === "en" ? (hero.subtitle || t("home.heroSubtitle")) : (hero.subtitle_he || t("home.heroSubtitle"))}
         </p>
         <div className="flex gap-3 mt-5">
           <Link
             href={hero.button1_link || "/scores"}
             className="px-5 py-2.5 font-bold text-sm rounded-lg hover:opacity-90 transition-opacity shadow-lg"
-            style={{ backgroundColor: hero.button1_bg_color || "#ffffff", color: hero.button1_text_color || "#dc2626" }}
+            style={{ backgroundColor: hero.button1_bg_color || "#dc2626", color: hero.button1_text_color || "#ffffff" }}
           >
             {locale === "en" ? (hero.button1_text || t("home.liveScoresBtn")) : (hero.button1_text_he || t("home.liveScoresBtn"))}
           </Link>
           <Link
             href={hero.button2_link || "/pronostics"}
             className="px-5 py-2.5 font-bold text-sm rounded-lg hover:opacity-90 transition-opacity border"
-            style={{ backgroundColor: hero.button2_bg_color || "rgba(255,255,255,0.15)", color: hero.button2_text_color || "#ffffff", borderColor: hero.button2_border_color || "rgba(255,255,255,0.2)" }}
+            style={{ backgroundColor: hero.button2_bg_color || "rgba(220,38,38,0.15)", color: hero.button2_text_color || "#dc2626", borderColor: hero.button2_border_color || "rgba(220,38,38,0.3)" }}
           >
             {locale === "en" ? (hero.button2_text || t("home.predictionsBtn")) : (hero.button2_text_he || t("home.predictionsBtn"))}
           </Link>
