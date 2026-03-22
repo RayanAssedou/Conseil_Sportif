@@ -1,7 +1,7 @@
 const en: Record<string, string> = {
   // Navbar
   "nav.home": "Home",
-  "nav.liveTicker": "Live Ticker",
+  "nav.liveTicker": "Live Tips",
   "nav.liveScores": "Live Scores",
   "nav.predictions": "Predictions",
   "nav.articles": "Sport Articles",
@@ -26,6 +26,8 @@ const en: Record<string, string> = {
   "home.following": "Following",
   "home.followMatch": "Follow match",
   "home.noLiveMatches": "No live or finished matches yet. Check back soon.",
+  "home.installApp": "Download the App",
+  "home.installAppDesc": "Add to your home screen for the best experience",
   "home.todayPredictions": "Today's Predictions",
   "home.prediction": "Prediction",
   "home.noPredictions": "No predictions available for today.",

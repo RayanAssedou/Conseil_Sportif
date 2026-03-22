@@ -1,7 +1,7 @@
 const ar: Record<string, string> = {
   // Navbar
   "nav.home": "الرئيسية",
-  "nav.liveTicker": "شريط مباشر",
+  "nav.liveTicker": "توصيات مباشرة",
   "nav.liveScores": "مباشر",
   "nav.predictions": "تحليلات",
   "nav.articles": "مقالات رياضية",
@@ -26,6 +26,8 @@ const ar: Record<string, string> = {
   "home.following": "متابَع",
   "home.followMatch": "تابع المباراة",
   "home.noLiveMatches": "لا توجد مباريات الآن. عُد لاحقاً للتحديثات.",
+  "home.installApp": "حمّل التطبيق",
+  "home.installAppDesc": "أضفه إلى شاشتك الرئيسية لأفضل تجربة",
   "home.todayPredictions": "تحليلات اليوم",
   "home.prediction": "تحليل",
   "home.noPredictions": "لا توجد تحليلات لهذا اليوم بعد. عُد قريباً!",

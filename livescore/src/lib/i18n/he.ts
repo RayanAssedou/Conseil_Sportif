@@ -1,7 +1,7 @@
 const he: Record<string, string> = {
   // Navbar
   "nav.home": "ראשי",
-  "nav.liveTicker": "ליין רץ",
+  "nav.liveTicker": "המלצות ליין רץ",
   "nav.liveScores": "תוצאות ספורט",
   "nav.predictions": "המלצות",
   "nav.articles": "כתבות ספורט",
@@ -14,8 +14,8 @@ const he: Record<string, string> = {
   "nav.user": "משתמש",
 
   // Homepage
-  "home.heroTitle": "הכל על כדורגל – במקום אחד",
-  "home.heroSubtitle": "תוצאות בזמן אמת, ניתוחי מומחים וחדשות כדורגל מהליגות המובילות בעולם. הכל כאן, הכל עכשיו.",
+  "home.heroTitle": "חמ\"ל - הבית החדש לחובבי הספורט",
+  "home.heroSubtitle": "צפייה ישירה בערוצי הספורט, חדשות חמות וטיפים למשחקים מטובי המומחים – הכל במקום אחד.",
   "home.liveScoresBtn": "תוצאות לייב",
   "home.predictionsBtn": "המלצות",
   "home.latestNews": "כתבות ספורט",
@@ -26,6 +26,8 @@ const he: Record<string, string> = {
   "home.following": "במעקב",
   "home.followMatch": "עקבו אחרי המשחק",
   "home.noLiveMatches": "אין משחקים ברגע זה. חזרו בקרוב לעדכונים.",
+  "home.installApp": "הורידו את האפליקציה",
+  "home.installAppDesc": "הוסיפו למסך הבית לחוויה הטובה ביותר",
   "home.todayPredictions": "ההמלצות של היום",
   "home.prediction": "ניתוח",
   "home.noPredictions": "עוד אין המלצות להיום. חזרו בקרוב!",

@@ -1,7 +1,7 @@
 const ru: Record<string, string> = {
   // Navbar
   "nav.home": "Главная",
-  "nav.liveTicker": "Лента Live",
+  "nav.liveTicker": "Live Советы",
   "nav.liveScores": "Онлайн",
   "nav.predictions": "Прогнозы",
   "nav.articles": "Спортивные статьи",
@@ -26,6 +26,8 @@ const ru: Record<string, string> = {
   "home.following": "Отслеживается",
   "home.followMatch": "Следить за матчем",
   "home.noLiveMatches": "Сейчас нет матчей. Загляните позже!",
+  "home.installApp": "Скачать приложение",
+  "home.installAppDesc": "Добавьте на главный экран для лучшего опыта",
   "home.todayPredictions": "Прогнозы на сегодня",
   "home.prediction": "Прогноз",
   "home.noPredictions": "Прогнозов на сегодня пока нет. Загляните позже!",

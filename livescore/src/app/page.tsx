@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Fixture } from "@/lib/types";
@@ -10,6 +10,11 @@ import { useNotifications } from "@/contexts/NotificationContext";
 import { useTranslation } from "@/contexts/LanguageContext";
 import { useProPlusModal } from "@/contexts/ProPlusModalContext";
 import SpiralMenu from "@/components/SpiralMenu";
+
+interface BeforeInstallPromptEvent extends Event {
+  prompt(): Promise<void>;
+  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
+}
 
 interface HeroConfig {
   title?: string;
@@ -80,6 +85,30 @@ export default function HomePage() {
   const [loadingArticles, setLoadingArticles] = useState(true);
   const [loadingFixtures, setLoadingFixtures] = useState(true);
   const [loadingPredictions, setLoadingPredictions] = useState(true);
+  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+  const [isAppInstalled, setIsAppInstalled] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.matchMedia("(display-mode: standalone)").matches) {
+      setIsAppInstalled(true);
+    }
+    const handler = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e as BeforeInstallPromptEvent);
+    };
+    window.addEventListener("beforeinstallprompt", handler);
+    window.addEventListener("appinstalled", () => setIsAppInstalled(true));
+    return () => window.removeEventListener("beforeinstallprompt", handler);
+  }, []);
+
+  const handleInstall = useCallback(async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const result = await deferredPrompt.userChoice;
+      if (result.outcome === "accepted") setIsAppInstalled(true);
+      setDeferredPrompt(null);
+    }
+  }, [deferredPrompt]);
 
   useEffect(() => {
     fetch("/api/content/hero")
@@ -164,25 +193,31 @@ export default function HomePage() {
         <p className="text-red-400/70 text-sm md:text-base max-w-lg">
           {locale === "en" ? (hero.subtitle || t("home.heroSubtitle")) : (hero.subtitle_he || t("home.heroSubtitle"))}
         </p>
-        <div className="flex gap-3 mt-5">
-          <Link
-            href={hero.button1_link || "/scores"}
-            className="px-5 py-2.5 font-bold text-sm rounded-lg hover:opacity-90 transition-opacity shadow-lg"
-            style={{ backgroundColor: hero.button1_bg_color || "#dc2626", color: hero.button1_text_color || "#ffffff" }}
-          >
-            {locale === "en" ? (hero.button1_text || t("home.liveScoresBtn")) : (hero.button1_text_he || t("home.liveScoresBtn"))}
-          </Link>
-          <Link
-            href={hero.button2_link || "/pronostics"}
-            className="px-5 py-2.5 font-bold text-sm rounded-lg hover:opacity-90 transition-opacity border-2 border-red-600 text-red-600 bg-red-600/10"
-          >
-            {locale === "en" ? (hero.button2_text || t("home.predictionsBtn")) : (hero.button2_text_he || t("home.predictionsBtn"))}
-          </Link>
-        </div>
       </div>
 
       {/* Mobile Hexagonal Nav */}
       <SpiralMenu />
+
+      {/* Install App Button */}
+      {!isAppInstalled && (
+        <button
+          onClick={handleInstall}
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-red-600 to-red-700 text-white shadow-lg hover:from-red-700 hover:to-red-800 transition-all hover:scale-[1.01] active:scale-[0.99]"
+        >
+          <div className="w-10 h-10 rounded-lg bg-white/15 flex items-center justify-center flex-shrink-0">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+            </svg>
+          </div>
+          <div className="flex-1 text-left">
+            <span className="text-sm font-bold block">{t("home.installApp")}</span>
+            <span className="text-[11px] text-white/70">{t("home.installAppDesc")}</span>
+          </div>
+          <svg className="w-5 h-5 text-white/60 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </button>
+      )}
 
       {/* Live Scores Preview */}
       <section>

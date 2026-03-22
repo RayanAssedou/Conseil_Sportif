@@ -132,10 +132,10 @@ export default function SpiralMenu() {
     const active = !item.external && isActive(item.href);
     const locked = item.authRequired && !user;
 
-    const hexSize = desktop ? "w-[72px] h-[72px]" : "w-14 h-14";
+    const hexSize = desktop ? "w-[72px] h-[72px]" : "w-12 h-12";
     const lockSize = desktop ? "w-5 h-5" : "w-4 h-4";
-    const labelSize = desktop ? "text-xs" : "text-[10px]";
-    const maxW = desktop ? "max-w-[80px]" : "max-w-[60px]";
+    const labelSize = desktop ? "text-xs" : "text-[9px]";
+    const maxW = desktop ? "max-w-[80px]" : "max-w-[52px]";
 
     const delay = `${index * 120}ms`;
 
@@ -236,8 +236,8 @@ export default function SpiralMenu() {
     <>
       {/* Mobile */}
       <div className="md:hidden -mt-2 mb-4">
-        <div className="bg-card rounded-2xl px-2 py-4 shadow-sm border border-border">
-          <div className="flex items-center justify-around">
+        <div className="bg-card rounded-2xl px-1 py-4 shadow-sm border border-border overflow-x-auto">
+          <div className="flex items-center justify-around min-w-0 gap-1">
             {menuItems.map((item, i) => renderItem(item, i, false))}
           </div>
         </div>
