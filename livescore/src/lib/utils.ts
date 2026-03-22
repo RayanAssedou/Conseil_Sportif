@@ -33,7 +33,7 @@ export function sortFixturesByLeaguePriority(fixtures: Fixture[]): Fixture[] {
   return [...fixtures].sort((a, b) => getLeaguePriority(a.league.id) - getLeaguePriority(b.league.id));
 }
 
-export function groupFixturesByLeague(fixtures: Fixture[]): LeagueGroup[] {
+export function groupFixturesByLeague(fixtures: Fixture[], adminPriority?: Set<number> | null): LeagueGroup[] {
   const map = new Map<number, LeagueGroup>();
 
   for (const fixture of fixtures) {
@@ -55,6 +55,12 @@ export function groupFixturesByLeague(fixtures: Fixture[]): LeagueGroup[] {
 
   const groups = Array.from(map.values());
   groups.sort((a, b) => {
+    if (adminPriority && adminPriority.size > 0) {
+      const aAdmin = adminPriority.has(a.league.id);
+      const bAdmin = adminPriority.has(b.league.id);
+      if (aAdmin && !bAdmin) return -1;
+      if (!aAdmin && bAdmin) return 1;
+    }
     const aPri = getLeaguePriority(a.league.id);
     const bPri = getLeaguePriority(b.league.id);
     if (aPri !== bPri) return aPri - bPri;

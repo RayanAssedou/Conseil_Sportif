@@ -74,9 +74,7 @@ export default function LiveScore() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const leagueFiltered = allowedLeagues
-    ? fixtures.filter((f) => allowedLeagues.has(f.league.id))
-    : fixtures;
+  const leagueFiltered = fixtures;
 
   const availableLeagues = useMemo(() => {
     const LEAGUE_META: Record<number, { name: string; country: string }> = {
@@ -169,7 +167,7 @@ export default function LiveScore() {
     };
   }, [leagueFiltered, selectedLeague, selectedTeam]);
 
-  const groups: LeagueGroup[] = groupFixturesByLeague(filteredFixtures);
+  const groups: LeagueGroup[] = groupFixturesByLeague(filteredFixtures, allowedLeagues);
 
   const filteredGroups = useMemo(() => {
     if (!search.trim()) return groups;
