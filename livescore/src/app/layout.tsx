@@ -1,20 +1,28 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, DM_Sans } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import NotificationToast from "@/components/NotificationToast";
+import ProPlusModal from "@/components/ProPlusModal";
 import PageTracker from "@/components/PageTracker";
 import TrackingScripts from "@/components/TrackingScripts";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
+import { ProPlusModalProvider } from "@/contexts/ProPlusModalContext";
 import { Analytics } from "@vercel/analytics/next";
 
 const inter = Inter({
   variable: "--font-geist-sans",
   subsets: ["latin", "latin-ext"],
+});
+
+const dmSans = DM_Sans({
+  variable: "--font-dm-sans",
+  subsets: ["latin", "latin-ext"],
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -31,18 +39,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} font-sans antialiased`}>
+      <body className={`${inter.variable} ${dmSans.variable} font-sans antialiased`}>
         <ThemeProvider>
         <LanguageProvider>
           <AuthProvider>
             <NotificationProvider>
+              <ProPlusModalProvider>
               <Navbar />
               <main className="min-h-screen">{children}</main>
               <Footer />
               <NotificationToast />
+              <ProPlusModal />
               <PageTracker />
               <TrackingScripts />
               <Analytics />
+              </ProPlusModalProvider>
             </NotificationProvider>
           </AuthProvider>
         </LanguageProvider>

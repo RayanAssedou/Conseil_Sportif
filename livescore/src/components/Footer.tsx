@@ -5,10 +5,12 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useTranslation } from "@/contexts/LanguageContext";
+import { useProPlusModal } from "@/contexts/ProPlusModalContext";
 
 export default function Footer() {
   const pathname = usePathname();
   const { t } = useTranslation();
+  const { openProPlus } = useProPlusModal();
   const [socialLinks, setSocialLinks] = useState({ telegram: "", whatsapp: "", instagram: "", vip: "" });
 
   useEffect(() => {
@@ -97,17 +99,15 @@ export default function Footer() {
                     <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
                   </svg>
                 </a>
-                <a
-                  href={socialLinks.vip}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-9 h-9 rounded-lg bg-amber-500/10 hover:bg-gradient-to-br hover:from-amber-400 hover:to-amber-600 text-amber-500 hover:text-white flex items-center justify-center transition-all duration-200 hover:scale-110"
-                  aria-label="VIP"
+                <button
+                  onClick={() => openProPlus(socialLinks.vip)}
+                  className="w-9 h-9 rounded-lg bg-blue-500/10 hover:bg-gradient-to-br hover:from-blue-400 hover:to-blue-600 text-blue-400 hover:text-white flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-[0_0_8px_rgba(59,130,246,0.4)] hover:shadow-[0_0_14px_rgba(59,130,246,0.6)]"
+                  aria-label="Pro+"
                 >
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
                   </svg>
-                </a>
+                </button>
               </div>
             </div>
 
@@ -185,20 +185,18 @@ export default function Footer() {
                   <span className="text-sm font-medium text-text-secondary group-hover:text-[#E4405F] transition-colors">{t("footer.instagram")}</span>
                 </a>
                 {socialLinks.vip && (
-                  <a
-                    href={socialLinks.vip}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-gradient-to-r from-amber-500/10 to-amber-400/5 border border-amber-400/20 hover:border-amber-400/40 transition-all group"
+                  <button
+                    onClick={() => openProPlus(socialLinks.vip)}
+                    className="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-gradient-to-r from-blue-500/10 to-blue-400/5 border border-blue-400/30 hover:border-blue-400/50 transition-all group shadow-[0_0_10px_rgba(59,130,246,0.15)] hover:shadow-[0_0_16px_rgba(59,130,246,0.3)] w-full"
                   >
-                    <div className="w-6 h-6 rounded-md bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center">
+                    <div className="w-6 h-6 rounded-md bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center shadow-[0_0_8px_rgba(59,130,246,0.5)]">
                       <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
                       </svg>
                     </div>
-                    <span className="text-sm font-bold text-amber-600 dark:text-amber-400 group-hover:text-amber-700 dark:group-hover:text-amber-300 transition-colors">{t("vip.title")}</span>
-                    <span className="ml-auto px-1.5 py-0.5 text-[8px] font-bold bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded uppercase tracking-wider">VIP</span>
-                  </a>
+                    <span className="text-sm font-bold text-blue-500 dark:text-blue-400 group-hover:text-blue-600 dark:group-hover:text-blue-300 transition-colors" style={{ textShadow: "0 0 8px rgba(59,130,246,0.5)" }}>{t("vip.title")}</span>
+                    <span className="ml-auto px-1.5 py-0.5 text-[8px] font-bold bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded uppercase tracking-wider shadow-[0_0_8px_rgba(59,130,246,0.5)]">PRO+</span>
+                  </button>
                 )}
               </div>
             </div>

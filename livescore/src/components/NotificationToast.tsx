@@ -27,58 +27,70 @@ function ToastItem({ toast, onDismiss }: { toast: NotifToast; onDismiss: () => v
   }, []);
 
   const isGoal = toast.type === "goal";
+  const isPenalty = toast.type === "penalty";
+  const isScoreEvent = isGoal || isPenalty;
 
   const handleClick = () => {
-    const path = isGoal ? `/match/${toast.fixtureId}` : `/pronostics/${toast.fixtureId}`;
+    const path = isScoreEvent ? `/match/${toast.fixtureId}` : `/pronostics/${toast.fixtureId}`;
     router.push(path);
     onDismiss();
   };
+
+  const accent = isScoreEvent
+    ? { bg: "from-emerald-500/10 to-emerald-500/5", border: "border-emerald-400/30 dark:border-emerald-500/20", iconBg: "bg-emerald-500", title: "text-emerald-700 dark:text-emerald-300", progress: "bg-emerald-500/30" }
+    : { bg: "from-blue-500/10 to-blue-500/5", border: "border-blue-400/30 dark:border-blue-500/20", iconBg: "bg-blue-500", title: "text-blue-700 dark:text-blue-300", progress: "bg-blue-500/30" };
 
   return (
     <div
       onClick={handleClick}
       className={`
-        relative overflow-hidden rounded-xl shadow-2xl border cursor-pointer
+        relative overflow-hidden rounded-2xl cursor-pointer
         transform transition-all duration-300 ease-out
-        animate-slide-in-right hover:scale-[1.02]
-        ${isGoal
-          ? "bg-gradient-to-r from-emerald-50 to-white dark:from-emerald-950 dark:to-surface border-emerald-200 dark:border-emerald-800"
-          : "bg-gradient-to-r from-amber-50 to-white dark:from-amber-950 dark:to-surface border-amber-200 dark:border-amber-800"
-        }
+        animate-slide-in-right hover:scale-[1.02] hover:shadow-2xl
+        bg-gradient-to-br ${accent.bg}
+        backdrop-blur-xl bg-white/80 dark:bg-surface/90
+        border ${accent.border}
+        shadow-lg shadow-black/5 dark:shadow-black/20
       `}
-      style={{ minWidth: 300, maxWidth: 380 }}
+      style={{ minWidth: 320, maxWidth: 400, fontFamily: "var(--font-dm-sans), sans-serif" }}
     >
-      <div className="flex items-start gap-3 p-4">
-        <div className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${
-          isGoal ? "bg-emerald-100" : "bg-amber-100"
-        }`}>
-          {isGoal ? (
-            <svg className="w-5 h-5 text-emerald-600" viewBox="0 0 24 24" fill="currentColor">
-              <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" fill="none" />
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 2c1.93 0 3.68.69 5.05 1.83L14.5 8.5l-2.5-1-2.5 1-2.55-2.67A7.956 7.956 0 0112 4zm-8 8c0-1.62.5-3.13 1.33-4.38L8 10.5v3l2.5 2.5-1 3.5A7.98 7.98 0 014 12zm8 8c-1.35 0-2.62-.35-3.73-.96L9.5 15.5 12 13l4 1v3.5l-1.32 1.98A7.89 7.89 0 0112 20zm5.67-2.87L16 15.5V14l2.93-3.07c.04.35.07.71.07 1.07a7.95 7.95 0 01-1.33 4.13z" />
-            </svg>
+      <div className="flex items-start gap-3.5 p-4">
+        <div className={`flex-shrink-0 w-10 h-10 rounded-xl ${accent.iconBg} flex items-center justify-center shadow-md`}>
+          {isScoreEvent ? (
+            <span className="text-lg leading-none" role="img" aria-label="goal">{isPenalty ? "⚽" : "⚽"}</span>
           ) : (
-            <svg className="w-5 h-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
             </svg>
           )}
         </div>
 
         <div className="flex-1 min-w-0">
-          <p className={`text-sm font-bold ${isGoal ? "text-emerald-800 dark:text-emerald-300" : "text-amber-800 dark:text-amber-300"}`}>
+          {isScoreEvent && (
+            <span className={`inline-block px-2 py-0.5 rounded-md text-[10px] font-semibold uppercase tracking-widest mb-1.5 ${
+              isPenalty
+                ? "bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300"
+                : "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300"
+            }`}>
+              {isPenalty ? "Penalty" : "Goal"}
+            </span>
+          )}
+          <p className={`text-[15px] font-semibold leading-snug tracking-tight ${accent.title}`}>
             {toast.title}
           </p>
-          <p className="text-sm text-slate-600 dark:text-slate-300 mt-0.5">{toast.body}</p>
-          <p className="text-[10px] text-slate-400 mt-1 uppercase tracking-wider font-medium">
+          <p className="text-[13px] font-normal text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+            {toast.body}
+          </p>
+          <p className="text-[10px] text-slate-400/80 dark:text-slate-500 mt-2 uppercase tracking-[0.08em] font-medium">
             {t("toast.clickToView")}
           </p>
         </div>
 
         <button
           onClick={(e) => { e.stopPropagation(); onDismiss(); }}
-          className="flex-shrink-0 p-1 rounded-lg hover:bg-black/5 transition-colors"
+          className="flex-shrink-0 p-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors mt-0.5"
         >
-          <svg className="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <svg className="w-3.5 h-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
@@ -86,7 +98,7 @@ function ToastItem({ toast, onDismiss }: { toast: NotifToast; onDismiss: () => v
 
       <div
         ref={progressRef}
-        className={`h-1 w-full ${isGoal ? "bg-emerald-400/40" : "bg-amber-400/40"}`}
+        className={`h-[3px] w-full ${accent.progress} rounded-full`}
         style={{ width: "100%" }}
       />
     </div>

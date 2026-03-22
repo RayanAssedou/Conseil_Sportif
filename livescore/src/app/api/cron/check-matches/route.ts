@@ -52,23 +52,11 @@ const PUSH_TEXTS: Record<string, Record<string, string>> = {
     ar: "!بدأت المباراة",
     ru: "Матч начался!",
   },
-  yellowCard: {
-    en: "🟨 Yellow Card",
-    he: "🟨 כרטיס צהוב",
-    ar: "🟨 بطاقة صفراء",
-    ru: "🟨 Жёлтая карточка",
-  },
-  redCard: {
-    en: "🟥 RED CARD",
-    he: "🟥 כרטיס אדום",
-    ar: "🟥 بطاقة حمراء",
-    ru: "🟥 КРАСНАЯ КАРТОЧКА",
-  },
-  substitution: {
-    en: "🔄 Substitution",
-    he: "🔄 חילוף",
-    ar: "🔄 تبديل",
-    ru: "🔄 Замена",
+  penalty: {
+    en: "⚽ PENALTY GOAL",
+    he: "⚽ גול מפנדל",
+    ar: "⚽ هدف من ركلة جزاء",
+    ru: "⚽ ГОЛ С ПЕНАЛЬТИ",
   },
 };
 
@@ -209,29 +197,16 @@ async function runCheck() {
       if (events.length > prevEventsCount && goalAlertSubs.length > 0) {
         const newEvents = events.slice(prevEventsCount);
         for (const evt of newEvents) {
-          let titleKey: string | null = null;
-          let body = "";
-
-          if (evt.type === "Card" && evt.detail?.includes("Yellow")) {
-            titleKey = "yellowCard";
-            body = `${evt.player?.name || "?"} — ${evt.team?.name || ""} (${evt.time?.elapsed || "?"}\')`;
-          } else if (evt.type === "Card" && (evt.detail?.includes("Red") || evt.detail?.includes("Second Yellow"))) {
-            titleKey = "redCard";
-            body = `${evt.player?.name || "?"} — ${evt.team?.name || ""} (${evt.time?.elapsed || "?"}\')`;
-          } else if (evt.type === "subst") {
-            titleKey = "substitution";
-            body = `${evt.player?.name || "?"} ➜ ${evt.assist?.name || "?"} — ${evt.team?.name || ""} (${evt.time?.elapsed || "?"}\')`;
-          }
-
-          if (titleKey) {
+          if (evt.type === "Goal" && evt.detail === "Penalty") {
+            const body = `${evt.player?.name || "?"} — ${evt.team?.name || ""} (${evt.time?.elapsed || "?"}\')`;
             for (const sub of goalAlertSubs) {
               const loc = sub.push_subscriptions.locale || "en";
-              const label = PUSH_TEXTS[titleKey]?.[loc] || PUSH_TEXTS[titleKey]?.en || titleKey;
+              const label = PUSH_TEXTS.penalty[loc] || PUSH_TEXTS.penalty.en;
               await sendPush(sub.push_subscriptions, {
                 title: `${label} — ${matchLabel}`,
                 body,
                 url: `/match/${fixtureId}`,
-                tag: `${titleKey}-${fixtureId}-${events.length}`,
+                tag: `penalty-${fixtureId}-${events.length}`,
                 fixtureId,
               });
               pushesSent++;

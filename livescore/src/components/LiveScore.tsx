@@ -74,7 +74,15 @@ export default function LiveScore() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const leagueFiltered = fixtures;
+  const leagueFiltered = useMemo(() => {
+    const cutoff = Date.now() - 24 * 60 * 60 * 1000;
+    return fixtures.filter((f) => {
+      if (isFinished(f.fixture.status.short)) {
+        return new Date(f.fixture.date).getTime() >= cutoff;
+      }
+      return true;
+    });
+  }, [fixtures]);
 
   const availableLeagues = useMemo(() => {
     const LEAGUE_META: Record<number, { name: string; country: string }> = {

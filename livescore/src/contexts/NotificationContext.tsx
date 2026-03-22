@@ -29,7 +29,7 @@ interface GoalAlertData {
 
 export interface NotifToast {
   id: string;
-  type: "kickoff" | "goal" | "yellow_card" | "red_card" | "substitution";
+  type: "kickoff" | "goal" | "penalty";
   title: string;
   body: string;
   fixtureId: number;
@@ -367,18 +367,9 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
         const newEvents = events.slice(prevCount);
 
         for (const evt of newEvents) {
-          if (evt.type === "Card" && evt.detail?.includes("Yellow")) {
-            const title = translate(localeRef.current, "notif.yellowCard", { player: evt.player?.name || "?" });
-            addToast({ type: "yellow_card", title, body: matchLabel, fixtureId });
-          } else if (evt.type === "Card" && (evt.detail?.includes("Red") || evt.detail?.includes("Second Yellow"))) {
-            const title = translate(localeRef.current, "notif.redCard", { player: evt.player?.name || "?" });
-            addToast({ type: "red_card", title, body: matchLabel, fixtureId });
-          } else if (evt.type === "subst") {
-            const title = translate(localeRef.current, "notif.substitution", {
-              playerOut: evt.player?.name || "?",
-              playerIn: evt.assist?.name || "?",
-            });
-            addToast({ type: "substitution", title, body: matchLabel, fixtureId });
+          if (evt.type === "Goal" && evt.detail === "Penalty") {
+            const title = translate(localeRef.current, "notif.penalty", { player: evt.player?.name || "?" });
+            addToast({ type: "penalty", title, body: matchLabel, fixtureId });
           }
         }
 

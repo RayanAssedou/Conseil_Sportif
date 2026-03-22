@@ -4,7 +4,6 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Fixture } from "@/lib/types";
 import { isLive, isFinished, getStatusDisplay } from "@/lib/utils";
-import { useAuth } from "@/contexts/AuthContext";
 import { useNotifications } from "@/contexts/NotificationContext";
 import { useTranslation } from "@/contexts/LanguageContext";
 
@@ -14,14 +13,13 @@ interface MatchCardProps {
 
 export default function MatchCard({ fixture }: MatchCardProps) {
   const router = useRouter();
-  const { user } = useAuth();
   const { addReminder, removeReminder, hasReminder, toggleGoalAlert, hasGoalAlert } = useNotifications();
   const { t, locale } = useTranslation();
   const live = isLive(fixture.fixture.status.short);
   const finished = isFinished(fixture.fixture.status.short);
   const upcoming = !live && !finished;
   const statusText = getStatusDisplay(fixture, locale);
-  const showBell = user && !finished;
+  const showBell = !finished;
   const isFollowed = hasReminder(fixture.fixture.id) || hasGoalAlert(fixture.fixture.id);
 
   const homeGoals = fixture.goals.home;
