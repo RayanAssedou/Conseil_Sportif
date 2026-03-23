@@ -10,6 +10,7 @@ export default function SettingsPage() {
   const [telegram, setTelegram] = useState<Record<string, string>>({});
   const [whatsapp, setWhatsapp] = useState<Record<string, string>>({});
   const [instagram, setInstagram] = useState<Record<string, string>>({});
+  const [facebook, setFacebook] = useState<Record<string, string>>({});
   const [whatsappVip, setWhatsappVip] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -20,6 +21,8 @@ export default function SettingsPage() {
   const [savedWhatsapp, setSavedWhatsapp] = useState(false);
   const [savingInstagram, setSavingInstagram] = useState(false);
   const [savedInstagram, setSavedInstagram] = useState(false);
+  const [savingFacebook, setSavingFacebook] = useState(false);
+  const [savedFacebook, setSavedFacebook] = useState(false);
   const [savingWhatsappVip, setSavingWhatsappVip] = useState(false);
   const [savedWhatsappVip, setSavedWhatsappVip] = useState(false);
   const [fbPixel, setFbPixel] = useState<Record<string, string>>({});
@@ -35,15 +38,17 @@ export default function SettingsPage() {
       fetch(API("/content/section?key=telegram")).then((r) => r.json()),
       fetch(API("/content/section?key=whatsapp")).then((r) => r.json()),
       fetch(API("/content/section?key=instagram")).then((r) => r.json()),
+      fetch(API("/content/section?key=facebook")).then((r) => r.json()),
       fetch(API("/content/section?key=facebook_pixel")).then((r) => r.json()),
       fetch(API("/content/section?key=google_tag")).then((r) => r.json()),
       fetch(API("/content/section?key=whatsapp_vip")).then((r) => r.json()),
     ])
-      .then(([sData, tData, wData, iData, fpData, gtData, wvData]) => {
+      .then(([sData, tData, wData, iData, fbData, fpData, gtData, wvData]) => {
         setSection(sData || {});
         setTelegram(tData || {});
         setWhatsapp(wData || {});
         setInstagram(iData || {});
+        setFacebook(fbData || {});
         setFbPixel(fpData || {});
         setGoogleTag(gtData || {});
         setWhatsappVip(wvData || {});
@@ -112,6 +117,7 @@ export default function SettingsPage() {
   const updateTelegram = (key: string, val: string) => setTelegram((t) => ({ ...t, [key]: val }));
   const updateWhatsapp = (key: string, val: string) => setWhatsapp((w) => ({ ...w, [key]: val }));
   const updateInstagram = (key: string, val: string) => setInstagram((ig) => ({ ...ig, [key]: val }));
+  const updateFacebook = (key: string, val: string) => setFacebook((fb) => ({ ...fb, [key]: val }));
 
   if (loading) {
     return (
@@ -339,6 +345,60 @@ export default function SettingsPage() {
                 {savingInstagram ? "Saving..." : "Save Instagram Link"}
               </button>
               {savedInstagram && (
+                <span className="flex items-center gap-1.5 text-sm text-green-600 font-medium">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                  </svg>
+                  Saved
+                </span>
+              )}
+            </div>
+          </div>
+        </form>
+
+        {/* Facebook */}
+        <form onSubmit={(e) => { e.preventDefault(); saveSocial(facebook, "facebook", setSavingFacebook, setSavedFacebook); }}>
+          <div className="bg-white rounded-xl border border-slate-200 p-6 space-y-5">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-[#1877F2] flex items-center justify-center">
+                <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                </svg>
+              </div>
+              <div>
+                <h2 className="text-base font-semibold text-slate-900">Facebook</h2>
+                <p className="text-sm text-slate-500">Set the Facebook page link shown on the homepage</p>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">Facebook Link</label>
+              <div className="flex gap-2">
+                <div className="flex items-center px-3 bg-slate-50 border border-r-0 border-slate-200 rounded-l-lg text-sm text-[#1877F2]">
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                  </svg>
+                </div>
+                <input
+                  type="url"
+                  value={facebook.view_all_link || ""}
+                  onChange={(e) => updateFacebook("view_all_link", e.target.value)}
+                  placeholder="https://facebook.com/yourpage"
+                  className="flex-1 px-4 py-3 border border-slate-200 rounded-r-lg focus:ring-2 focus:ring-red-500/20 focus:border-red-500 outline-none transition"
+                />
+              </div>
+              <p className="text-xs text-slate-400 mt-1.5">Paste your Facebook page link (e.g. https://facebook.com/yourpage)</p>
+            </div>
+
+            <div className="flex items-center gap-3 pt-2">
+              <button
+                type="submit"
+                disabled={savingFacebook}
+                className="flex items-center gap-2 px-6 py-2.5 bg-[#1877F2] text-white text-sm font-semibold rounded-lg hover:bg-[#166fe5] transition-colors shadow-sm disabled:opacity-50"
+              >
+                {savingFacebook ? "Saving..." : "Save Facebook Link"}
+              </button>
+              {savedFacebook && (
                 <span className="flex items-center gap-1.5 text-sm text-green-600 font-medium">
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />

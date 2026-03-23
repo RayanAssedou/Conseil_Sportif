@@ -312,6 +312,7 @@ const ru: Record<string, string> = {
   "footer.telegram": "Telegram",
   "footer.whatsapp": "WhatsApp",
   "footer.instagram": "Instagram",
+  "footer.facebook": "Facebook",
   "footer.joinCommunity": "Присоединяйтесь к нашему сообществу — эксклюзивные советы, live-обновления и экспертная аналитика.",
   "footer.rights": "Все права защищены.",
   "footer.madeWith": "Сделано с",

@@ -312,6 +312,7 @@ const en: Record<string, string> = {
   "footer.telegram": "Telegram",
   "footer.whatsapp": "WhatsApp",
   "footer.instagram": "Instagram",
+  "footer.facebook": "Facebook",
   "footer.joinCommunity": "Join our community for exclusive tips, live updates, and expert analysis.",
   "footer.rights": "All rights reserved.",
   "footer.madeWith": "Made with",

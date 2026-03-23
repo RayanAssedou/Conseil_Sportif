@@ -312,6 +312,7 @@ const ar: Record<string, string> = {
   "footer.telegram": "تيليجرام",
   "footer.whatsapp": "واتساب",
   "footer.instagram": "إنستغرام",
+  "footer.facebook": "فيسبوك",
   "footer.joinCommunity": "انضم إلى مجتمعنا للحصول على نصائح حصرية وتحديثات مباشرة وتحليلات احترافية.",
   "footer.rights": "جميع الحقوق محفوظة.",
   "footer.madeWith": "صُنع بـ",
