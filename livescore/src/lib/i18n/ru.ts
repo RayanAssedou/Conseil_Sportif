@@ -42,6 +42,12 @@ const ru: Record<string, string> = {
   "home.instagramTitle": "Instagram",
   "home.instagramDesc": "Ежедневный контент, обзоры матчей и закулисье.",
   "home.followInstagram": "Подписаться",
+  "home.youtubeTitle": "YouTube",
+  "home.youtubeDesc": "Смотрите разборы матчей, голы и эксклюзивный контент.",
+  "home.subscribeYoutube": "Подписаться",
+  "home.bonusTitle": "Бонус 100₪!",
+  "home.bonusDesc": "Присоединяйтесь и получите бонус при первом депозите",
+  "home.getBonus": "Получить бонус",
 
   // Live Scores page
   "scores.title": "Результаты Live",
@@ -294,6 +300,22 @@ const ru: Record<string, string> = {
   "ai.shortDesc": "Анализ на базе искусственного интеллекта HAMAL",
   "ai.dataSource": "Данные и анализ HAMAL AI",
 
+  // Bonus Modal
+  "bonus.headline": "Дилер балует вас!",
+  "bonus.subtitle": "Присоединяйтесь сейчас и получите 100₪ в подарок при первом депозите!",
+  "bonus.gift": "Бесплатный бонус при первом депозите",
+  "bonus.condition": "При условии депозита (только первый депозит!)",
+  "bonus.everyDeposit": "Бонус на каждый депозит",
+  "bonus.everyDepositDesc": "Не только на первый депозит! Получайте бонус на каждое пополнение.",
+  "bonus.vip": "VIP-сервис – полная доступность 24/7.",
+  "bonus.personal": "Персональный подход – только живая профессиональная поддержка.",
+  "bonus.transparent": "Прозрачность – каждый балл равен ровно 1₪!",
+  "bonus.security": "Безопасность – мгновенный вывод выигрыша.",
+  "bonus.sports": "Все лиги, все матчи и все автоматы в одном месте!",
+  "bonus.certified": "Сертифицированный и лицензированный агент",
+  "bonus.cta": "Написать сейчас",
+  "bonus.phone": "052-6142250",
+
   // Footer
   "footer.brand": "Спорт Хамаль",
   "footer.tagline": "Ваш главный источник live-результатов, экспертных прогнозов и детального анализа каждого матча.",
@@ -313,6 +335,9 @@ const ru: Record<string, string> = {
   "footer.whatsapp": "WhatsApp",
   "footer.instagram": "Instagram",
   "footer.facebook": "Facebook",
+  "footer.tiktok": "TikTok",
+  "footer.twitter": "X",
+  "footer.youtube": "YouTube",
   "footer.joinCommunity": "Присоединяйтесь к нашему сообществу — эксклюзивные советы, live-обновления и экспертная аналитика.",
   "footer.rights": "Все права защищены.",
   "footer.madeWith": "Сделано с",

@@ -10,6 +10,7 @@ import { useNotifications } from "@/contexts/NotificationContext";
 import { useTranslation } from "@/contexts/LanguageContext";
 import { useProPlusModal } from "@/contexts/ProPlusModalContext";
 import SpiralMenu from "@/components/SpiralMenu";
+import BonusModal from "@/components/BonusModal";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>;
@@ -76,6 +77,7 @@ export default function HomePage() {
   const [telegramLink, setTelegramLink] = useState("");
   const [whatsappLink, setWhatsappLink] = useState("");
   const [instagramLink, setInstagramLink] = useState("");
+  const [youtubeLink, setYoutubeLink] = useState("");
   const [vipLink, setVipLink] = useState("");
   const [articles, setArticles] = useState<Article[]>([]);
   const [fixtures, setFixtures] = useState<Fixture[]>([]);
@@ -87,6 +89,7 @@ export default function HomePage() {
   const [loadingPredictions, setLoadingPredictions] = useState(true);
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isAppInstalled, setIsAppInstalled] = useState(false);
+  const [bonusModalOpen, setBonusModalOpen] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.matchMedia("(display-mode: standalone)").matches) {
@@ -135,6 +138,11 @@ export default function HomePage() {
     fetch("/api/content/section?key=instagram")
       .then((r) => r.json())
       .then((data) => setInstagramLink(data?.view_all_link || ""))
+      .catch(console.error);
+
+    fetch("/api/content/section?key=youtube")
+      .then((r) => r.json())
+      .then((data) => { const v = data?.view_all_link; setYoutubeLink(v && v.startsWith("http") ? v : ""); })
       .catch(console.error);
 
     fetch("/api/content/section?key=whatsapp_vip")
@@ -391,6 +399,38 @@ export default function HomePage() {
                   </span>
                 </div>
               </a>
+              <a href={youtubeLink || "https://youtube.com/channel/UCSiVU6MH4GCS9-68ClAsyEQ?si=e7blRdgdbT1CT8mD"} target="_blank" rel="noopener noreferrer" className="flex-shrink-0 bg-gradient-to-br from-[#FF0000] to-[#cc0000] rounded-xl p-3.5 text-white" style={{ width: "80vw" }}>
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 bg-white/15 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-sm font-bold">{t("home.youtubeTitle")}</h3>
+                    <p className="text-white/70 text-[11px] leading-tight">{t("home.youtubeDesc")}</p>
+                  </div>
+                  <span className="flex-shrink-0 inline-flex items-center gap-1 px-2.5 py-1.5 bg-white/20 rounded-lg text-[11px] font-semibold">
+                    {t("home.subscribeYoutube")}
+                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
+                  </span>
+                </div>
+              </a>
+              <button onClick={() => setBonusModalOpen(true)} className="flex-shrink-0 bg-gradient-to-br from-amber-500 to-amber-700 rounded-xl p-3.5 text-white shadow-[0_0_20px_rgba(245,158,11,0.3)] text-left" style={{ width: "80vw" }}>
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 bg-white/15 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M21 11.25v8.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5v-8.25M12 4.875A2.625 2.625 0 109.375 7.5H12m0-2.625V7.5m0-2.625A2.625 2.625 0 1114.625 7.5H12m0 0V21m-8.625-9.75h18c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125h-18c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+                    </svg>
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-sm font-bold">{t("home.bonusTitle")}</h3>
+                    <p className="text-white/70 text-[11px] leading-tight">{t("home.bonusDesc")}</p>
+                  </div>
+                  <span className="flex-shrink-0 inline-flex items-center gap-1 px-2.5 py-1.5 bg-white/20 rounded-lg text-[11px] font-semibold">
+                    {t("home.getBonus")}
+                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
+                  </span>
+                </div>
+              </button>
               <button onClick={() => openProPlus(vipLink || whatsappLink || "https://wa.me/")} className="flex-shrink-0 bg-gradient-to-br from-violet-500 to-blue-600 rounded-xl p-3.5 text-white shadow-[0_0_20px_rgba(139,92,246,0.4)] text-left" style={{ width: "80vw" }}>
                 <div className="flex items-center gap-2.5">
                   <div className="w-9 h-9 bg-white/15 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -639,7 +679,7 @@ export default function HomePage() {
       <div className="h-8" />
 
       {/* Social Links - Desktop Grid */}
-      <section className="hidden md:grid gap-4 grid-cols-2 lg:grid-cols-4">
+      <section className="hidden md:grid gap-4 grid-cols-2 lg:grid-cols-6">
         <a
           href={telegramLink || "https://t.me/"}
           target="_blank"
@@ -715,6 +755,54 @@ export default function HomePage() {
           </span>
         </a>
 
+        <a
+          href={youtubeLink || "https://youtube.com/channel/UCSiVU6MH4GCS9-68ClAsyEQ?si=e7blRdgdbT1CT8mD"}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="bg-gradient-to-br from-[#FF0000] to-[#cc0000] rounded-2xl p-5 text-white hover:shadow-lg hover:scale-[1.02] transition-all group"
+        >
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-12 h-12 bg-white/15 rounded-xl flex items-center justify-center">
+              <svg className="w-7 h-7 text-white" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+              </svg>
+            </div>
+            <div>
+              <h3 className="text-lg font-bold">{t("home.youtubeTitle")}</h3>
+              <p className="text-white/70 text-xs">{t("home.youtubeDesc")}</p>
+            </div>
+          </div>
+          <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-white/20 rounded-lg text-sm font-semibold group-hover:bg-white/30 transition-colors">
+            {t("home.subscribeYoutube")}
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+            </svg>
+          </span>
+        </a>
+
+        <button
+          onClick={() => setBonusModalOpen(true)}
+          className="bg-gradient-to-br from-amber-500 to-amber-700 rounded-2xl p-5 text-white hover:shadow-[0_0_24px_rgba(245,158,11,0.5)] hover:scale-[1.02] transition-all group shadow-[0_0_16px_rgba(245,158,11,0.2)] text-left w-full"
+        >
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-12 h-12 bg-white/15 rounded-xl flex items-center justify-center">
+              <svg className="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 11.25v8.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5v-8.25M12 4.875A2.625 2.625 0 109.375 7.5H12m0-2.625V7.5m0-2.625A2.625 2.625 0 1114.625 7.5H12m0 0V21m-8.625-9.75h18c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125h-18c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+              </svg>
+            </div>
+            <div>
+              <h3 className="text-lg font-bold">{t("home.bonusTitle")}</h3>
+              <p className="text-white/70 text-xs">{t("home.bonusDesc")}</p>
+            </div>
+          </div>
+          <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-white/20 rounded-lg text-sm font-semibold group-hover:bg-white/30 transition-colors">
+            {t("home.getBonus")}
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+            </svg>
+          </span>
+        </button>
+
         <button
           onClick={() => openProPlus(vipLink || whatsappLink || "https://wa.me/")}
           className="bg-gradient-to-br from-violet-500 to-blue-600 rounded-2xl p-5 text-white hover:shadow-[0_0_24px_rgba(139,92,246,0.5)] hover:scale-[1.02] transition-all group shadow-[0_0_16px_rgba(139,92,246,0.3)] text-left w-full"
@@ -748,6 +836,8 @@ export default function HomePage() {
           </span>
         </button>
       </section>
+
+      <BonusModal isOpen={bonusModalOpen} onClose={() => setBonusModalOpen(false)} />
     </div>
   );
 }

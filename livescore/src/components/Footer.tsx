@@ -11,7 +11,7 @@ export default function Footer() {
   const pathname = usePathname();
   const { t } = useTranslation();
   const { openProPlus } = useProPlusModal();
-  const [socialLinks, setSocialLinks] = useState({ telegram: "", whatsapp: "", instagram: "", facebook: "", vip: "" });
+  const [socialLinks, setSocialLinks] = useState({ telegram: "", whatsapp: "", instagram: "", facebook: "", tiktok: "", twitter: "", youtube: "", vip: "" });
 
   useEffect(() => {
     Promise.all([
@@ -19,14 +19,20 @@ export default function Footer() {
       fetch("/api/content/section?key=whatsapp").then((r) => r.json()).catch(() => null),
       fetch("/api/content/section?key=instagram").then((r) => r.json()).catch(() => null),
       fetch("/api/content/section?key=facebook").then((r) => r.json()).catch(() => null),
+      fetch("/api/content/section?key=tiktok").then((r) => r.json()).catch(() => null),
+      fetch("/api/content/section?key=twitter").then((r) => r.json()).catch(() => null),
+      fetch("/api/content/section?key=youtube").then((r) => r.json()).catch(() => null),
       fetch("/api/content/section?key=whatsapp_vip").then((r) => r.json()).catch(() => null),
-    ]).then(([tg, wa, ig, fb, vip]) => {
+    ]).then(([tg, wa, ig, fb, tt, tw, yt, vip]) => {
       setSocialLinks({
-        telegram: tg?.view_all_link || "https://t.me/",
-        whatsapp: wa?.view_all_link || "https://wa.me/",
-        instagram: ig?.view_all_link || "https://instagram.com/",
-        facebook: fb?.view_all_link || "https://facebook.com/",
-        vip: vip?.view_all_link || wa?.view_all_link || "https://wa.me/",
+        telegram: tg?.view_all_link || "https://t.me/Niv_grafica",
+        whatsapp: wa?.view_all_link || "https://wa.me/972504593270",
+        instagram: ig?.view_all_link || "https://www.instagram.com/nivphotografi?igsh=MTVuMG90bG1kZGkzcw==",
+        facebook: fb?.view_all_link || "https://www.facebook.com/share/g/1FjxBVg48G/",
+        tiktok: tt?.view_all_link || "https://www.tiktok.com/@niv_winner_tips?_r=1&_t=ZS-958O1XrBfQC",
+        twitter: tw?.view_all_link || "https://x.com/nivphotograf",
+        youtube: yt?.view_all_link || "https://youtube.com/channel/UCSiVU6MH4GCS9-68ClAsyEQ?si=e7blRdgdbT1CT8mD",
+        vip: vip?.view_all_link || wa?.view_all_link || "https://wa.me/972504593270",
       });
     });
   }, []);
@@ -110,6 +116,39 @@ export default function Footer() {
                 >
                   <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                  </svg>
+                </a>
+                <a
+                  href={socialLinks.tiktok}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-9 h-9 rounded-lg bg-[#010101]/10 hover:bg-[#010101] text-[#010101] dark:text-white hover:text-white flex items-center justify-center transition-all duration-200 hover:scale-110"
+                  aria-label="TikTok"
+                >
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z" />
+                  </svg>
+                </a>
+                <a
+                  href={socialLinks.twitter}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-9 h-9 rounded-lg bg-[#000000]/10 hover:bg-[#000000] text-[#000000] dark:text-white hover:text-white flex items-center justify-center transition-all duration-200 hover:scale-110"
+                  aria-label="X"
+                >
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                  </svg>
+                </a>
+                <a
+                  href={socialLinks.youtube}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-9 h-9 rounded-lg bg-[#FF0000]/10 hover:bg-[#FF0000] text-[#FF0000] hover:text-white flex items-center justify-center transition-all duration-200 hover:scale-110"
+                  aria-label="YouTube"
+                >
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
                   </svg>
                 </a>
                 <button
@@ -209,6 +248,45 @@ export default function Footer() {
                     </svg>
                   </div>
                   <span className="text-sm font-medium text-text-secondary group-hover:text-[#1877F2] transition-colors">{t("footer.facebook")}</span>
+                </a>
+                <a
+                  href={socialLinks.tiktok}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-surface-light hover:bg-[#010101]/10 transition-colors group"
+                >
+                  <div className="w-6 h-6 rounded-md bg-[#010101]/15 flex items-center justify-center">
+                    <svg className="w-3 h-3 text-[#010101] dark:text-white" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z" />
+                    </svg>
+                  </div>
+                  <span className="text-sm font-medium text-text-secondary group-hover:text-[#010101] dark:group-hover:text-white transition-colors">{t("footer.tiktok")}</span>
+                </a>
+                <a
+                  href={socialLinks.twitter}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-surface-light hover:bg-[#000]/10 transition-colors group"
+                >
+                  <div className="w-6 h-6 rounded-md bg-[#000]/15 flex items-center justify-center">
+                    <svg className="w-3 h-3 text-[#000] dark:text-white" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                    </svg>
+                  </div>
+                  <span className="text-sm font-medium text-text-secondary group-hover:text-[#000] dark:group-hover:text-white transition-colors">{t("footer.twitter")}</span>
+                </a>
+                <a
+                  href={socialLinks.youtube}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-surface-light hover:bg-[#FF0000]/10 transition-colors group"
+                >
+                  <div className="w-6 h-6 rounded-md bg-[#FF0000]/15 flex items-center justify-center">
+                    <svg className="w-3 h-3 text-[#FF0000]" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                    </svg>
+                  </div>
+                  <span className="text-sm font-medium text-text-secondary group-hover:text-[#FF0000] transition-colors">{t("footer.youtube")}</span>
                 </a>
                 {socialLinks.vip && (
                   <button

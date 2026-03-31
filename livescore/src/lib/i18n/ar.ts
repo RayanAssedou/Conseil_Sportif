@@ -42,6 +42,12 @@ const ar: Record<string, string> = {
   "home.instagramTitle": "إنستغرام",
   "home.instagramDesc": "محتوى يومي، أبرز اللقطات وكواليس حصرية.",
   "home.followInstagram": "تابعنا",
+  "home.youtubeTitle": "يوتيوب",
+  "home.youtubeDesc": "شاهد تحليلات المباريات والأهداف ومحتوى حصري.",
+  "home.subscribeYoutube": "اشترك",
+  "home.bonusTitle": "100₪ هدية!",
+  "home.bonusDesc": "انضم الآن واحصل على بونص عند أول إيداع",
+  "home.getBonus": "احصل على البونص",
 
   // Live Scores page
   "scores.title": "النتائج المباشرة",
@@ -294,6 +300,22 @@ const ar: Record<string, string> = {
   "ai.shortDesc": "تحليل مدعوم بالذكاء الاصطناعي HAMAL",
   "ai.dataSource": "البيانات والتحليل بواسطة HAMAL AI",
 
+  // Bonus Modal
+  "bonus.headline": "الوكيل يدللكم!",
+  "bonus.subtitle": "انضموا الآن واحصلوا على 100₪ هدية عند أول إيداع!",
+  "bonus.gift": "هدية مجانية عند أول إيداع",
+  "bonus.condition": "مشروط بالإيداع (الإيداع الأول فقط!)",
+  "bonus.everyDeposit": "بونص على كل إيداع",
+  "bonus.everyDepositDesc": "ليس فقط على الإيداع الأول! احصل على بونص مع كل إيداع تقوم به.",
+  "bonus.vip": "خدمة VIP – متوفرة على مدار الساعة 24/7.",
+  "bonus.personal": "اهتمام شخصي – دعم بشري ومهني فقط.",
+  "bonus.transparent": "شفافية – كل نقطة تساوي 1₪ بالضبط!",
+  "bonus.security": "أمان – سحب الأرباح بأسرع وقت.",
+  "bonus.sports": "كل الدوريات، كل المباريات وكل الماكينات في مكان واحد!",
+  "bonus.certified": "وكيل معتمد ومرخّص",
+  "bonus.cta": "أرسل رسالة الآن",
+  "bonus.phone": "052-6142250",
+
   // Footer
   "footer.brand": "سبورت حمال",
   "footer.tagline": "وجهتك المثالية لنتائج كرة القدم المباشرة والتحليلات الاحترافية ومتابعة كل تفاصيل المباريات.",
@@ -313,6 +335,9 @@ const ar: Record<string, string> = {
   "footer.whatsapp": "واتساب",
   "footer.instagram": "إنستغرام",
   "footer.facebook": "فيسبوك",
+  "footer.tiktok": "تيك توك",
+  "footer.twitter": "X",
+  "footer.youtube": "يوتيوب",
   "footer.joinCommunity": "انضم إلى مجتمعنا للحصول على نصائح حصرية وتحديثات مباشرة وتحليلات احترافية.",
   "footer.rights": "جميع الحقوق محفوظة.",
   "footer.madeWith": "صُنع بـ",

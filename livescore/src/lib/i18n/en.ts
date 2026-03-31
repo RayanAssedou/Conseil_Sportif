@@ -42,6 +42,12 @@ const en: Record<string, string> = {
   "home.instagramTitle": "Instagram",
   "home.instagramDesc": "Follow us for daily content and highlights.",
   "home.followInstagram": "Follow Us",
+  "home.youtubeTitle": "YouTube",
+  "home.youtubeDesc": "Watch match analyses, highlights and exclusive content.",
+  "home.subscribeYoutube": "Subscribe",
+  "home.bonusTitle": "100₪ Bonus!",
+  "home.bonusDesc": "Join now and get a bonus on your first deposit",
+  "home.getBonus": "Get Bonus",
 
   // Live Scores page
   "scores.title": "Live Scores",
@@ -294,6 +300,22 @@ const en: Record<string, string> = {
   "ai.shortDesc": "Analysis powered by HAMAL artificial intelligence",
   "ai.dataSource": "Data & analysis by HAMAL AI",
 
+  // Bonus Modal
+  "bonus.headline": "The Dealer Treats You!",
+  "bonus.subtitle": "Join now and get 100₪ free on your first deposit!",
+  "bonus.gift": "Free bonus on first deposit",
+  "bonus.condition": "Subject to deposit (first deposit only!)",
+  "bonus.everyDeposit": "Bonus on Every Deposit",
+  "bonus.everyDepositDesc": "Not just the first deposit! Get a bonus on every deposit you make.",
+  "bonus.vip": "VIP Service – Full availability 24/7.",
+  "bonus.personal": "Personal attention – Human and professional support only.",
+  "bonus.transparent": "Transparency – Every point equals exactly 1₪!",
+  "bonus.security": "Security – Fastest withdrawal of winnings.",
+  "bonus.sports": "All leagues, all matches and all machines in one place!",
+  "bonus.certified": "Verified and licensed agent",
+  "bonus.cta": "Send a message now",
+  "bonus.phone": "052-6142250",
+
   // Footer
   "footer.brand": "Sport Hamal",
   "footer.tagline": "Your ultimate destination for live football scores, expert predictions, and in-depth match analysis.",
@@ -313,6 +335,9 @@ const en: Record<string, string> = {
   "footer.whatsapp": "WhatsApp",
   "footer.instagram": "Instagram",
   "footer.facebook": "Facebook",
+  "footer.tiktok": "TikTok",
+  "footer.twitter": "X",
+  "footer.youtube": "YouTube",
   "footer.joinCommunity": "Join our community for exclusive tips, live updates, and expert analysis.",
   "footer.rights": "All rights reserved.",
   "footer.madeWith": "Made with",

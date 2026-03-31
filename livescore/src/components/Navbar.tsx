@@ -32,7 +32,7 @@ export default function Navbar() {
   const langRefMobile = useRef<HTMLDivElement>(null);
   const notifCount = reminders.size + goalAlerts.size;
 
-  const [socialLinks, setSocialLinks] = useState({ telegram: "", whatsapp: "", instagram: "", facebook: "" });
+  const [socialLinks, setSocialLinks] = useState({ telegram: "", whatsapp: "", instagram: "", facebook: "", tiktok: "", twitter: "", youtube: "" });
 
   useEffect(() => {
     Promise.all([
@@ -40,14 +40,20 @@ export default function Navbar() {
       fetch("/api/content/section?key=whatsapp").then((r) => r.json()).catch(() => null),
       fetch("/api/content/section?key=instagram").then((r) => r.json()).catch(() => null),
       fetch("/api/content/section?key=facebook").then((r) => r.json()).catch(() => null),
-    ]).then(([tg, wa, ig, fb]) => {
+      fetch("/api/content/section?key=tiktok").then((r) => r.json()).catch(() => null),
+      fetch("/api/content/section?key=twitter").then((r) => r.json()).catch(() => null),
+      fetch("/api/content/section?key=youtube").then((r) => r.json()).catch(() => null),
+    ]).then(([tg, wa, ig, fb, tt, tw, yt]) => {
       const validUrl = (v: string | undefined, fallback: string) =>
         v && v.startsWith("http") ? v : fallback;
       setSocialLinks({
-        telegram: validUrl(tg?.view_all_link, "https://t.me/"),
-        whatsapp: validUrl(wa?.view_all_link, "https://wa.me/"),
-        instagram: validUrl(ig?.view_all_link, "https://instagram.com/"),
-        facebook: validUrl(fb?.view_all_link, "https://facebook.com/"),
+        telegram: validUrl(tg?.view_all_link, "https://t.me/Niv_grafica"),
+        whatsapp: validUrl(wa?.view_all_link, "https://wa.me/972504593270"),
+        instagram: validUrl(ig?.view_all_link, "https://www.instagram.com/nivphotografi?igsh=MTVuMG90bG1kZGkzcw=="),
+        facebook: validUrl(fb?.view_all_link, "https://www.facebook.com/share/g/1FjxBVg48G/"),
+        tiktok: validUrl(tt?.view_all_link, "https://www.tiktok.com/@niv_winner_tips?_r=1&_t=ZS-958O1XrBfQC"),
+        twitter: validUrl(tw?.view_all_link, "https://x.com/nivphotograf"),
+        youtube: validUrl(yt?.view_all_link, "https://youtube.com/channel/UCSiVU6MH4GCS9-68ClAsyEQ?si=e7blRdgdbT1CT8mD"),
       });
     });
   }, []);
@@ -402,7 +408,7 @@ export default function Navbar() {
             {navKeys.map((n) => renderNavItem(n, true))}
           </div>
 
-          {(socialLinks.telegram || socialLinks.whatsapp || socialLinks.instagram || socialLinks.facebook) && (
+          {(socialLinks.telegram || socialLinks.whatsapp || socialLinks.instagram || socialLinks.facebook || socialLinks.tiktok || socialLinks.twitter || socialLinks.youtube) && (
             <div className="border-t border-border px-4 py-3 space-y-2">
               {socialLinks.telegram && (
                 <a
@@ -458,6 +464,20 @@ export default function Navbar() {
                     <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                   </svg>
                   <span className="text-sm font-semibold">Facebook</span>
+                </a>
+              )}
+              {socialLinks.youtube && (
+                <a
+                  href={socialLinks.youtube}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setMobileOpen(false)}
+                  className="flex items-center justify-center gap-2 w-full px-3 py-2.5 rounded-xl bg-[#FF0000] text-white hover:bg-[#cc0000] transition-all"
+                >
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                  </svg>
+                  <span className="text-sm font-semibold">YouTube</span>
                 </a>
               )}
             </div>

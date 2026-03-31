@@ -42,6 +42,12 @@ const he: Record<string, string> = {
   "home.instagramTitle": "אינסטגרם",
   "home.instagramDesc": "תוכן יומי, דגשים וסיקורים מאחורי הקלעים.",
   "home.followInstagram": "עקבו אחרינו",
+  "home.youtubeTitle": "יוטיוב",
+  "home.youtubeDesc": "צפו בניתוחי משחקים, הרצאות ותוכן בלעדי.",
+  "home.subscribeYoutube": "הירשמו",
+  "home.bonusTitle": "100₪ מתנה!",
+  "home.bonusDesc": "הצטרפו עכשיו וקבלו בונוס בהפקדה ראשונה",
+  "home.getBonus": "לקבלת הבונוס",
 
   // Live Scores page
   "scores.title": "תוצאות לייב",
@@ -295,6 +301,23 @@ const he: Record<string, string> = {
   "ai.dataSource": "נתונים וניתוח HAMAL AI",
 
   // Footer
+  // Bonus Modal
+  "bonus.headline": "הדילר מפנק אתכם!",
+  "bonus.subtitle": "מצטרפים עכשיו ומקבלים 100₪ מתנה בהפקדה ראשונה!",
+  "bonus.gift": "מתנה בהפקדה ראשונה",
+  "bonus.condition": "מותנה בהפקדה (בהפקדה ראשונה בלבד!)",
+  "bonus.everyDeposit": "בונוס בכל הפקדה",
+  "bonus.everyDepositDesc": "לא רק בהפקדה הראשונה! אצלנו תקבלו בונוס על כל הפקדה שתבצעו.",
+  "bonus.vip": "שירות VIP – זמינות מלאה 24/7.",
+  "bonus.personal": "יחס אישי – מענה אנושי ומקצועי בלבד.",
+  "bonus.transparent": "שקיפות – כל נקודה שווה 1₪ בדיוק!",
+  "bonus.security": "ביטחון – משיכת זכיות במהירות שיא.",
+  "bonus.sports": "כל הליגות, כל המשחקים וכל המכונות במקום אחד!",
+  "bonus.certified": "סוכן מאומת ומורשה",
+  "bonus.cta": "שלחו הודעה עכשיו",
+  "bonus.phone": "052-6142250",
+
+  // Footer
   "footer.brand": "ספורט חמ״ל",
   "footer.tagline": "היעד המושלם שלכם לתוצאות כדורגל בלייב, המלצות מקצועיות ומידע מעמיק על כל משחק.",
   "footer.navigation": "ניווט",
@@ -313,6 +336,9 @@ const he: Record<string, string> = {
   "footer.whatsapp": "ווטסאפ",
   "footer.instagram": "אינסטגרם",
   "footer.facebook": "פייסבוק",
+  "footer.tiktok": "טיקטוק",
+  "footer.twitter": "X",
+  "footer.youtube": "יוטיוב",
   "footer.joinCommunity": "הצטרפו לקהילה שלנו לטיפים בלעדיים, עדכונים בלייב והמלצות מקצועיות.",
   "footer.rights": "כל הזכויות שמורות.",
   "footer.madeWith": "נבנה עם",

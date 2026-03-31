@@ -11,6 +11,9 @@ export default function SettingsPage() {
   const [whatsapp, setWhatsapp] = useState<Record<string, string>>({});
   const [instagram, setInstagram] = useState<Record<string, string>>({});
   const [facebook, setFacebook] = useState<Record<string, string>>({});
+  const [tiktok, setTiktok] = useState<Record<string, string>>({});
+  const [twitter, setTwitter] = useState<Record<string, string>>({});
+  const [youtube, setYoutube] = useState<Record<string, string>>({});
   const [whatsappVip, setWhatsappVip] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -23,6 +26,12 @@ export default function SettingsPage() {
   const [savedInstagram, setSavedInstagram] = useState(false);
   const [savingFacebook, setSavingFacebook] = useState(false);
   const [savedFacebook, setSavedFacebook] = useState(false);
+  const [savingTiktok, setSavingTiktok] = useState(false);
+  const [savedTiktok, setSavedTiktok] = useState(false);
+  const [savingTwitter, setSavingTwitter] = useState(false);
+  const [savedTwitter, setSavedTwitter] = useState(false);
+  const [savingYoutube, setSavingYoutube] = useState(false);
+  const [savedYoutube, setSavedYoutube] = useState(false);
   const [savingWhatsappVip, setSavingWhatsappVip] = useState(false);
   const [savedWhatsappVip, setSavedWhatsappVip] = useState(false);
   const [fbPixel, setFbPixel] = useState<Record<string, string>>({});
@@ -39,16 +48,22 @@ export default function SettingsPage() {
       fetch(API("/content/section?key=whatsapp")).then((r) => r.json()),
       fetch(API("/content/section?key=instagram")).then((r) => r.json()),
       fetch(API("/content/section?key=facebook")).then((r) => r.json()),
+      fetch(API("/content/section?key=tiktok")).then((r) => r.json()),
+      fetch(API("/content/section?key=twitter")).then((r) => r.json()),
+      fetch(API("/content/section?key=youtube")).then((r) => r.json()),
       fetch(API("/content/section?key=facebook_pixel")).then((r) => r.json()),
       fetch(API("/content/section?key=google_tag")).then((r) => r.json()),
       fetch(API("/content/section?key=whatsapp_vip")).then((r) => r.json()),
     ])
-      .then(([sData, tData, wData, iData, fbData, fpData, gtData, wvData]) => {
+      .then(([sData, tData, wData, iData, fbData, ttData, twData, ytData, fpData, gtData, wvData]) => {
         setSection(sData || {});
         setTelegram(tData || {});
         setWhatsapp(wData || {});
         setInstagram(iData || {});
         setFacebook(fbData || {});
+        setTiktok(ttData || {});
+        setTwitter(twData || {});
+        setYoutube(ytData || {});
         setFbPixel(fpData || {});
         setGoogleTag(gtData || {});
         setWhatsappVip(wvData || {});
@@ -118,6 +133,9 @@ export default function SettingsPage() {
   const updateWhatsapp = (key: string, val: string) => setWhatsapp((w) => ({ ...w, [key]: val }));
   const updateInstagram = (key: string, val: string) => setInstagram((ig) => ({ ...ig, [key]: val }));
   const updateFacebook = (key: string, val: string) => setFacebook((fb) => ({ ...fb, [key]: val }));
+  const updateTiktok = (key: string, val: string) => setTiktok((tt) => ({ ...tt, [key]: val }));
+  const updateTwitter = (key: string, val: string) => setTwitter((tw) => ({ ...tw, [key]: val }));
+  const updateYoutube = (key: string, val: string) => setYoutube((yt) => ({ ...yt, [key]: val }));
 
   if (loading) {
     return (
@@ -403,6 +421,144 @@ export default function SettingsPage() {
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                   </svg>
+                  Saved
+                </span>
+              )}
+            </div>
+          </div>
+        </form>
+
+        {/* TikTok */}
+        <form onSubmit={(e) => { e.preventDefault(); saveSocial(tiktok, "tiktok", setSavingTiktok, setSavedTiktok); }}>
+          <div className="bg-white rounded-xl border border-slate-200 p-6 space-y-5">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-[#010101] flex items-center justify-center">
+                <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>
+                </svg>
+              </div>
+              <div>
+                <h2 className="text-base font-semibold text-slate-900">TikTok</h2>
+                <p className="text-sm text-slate-500">Set the TikTok profile link shown on the homepage</p>
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">TikTok Link</label>
+              <div className="flex gap-2">
+                <div className="flex items-center px-3 bg-slate-50 border border-r-0 border-slate-200 rounded-l-lg text-sm text-[#010101]">
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>
+                  </svg>
+                </div>
+                <input
+                  type="url"
+                  value={tiktok.view_all_link || ""}
+                  onChange={(e) => updateTiktok("view_all_link", e.target.value)}
+                  placeholder="https://www.tiktok.com/@yourprofile"
+                  className="flex-1 px-4 py-3 border border-slate-200 rounded-r-lg focus:ring-2 focus:ring-red-500/20 focus:border-red-500 outline-none transition"
+                />
+              </div>
+              <p className="text-xs text-slate-400 mt-1.5">Paste your TikTok profile link</p>
+            </div>
+            <div className="flex items-center gap-3 pt-2">
+              <button type="submit" disabled={savingTiktok} className="flex items-center gap-2 px-6 py-2.5 bg-[#010101] text-white text-sm font-semibold rounded-lg hover:bg-[#333] transition-colors shadow-sm disabled:opacity-50">
+                {savingTiktok ? "Saving..." : "Save TikTok Link"}
+              </button>
+              {savedTiktok && (
+                <span className="flex items-center gap-1.5 text-sm text-green-600 font-medium">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                  Saved
+                </span>
+              )}
+            </div>
+          </div>
+        </form>
+
+        {/* X (Twitter) */}
+        <form onSubmit={(e) => { e.preventDefault(); saveSocial(twitter, "twitter", setSavingTwitter, setSavedTwitter); }}>
+          <div className="bg-white rounded-xl border border-slate-200 p-6 space-y-5">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-[#000000] flex items-center justify-center">
+                <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+              </div>
+              <div>
+                <h2 className="text-base font-semibold text-slate-900">X (Twitter)</h2>
+                <p className="text-sm text-slate-500">Set the X profile link shown on the homepage</p>
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">X Link</label>
+              <div className="flex gap-2">
+                <div className="flex items-center px-3 bg-slate-50 border border-r-0 border-slate-200 rounded-l-lg text-sm text-[#000]">
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                  </svg>
+                </div>
+                <input
+                  type="url"
+                  value={twitter.view_all_link || ""}
+                  onChange={(e) => updateTwitter("view_all_link", e.target.value)}
+                  placeholder="https://x.com/yourprofile"
+                  className="flex-1 px-4 py-3 border border-slate-200 rounded-r-lg focus:ring-2 focus:ring-red-500/20 focus:border-red-500 outline-none transition"
+                />
+              </div>
+              <p className="text-xs text-slate-400 mt-1.5">Paste your X (Twitter) profile link</p>
+            </div>
+            <div className="flex items-center gap-3 pt-2">
+              <button type="submit" disabled={savingTwitter} className="flex items-center gap-2 px-6 py-2.5 bg-[#000] text-white text-sm font-semibold rounded-lg hover:bg-[#333] transition-colors shadow-sm disabled:opacity-50">
+                {savingTwitter ? "Saving..." : "Save X Link"}
+              </button>
+              {savedTwitter && (
+                <span className="flex items-center gap-1.5 text-sm text-green-600 font-medium">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                  Saved
+                </span>
+              )}
+            </div>
+          </div>
+        </form>
+
+        {/* YouTube */}
+        <form onSubmit={(e) => { e.preventDefault(); saveSocial(youtube, "youtube", setSavingYoutube, setSavedYoutube); }}>
+          <div className="bg-white rounded-xl border border-slate-200 p-6 space-y-5">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-[#FF0000] flex items-center justify-center">
+                <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                </svg>
+              </div>
+              <div>
+                <h2 className="text-base font-semibold text-slate-900">YouTube</h2>
+                <p className="text-sm text-slate-500">Set the YouTube channel link shown on the homepage</p>
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">YouTube Link</label>
+              <div className="flex gap-2">
+                <div className="flex items-center px-3 bg-slate-50 border border-r-0 border-slate-200 rounded-l-lg text-sm text-[#FF0000]">
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                  </svg>
+                </div>
+                <input
+                  type="url"
+                  value={youtube.view_all_link || ""}
+                  onChange={(e) => updateYoutube("view_all_link", e.target.value)}
+                  placeholder="https://youtube.com/channel/yourchannel"
+                  className="flex-1 px-4 py-3 border border-slate-200 rounded-r-lg focus:ring-2 focus:ring-red-500/20 focus:border-red-500 outline-none transition"
+                />
+              </div>
+              <p className="text-xs text-slate-400 mt-1.5">Paste your YouTube channel link</p>
+            </div>
+            <div className="flex items-center gap-3 pt-2">
+              <button type="submit" disabled={savingYoutube} className="flex items-center gap-2 px-6 py-2.5 bg-[#FF0000] text-white text-sm font-semibold rounded-lg hover:bg-[#cc0000] transition-colors shadow-sm disabled:opacity-50">
+                {savingYoutube ? "Saving..." : "Save YouTube Link"}
+              </button>
+              {savedYoutube && (
+                <span className="flex items-center gap-1.5 text-sm text-green-600 font-medium">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
                   Saved
                 </span>
               )}
