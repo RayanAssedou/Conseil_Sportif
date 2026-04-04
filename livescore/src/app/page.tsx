@@ -194,13 +194,18 @@ export default function HomePage() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-6 space-y-8">
       {/* Hero */}
-      <div className="rounded-2xl p-6 md:p-8 border border-red-900/30 bg-white dark:bg-[#111111]" style={heroStyle}>
-        <h1 className="text-3xl md:text-4xl font-black mb-2 text-red-500">
-          {locale === "en" ? (hero.title || t("home.heroTitle")) : (hero.title_he || t("home.heroTitle"))}
-        </h1>
-        <p className="text-red-400/70 text-sm md:text-base max-w-lg">
-          {locale === "en" ? (hero.subtitle || t("home.heroSubtitle")) : (hero.subtitle_he || t("home.heroSubtitle"))}
-        </p>
+      <div
+        className="relative rounded-2xl overflow-hidden border border-red-900/30 bg-white dark:bg-[#111111] min-h-[180px] md:min-h-[260px] flex items-end"
+        style={heroStyle}
+      >
+        <div className="relative z-10 w-full p-6 md:p-8 bg-gradient-to-t from-black/60 via-black/30 to-transparent">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-black mb-1 text-white drop-shadow-lg">
+            {locale === "en" ? (hero.title || t("home.heroTitle")) : (hero.title_he || t("home.heroTitle"))}
+          </h1>
+          <p className="text-white/80 text-sm md:text-base max-w-lg drop-shadow">
+            {locale === "en" ? (hero.subtitle || t("home.heroSubtitle")) : (hero.subtitle_he || t("home.heroSubtitle"))}
+          </p>
+        </div>
       </div>
 
       {/* Mobile Hexagonal Nav */}

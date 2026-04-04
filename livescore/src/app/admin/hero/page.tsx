@@ -110,7 +110,7 @@ export default function HeroSettingsPage() {
               className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition resize-none"
             />
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1.5">Button 1 Text (Hebrew)</label>
               <input
@@ -179,7 +179,7 @@ export default function HeroSettingsPage() {
 
         <div className="bg-white rounded-xl border border-slate-200 p-6 space-y-5">
           <h2 className="text-base font-semibold text-slate-900">Button 1</h2>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1.5">Text</label>
               <input value={hero.button1_text || ""} onChange={(e) => update("button1_text", e.target.value)} placeholder="Live Scores" className="w-full px-3 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-red-500/20 focus:border-red-500 outline-none transition" />
@@ -207,7 +207,7 @@ export default function HeroSettingsPage() {
 
         <div className="bg-white rounded-xl border border-slate-200 p-6 space-y-5">
           <h2 className="text-base font-semibold text-slate-900">Button 2</h2>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1.5">Text</label>
               <input value={hero.button2_text || ""} onChange={(e) => update("button2_text", e.target.value)} placeholder="Predictions" className="w-full px-3 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-red-500/20 focus:border-red-500 outline-none transition" />

@@ -16,6 +16,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     fetch(API("/admin/me"), fetchOpts)
@@ -126,9 +127,20 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
-      <Sidebar currentUser={currentUser} onLogout={handleLogout} />
-      <div className="ml-64">
-        <main className="p-6 lg:p-8">{children}</main>
+      <Sidebar currentUser={currentUser} onLogout={handleLogout} open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+
+      {/* Mobile header */}
+      <div className="lg:hidden sticky top-0 z-30 bg-slate-900 text-white flex items-center gap-3 px-4 py-3">
+        <button onClick={() => setSidebarOpen(true)} className="p-1 rounded hover:bg-slate-800 transition-colors">
+          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+          </svg>
+        </button>
+        <span className="text-sm font-bold">LiveScore Admin</span>
+      </div>
+
+      <div className="lg:ml-64">
+        <main className="p-4 sm:p-6 lg:p-8">{children}</main>
       </div>
     </div>
   );

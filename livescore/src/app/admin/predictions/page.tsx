@@ -334,9 +334,9 @@ export default function AdminPredictionsPage() {
                 <div className="relative w-5 h-5">
                   <Image src={group.league.logo} alt="" fill className="object-contain" sizes="20px" unoptimized />
                 </div>
-                <span className="text-xs text-slate-400 uppercase tracking-wider font-medium">{group.league.country}</span>
-                <span className="text-slate-300">·</span>
-                <span className="text-sm font-semibold text-slate-900">{group.league.name}</span>
+                <span className="text-xs text-slate-400 uppercase tracking-wider font-medium flex-shrink-0">{group.league.country}</span>
+                <span className="text-slate-300 flex-shrink-0">·</span>
+                <span className="text-sm font-semibold text-slate-900 truncate min-w-0">{group.league.name}</span>
               </div>
 
               {/* Matches */}
@@ -475,7 +475,7 @@ function PredictionForm({
         {/* Win probability */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-slate-700 mb-2">Win Probability (%)</label>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-3 sm:gap-3 gap-2">
             <div>
               <label className="block text-xs text-slate-500 mb-1 text-center">Home</label>
               <input
