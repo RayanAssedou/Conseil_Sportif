@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import Image from "next/image";
 
 const API = (path: string) => `/api${path}`;
@@ -69,40 +69,85 @@ export default function AdminPredictionsPage() {
   const [loading, setLoading] = useState(true);
   const [expandedFixture, setExpandedFixture] = useState<number | null>(null);
   const [saving, setSaving] = useState<number | null>(null);
+  const [matchSearch, setMatchSearch] = useState("");
+  const [fromApiSearch, setFromApiSearch] = useState(false);
+  const [apiSearchLoading, setApiSearchLoading] = useState(false);
 
   const dates = Array.from({ length: 7 }, (_, i) => ({
     date: getDateOffset(i),
     label: formatDateLabel(getDateOffset(i)),
   }));
 
+  const loadPredictionsForFixtures = useCallback(async (fixtureList: FixtureData[]) => {
+    if (fixtureList.length > 0) {
+      const ids = fixtureList.map((f) => f.fixture.id).join(",");
+      const predRes = await fetch(API(`/admin/predictions?fixtureIds=${ids}`), fetchOpts);
+      const predData = await predRes.json();
+      const predMap = new Map<number, AdminPrediction>();
+      if (Array.isArray(predData)) {
+        predData.forEach((p: AdminPrediction) => predMap.set(p.fixture_id, p));
+      }
+      setPredictions(predMap);
+    } else {
+      setPredictions(new Map());
+    }
+  }, []);
+
   const loadData = useCallback(async () => {
     setLoading(true);
+    setFromApiSearch(false);
     try {
       const res = await fetch(`/api/fixtures?date=${selectedDate}`);
       const data = await res.json();
       const fixtureList: FixtureData[] = data.response || [];
       setFixtures(fixtureList);
-
-      if (fixtureList.length > 0) {
-        const ids = fixtureList.map((f) => f.fixture.id).join(",");
-        const predRes = await fetch(API(`/admin/predictions?fixtureIds=${ids}`), fetchOpts);
-        const predData = await predRes.json();
-        const predMap = new Map<number, AdminPrediction>();
-        if (Array.isArray(predData)) {
-          predData.forEach((p: AdminPrediction) => predMap.set(p.fixture_id, p));
-        }
-        setPredictions(predMap);
-      } else {
-        setPredictions(new Map());
-      }
+      await loadPredictionsForFixtures(fixtureList);
     } catch (e) {
       console.error(e);
     } finally {
       setLoading(false);
     }
-  }, [selectedDate]);
+  }, [selectedDate, loadPredictionsForFixtures]);
 
   useEffect(() => { loadData(); }, [loadData]);
+
+  const runApiMatchSearch = async () => {
+    const q = matchSearch.trim();
+    if (q.length < 2) {
+      alert("Enter at least 2 characters to search teams.");
+      return;
+    }
+    setApiSearchLoading(true);
+    setExpandedFixture(null);
+    try {
+      const res = await fetch(`${API("/admin/matches/search")}?q=${encodeURIComponent(q)}`, fetchOpts);
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error || "Search failed");
+        return;
+      }
+      const fixtureList: FixtureData[] = data.response || [];
+      setFixtures(fixtureList);
+      setFromApiSearch(true);
+      await loadPredictionsForFixtures(fixtureList);
+    } catch (e) {
+      alert(String(e));
+    } finally {
+      setApiSearchLoading(false);
+    }
+  };
+
+  const filteredFixtures = useMemo(() => {
+    const q = matchSearch.trim().toLowerCase();
+    if (!q) return fixtures;
+    return fixtures.filter(
+      (f) =>
+        f.teams.home.name.toLowerCase().includes(q) ||
+        f.teams.away.name.toLowerCase().includes(q) ||
+        f.league.name.toLowerCase().includes(q) ||
+        f.league.country.toLowerCase().includes(q)
+    );
+  }, [fixtures, matchSearch]);
 
   const savePrediction = async (fixture: FixtureData, homeScore: string, awayScore: string, advice: string, probHome: string, probDraw: string, probAway: string) => {
     setSaving(fixture.fixture.id);
@@ -166,12 +211,12 @@ export default function AdminPredictionsPage() {
     }
   };
 
-  const groups = groupByLeague(fixtures);
+  const groups = groupByLeague(filteredFixtures);
   const totalPredictions = predictions.size;
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Predictions</h1>
           <p className="text-sm text-slate-500 mt-1">
@@ -184,14 +229,57 @@ export default function AdminPredictionsPage() {
             )}
           </p>
         </div>
+        <div className="w-full sm:max-w-md flex flex-col gap-2">
+          <label className="sr-only">Search matches</label>
+          <div className="flex gap-2">
+            <div className="relative flex-1">
+              <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <input
+                type="search"
+                value={matchSearch}
+                onChange={(e) => setMatchSearch(e.target.value)}
+                placeholder="Team, league, country…"
+                className="w-full pl-10 pr-3 py-2.5 text-sm border border-slate-200 rounded-lg bg-white text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-red-500/20 focus:border-red-500 outline-none transition"
+                autoComplete="off"
+              />
+            </div>
+            <button
+              type="button"
+              onClick={runApiMatchSearch}
+              disabled={apiSearchLoading || matchSearch.trim().length < 2}
+              className="flex-shrink-0 px-3 py-2.5 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              title="Load upcoming fixtures for teams matching your search (API)"
+            >
+              {apiSearchLoading ? "…" : "Search"}
+            </button>
+          </div>
+          <p className="text-xs text-slate-500">
+            Filter the list as you type. Use <span className="font-medium text-slate-600">Search</span> to load upcoming matches from the API by team name (min. 2 characters).
+          </p>
+        </div>
       </div>
 
+      {fromApiSearch && (
+        <div className="mb-4 flex flex-wrap items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+          <span>Showing API search results (upcoming fixtures for matching teams).</span>
+          <button
+            type="button"
+            onClick={() => { setMatchSearch(""); loadData(); }}
+            className="font-semibold text-red-700 hover:underline"
+          >
+            Back to date view
+          </button>
+        </div>
+      )}
+
       {/* Date picker */}
-      <div className="flex items-center gap-1.5 overflow-x-auto py-3 mb-6 scrollbar-hide">
+      <div className={`flex items-center gap-1.5 overflow-x-auto py-3 mb-6 scrollbar-hide ${fromApiSearch ? "opacity-50 pointer-events-none" : ""}`}>
         {dates.map(({ date, label }) => (
           <button
             key={date}
-            onClick={() => { setSelectedDate(date); setExpandedFixture(null); }}
+            onClick={() => { setSelectedDate(date); setExpandedFixture(null); setFromApiSearch(false); }}
             className={`flex-shrink-0 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
               date === selectedDate
                 ? "bg-red-600 text-white shadow-lg shadow-red-600/25"
@@ -224,7 +312,13 @@ export default function AdminPredictionsPage() {
             <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
           </svg>
           <h3 className="text-lg font-semibold text-slate-900 mb-1">No matches found</h3>
-          <p className="text-sm text-slate-500">No matches available for this date.</p>
+          <p className="text-sm text-slate-500">
+            {fixtures.length > 0 && matchSearch.trim()
+              ? "Nothing matches your search. Try another term or use Search to query the API."
+              : fromApiSearch
+                ? "No upcoming fixtures for those teams."
+                : "No matches available for this date."}
+          </p>
         </div>
       ) : (
         <div className="space-y-4">
