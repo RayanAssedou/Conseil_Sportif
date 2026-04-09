@@ -11,16 +11,16 @@ interface LanguageContextType {
 }
 
 const LanguageContext = createContext<LanguageContextType>({
-  locale: "en",
+  locale: "he",
   setLocale: () => {},
   t: (key) => key,
-  isRtl: false,
+  isRtl: true,
 });
 
 const LS_KEY = "site-lang";
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>("en");
+  const [locale, setLocaleState] = useState<Locale>("he");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {

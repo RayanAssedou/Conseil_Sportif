@@ -11,9 +11,22 @@ export default function Footer() {
   const pathname = usePathname();
   const { t } = useTranslation();
   const { openProPlus } = useProPlusModal();
-  const [socialLinks, setSocialLinks] = useState({ telegram: "", whatsapp: "", instagram: "", facebook: "", tiktok: "", twitter: "", youtube: "", vip: "" });
+  const DEFAULTS = {
+    telegram: "https://t.me/Niv_grafica",
+    whatsapp: "https://wa.me/972504593270",
+    instagram: "https://www.instagram.com/nivphotografi?igsh=MTVuMG90bG1kZGkzcw==",
+    facebook: "https://www.facebook.com/share/g/1FjxBVg48G/",
+    tiktok: "https://www.tiktok.com/@niv_winner_tips?_r=1&_t=ZS-958O1XrBfQC",
+    twitter: "https://x.com/nivphotograf",
+    youtube: "https://youtube.com/channel/UCSiVU6MH4GCS9-68ClAsyEQ?si=e7blRdgdbT1CT8mD",
+    vip: "https://wa.me/972504593270",
+  };
+  const [socialLinks, setSocialLinks] = useState(DEFAULTS);
 
   useEffect(() => {
+    const validUrl = (v: string | undefined | null, fallback: string) =>
+      v && typeof v === "string" && v.startsWith("http") ? v : fallback;
+
     Promise.all([
       fetch("/api/content/section?key=telegram").then((r) => r.json()).catch(() => null),
       fetch("/api/content/section?key=whatsapp").then((r) => r.json()).catch(() => null),
@@ -25,14 +38,14 @@ export default function Footer() {
       fetch("/api/content/section?key=whatsapp_vip").then((r) => r.json()).catch(() => null),
     ]).then(([tg, wa, ig, fb, tt, tw, yt, vip]) => {
       setSocialLinks({
-        telegram: tg?.view_all_link || "https://t.me/Niv_grafica",
-        whatsapp: wa?.view_all_link || "https://wa.me/972504593270",
-        instagram: ig?.view_all_link || "https://www.instagram.com/nivphotografi?igsh=MTVuMG90bG1kZGkzcw==",
-        facebook: fb?.view_all_link || "https://www.facebook.com/share/g/1FjxBVg48G/",
-        tiktok: tt?.view_all_link || "https://www.tiktok.com/@niv_winner_tips?_r=1&_t=ZS-958O1XrBfQC",
-        twitter: tw?.view_all_link || "https://x.com/nivphotograf",
-        youtube: yt?.view_all_link || "https://youtube.com/channel/UCSiVU6MH4GCS9-68ClAsyEQ?si=e7blRdgdbT1CT8mD",
-        vip: vip?.view_all_link || wa?.view_all_link || "https://wa.me/972504593270",
+        telegram: validUrl(tg?.view_all_link, DEFAULTS.telegram),
+        whatsapp: validUrl(wa?.view_all_link, DEFAULTS.whatsapp),
+        instagram: validUrl(ig?.view_all_link, DEFAULTS.instagram),
+        facebook: validUrl(fb?.view_all_link, DEFAULTS.facebook),
+        tiktok: validUrl(tt?.view_all_link, DEFAULTS.tiktok),
+        twitter: validUrl(tw?.view_all_link, DEFAULTS.twitter),
+        youtube: validUrl(yt?.view_all_link, DEFAULTS.youtube),
+        vip: validUrl(vip?.view_all_link, validUrl(wa?.view_all_link, DEFAULTS.vip)),
       });
     });
   }, []);

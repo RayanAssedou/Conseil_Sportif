@@ -118,7 +118,7 @@ export default function ProPlusModal() {
 
   if (!isOpen) return null;
 
-  const link = whatsappLink || "https://wa.me/";
+  const link = whatsappLink || "https://wa.me/972504593270";
 
   return (
     <div
