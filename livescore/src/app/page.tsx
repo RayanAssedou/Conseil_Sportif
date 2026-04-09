@@ -201,7 +201,7 @@ export default function HomePage() {
     <div className="max-w-7xl mx-auto px-4 py-6 space-y-8">
       {/* Hero */}
       {hero.background_type === "image" && hero.background_value ? (
-        <div className="relative rounded-2xl overflow-hidden border border-red-900/30">
+        <div className="relative rounded-2xl overflow-hidden">
           <img
             src={hero.background_value}
             alt=""
@@ -211,7 +211,7 @@ export default function HomePage() {
         </div>
       ) : (
         <div
-          className="relative rounded-2xl overflow-hidden border border-red-900/30 bg-white dark:bg-[#111111] min-h-[180px] md:min-h-[260px]"
+          className="relative rounded-2xl overflow-hidden bg-white dark:bg-[#111111] min-h-[180px] md:min-h-[260px]"
           style={heroStyle}
         />
       )}
