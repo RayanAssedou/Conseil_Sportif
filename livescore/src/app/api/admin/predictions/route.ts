@@ -62,7 +62,11 @@ export async function POST(req: NextRequest) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  sendPredictionNotifications().catch(console.error);
+  try {
+    await sendPredictionNotifications();
+  } catch (e) {
+    console.error("Prediction notification error:", e);
+  }
 
   return NextResponse.json(data);
 }
