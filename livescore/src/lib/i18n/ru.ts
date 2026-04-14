@@ -123,6 +123,7 @@ const ru: Record<string, string> = {
   "predictionDetail.lastMatches": "Последние матчи",
 
   // Articles page
+  "articles.categoryLabel": "Новости HAMAL Спорт",
   "articles.title": "Футбольные статьи",
   "articles.subtitle": "Новости, репортажи и обзоры из ведущих лиг мира",
   "articles.noArticles": "Статей пока нет",

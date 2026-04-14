@@ -123,6 +123,7 @@ const he: Record<string, string> = {
   "predictionDetail.lastMatches": "משחקים אחרונים",
 
   // Articles page
+  "articles.categoryLabel": "חדשות חמ\"ל ספורט",
   "articles.title": "כתבות כדורגל",
   "articles.subtitle": "חדשות, סיפורים וסיקורים מהליגות המובילות בעולם",
   "articles.noArticles": "אין כתבות כרגע",

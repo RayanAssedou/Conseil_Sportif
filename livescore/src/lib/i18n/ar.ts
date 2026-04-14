@@ -123,6 +123,7 @@ const ar: Record<string, string> = {
   "predictionDetail.lastMatches": "آخر المباريات",
 
   // Articles page
+  "articles.categoryLabel": "أخبار حمال الرياضية",
   "articles.title": "مقالات كرة القدم",
   "articles.subtitle": "أخبار وقصص وتقارير من أقوى الدوريات حول العالم",
   "articles.noArticles": "لا توجد مقالات حالياً",

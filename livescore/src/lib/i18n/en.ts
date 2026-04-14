@@ -123,6 +123,7 @@ const en: Record<string, string> = {
   "predictionDetail.lastMatches": "Last Matches",
 
   // Articles page
+  "articles.categoryLabel": "HAMAL Sport News",
   "articles.title": "Football Articles",
   "articles.subtitle": "The latest football news and stories from around the world",
   "articles.noArticles": "No articles available",

@@ -687,7 +687,7 @@ export default function HomePage() {
                   </div>
                 )}
                 <div className="p-4">
-                  <span className="text-xs font-semibold text-primary uppercase tracking-wider">{article.category}</span>
+                  <span className="text-xs font-semibold text-primary uppercase tracking-wider">{t("articles.categoryLabel")}</span>
                   <h3 className="text-sm font-bold text-text mt-1 line-clamp-2 group-hover:text-primary transition-colors">
                     {article.title}
                   </h3>

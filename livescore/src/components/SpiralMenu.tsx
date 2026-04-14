@@ -184,7 +184,7 @@ export default function SpiralMenu() {
         <span
           className={`${labelSize} font-semibold leading-tight text-center ${maxW} transition-colors duration-300 ${
             isVip ? "text-violet-500 dark:text-violet-400 group-hover:text-violet-600"
-              : active ? "text-red-600" : locked ? "text-slate-400" : "text-slate-500 group-hover:text-red-500"
+              : active ? "text-white" : locked ? "text-white/50" : "text-white/80 group-hover:text-white"
           }`}
           {...(isVip ? { dir: "ltr" } : {})}
         >

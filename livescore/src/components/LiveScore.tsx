@@ -274,7 +274,7 @@ export default function LiveScore() {
               </button>
 
               {showLeagueDropdown && (
-                <div className="absolute top-full left-0 mt-1 w-72 max-h-80 overflow-y-auto bg-card border border-border rounded-xl shadow-xl z-50">
+                <div className="absolute top-full start-0 mt-1 w-72 max-w-[calc(100vw-2rem)] max-h-80 overflow-y-auto bg-card border border-border rounded-xl shadow-xl z-50">
                   <button
                     onClick={() => { setSelectedLeague(null); setSelectedTeam(null); setShowLeagueDropdown(false); }}
                     className={`w-full flex items-center gap-2 px-3 py-2.5 text-sm transition-colors ${!selectedLeague ? "bg-primary/10 text-primary font-semibold" : "text-text hover:bg-surface"}`}
@@ -328,7 +328,7 @@ export default function LiveScore() {
               </button>
 
               {showTeamDropdown && (
-                <div className="absolute top-full left-0 mt-1 w-72 max-h-80 overflow-y-auto bg-card border border-border rounded-xl shadow-xl z-50">
+                <div className="absolute top-full start-0 mt-1 w-72 max-w-[calc(100vw-2rem)] max-h-80 overflow-y-auto bg-card border border-border rounded-xl shadow-xl z-50">
                   <button
                     onClick={() => { setSelectedTeam(null); setShowTeamDropdown(false); }}
                     className={`w-full flex items-center gap-2 px-3 py-2.5 text-sm transition-colors ${!selectedTeam ? "bg-primary/10 text-primary font-semibold" : "text-text hover:bg-surface"}`}

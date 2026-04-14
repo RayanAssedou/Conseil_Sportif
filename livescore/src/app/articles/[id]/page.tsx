@@ -121,7 +121,7 @@ export default function ArticleDetailPage() {
 
         <div>
           <span className="inline-block px-3 py-1 bg-primary/10 text-primary text-xs font-bold rounded-full uppercase tracking-wider">
-            {article.category}
+            {t("articles.categoryLabel")}
           </span>
         </div>
 
