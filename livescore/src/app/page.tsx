@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Fixture } from "@/lib/types";
@@ -91,6 +91,7 @@ export default function HomePage() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isAppInstalled, setIsAppInstalled] = useState(false);
   const [bonusModalOpen, setBonusModalOpen] = useState(false);
+  const socialCarouselRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.matchMedia("(display-mode: standalone)").matches) {
@@ -113,6 +114,20 @@ export default function HomePage() {
       setDeferredPrompt(null);
     }
   }, [deferredPrompt]);
+
+  useEffect(() => {
+    const el = socialCarouselRef.current;
+    if (!el) return;
+    const restart = () => {
+      if (document.visibilityState === "visible") {
+        el.style.animation = "none";
+        void el.offsetHeight;
+        el.style.animation = "";
+      }
+    };
+    document.addEventListener("visibilitychange", restart);
+    return () => document.removeEventListener("visibilitychange", restart);
+  }, []);
 
   useEffect(() => {
     fetch("/api/content/hero")
@@ -364,7 +379,7 @@ export default function HomePage() {
           .social-infinite { animation: socialLoop 24s linear infinite; }
           .social-infinite:hover, .social-infinite:active { animation-play-state: paused; }
         `}</style>
-        <div className="social-infinite flex gap-3 px-4 pb-2 w-max">
+        <div ref={socialCarouselRef} className="social-infinite flex gap-3 px-4 pb-2 w-max">
           {[0, 1].map((dup) => (
             <div key={dup} className="flex gap-3 flex-shrink-0" aria-hidden={dup === 1 ? "true" : undefined}>
               <a href={telegramLink || "https://t.me/Niv_grafica"} target="_blank" rel="noopener noreferrer" className="flex-shrink-0 bg-gradient-to-br from-[#0088cc] to-[#0077b5] rounded-xl p-3.5 text-white" style={{ width: "80vw" }}>
