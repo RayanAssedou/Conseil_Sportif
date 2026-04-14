@@ -19,16 +19,25 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Subscription not found" }, { status: 404 });
     }
 
+    const { data: existing } = await supabase
+      .from("push_follows")
+      .select("id, follow_type")
+      .eq("subscription_id", sub.id)
+      .eq("fixture_id", fixtureId)
+      .eq("follow_type", type)
+      .maybeSingle();
+
+    if (existing) {
+      return NextResponse.json({ ok: true });
+    }
+
     const { error } = await supabase
       .from("push_follows")
-      .upsert(
-        {
-          subscription_id: sub.id,
-          fixture_id: fixtureId,
-          follow_type: type,
-        },
-        { onConflict: "subscription_id,fixture_id" }
-      );
+      .insert({
+        subscription_id: sub.id,
+        fixture_id: fixtureId,
+        follow_type: type,
+      });
 
     if (error) {
       console.error("Push follow error:", error);
@@ -44,7 +53,7 @@ export async function POST(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
-    const { endpoint, fixtureId } = await request.json();
+    const { endpoint, fixtureId, type } = await request.json();
 
     if (!endpoint || !fixtureId) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -60,11 +69,17 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: "Subscription not found" }, { status: 404 });
     }
 
-    const { error } = await supabase
+    let query = supabase
       .from("push_follows")
       .delete()
       .eq("subscription_id", sub.id)
       .eq("fixture_id", fixtureId);
+
+    if (type) {
+      query = query.eq("follow_type", type);
+    }
+
+    const { error } = await query;
 
     if (error) {
       console.error("Push unfollow error:", error);

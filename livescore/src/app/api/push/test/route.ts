@@ -88,6 +88,7 @@ export async function GET() {
     vapidPrivateKey: VAPID_PRIVATE ? "SET (hidden)" : "NOT SET",
     supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL ? "SET" : "NOT SET",
     serviceKey: process.env.SUPABASE_SERVICE_KEY ? "SET" : "NOT SET",
+    anonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? "SET" : "NOT SET",
   };
 
   const { data: subs, error } = await supabase
@@ -95,10 +96,26 @@ export async function GET() {
     .select("id, endpoint, locale, created_at")
     .limit(10);
 
+  const { data: follows, error: followsErr } = await supabase
+    .from("push_follows")
+    .select("id, subscription_id, fixture_id, follow_type, created_at")
+    .limit(20);
+
+  const { data: states, error: statesErr } = await supabase
+    .from("match_push_states")
+    .select("*")
+    .limit(10);
+
   return NextResponse.json({
     diagnostics,
     subscriptions: error
       ? { error: error.message, hint: error.hint, code: error.code }
       : { count: subs?.length ?? 0, items: subs?.map((s) => ({ id: s.id, endpoint: s.endpoint?.slice(0, 60) + "...", locale: s.locale, created_at: s.created_at })) },
+    follows: followsErr
+      ? { error: followsErr.message }
+      : { count: follows?.length ?? 0, items: follows },
+    matchStates: statesErr
+      ? { error: statesErr.message }
+      : { count: states?.length ?? 0, items: states },
   });
 }

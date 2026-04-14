@@ -31,22 +31,30 @@ export async function registerServiceWorker(): Promise<ServiceWorkerRegistration
 export async function subscribeToPush(
   registration: ServiceWorkerRegistration
 ): Promise<PushSubscription | null> {
-  if (!("PushManager" in window)) return null;
+  if (!("PushManager" in window)) {
+    console.warn("[Push] PushManager not supported");
+    return null;
+  }
 
   const vapidKey = getVapidKey();
   if (!vapidKey) {
-    console.warn("[Push] VAPID public key not configured");
+    console.warn("[Push] NEXT_PUBLIC_VAPID_PUBLIC_KEY not configured");
     return null;
   }
 
   try {
     const existing = await registration.pushManager.getSubscription();
-    if (existing) return existing;
+    if (existing) {
+      console.log("[Push] Using existing subscription");
+      return existing;
+    }
 
+    console.log("[Push] Creating new push subscription...");
     const subscription = await registration.pushManager.subscribe({
       userVisibleOnly: true,
       applicationServerKey: urlBase64ToUint8Array(vapidKey).buffer as ArrayBuffer,
     });
+    console.log("[Push] New subscription created");
     return subscription;
   } catch (err) {
     console.error("[Push] Subscribe failed:", err);
@@ -85,13 +93,18 @@ export async function syncFollowToServer(
   action: "add" | "remove"
 ): Promise<boolean> {
   try {
+    const payload: Record<string, unknown> = { endpoint, fixtureId, type };
     const res = await fetch("/api/push/follow", {
       method: action === "add" ? "POST" : "DELETE",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ endpoint, fixtureId, type }),
+      body: JSON.stringify(payload),
     });
+    if (!res.ok) {
+      console.error(`[Push] syncFollow ${action} failed: ${res.status}`);
+    }
     return res.ok;
-  } catch {
+  } catch (err) {
+    console.error("[Push] syncFollow error:", err);
     return false;
   }
 }

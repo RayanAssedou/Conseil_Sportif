@@ -130,6 +130,64 @@ ALTER TABLE admin_users ENABLE ROW LEVEL SECURITY;
 INSERT INTO admin_users (username, password_hash)
 VALUES ('admin', '$2b$10$tJRqf/ulKIuJr3J1CModW.EAuBGDv7FIACrqqE4uhlTJVKsg4kWfy')
 ON CONFLICT (username) DO NOTHING;
+
+-- Push notification tables
+CREATE TABLE IF NOT EXISTS push_subscriptions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  endpoint TEXT NOT NULL UNIQUE,
+  p256dh TEXT NOT NULL,
+  auth TEXT NOT NULL,
+  locale TEXT DEFAULT 'en',
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_push_subs_user ON push_subscriptions(user_id);
+CREATE INDEX IF NOT EXISTS idx_push_subs_endpoint ON push_subscriptions(endpoint);
+
+CREATE TABLE IF NOT EXISTS push_follows (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  subscription_id UUID NOT NULL REFERENCES push_subscriptions(id) ON DELETE CASCADE,
+  fixture_id INTEGER NOT NULL,
+  follow_type TEXT NOT NULL CHECK (follow_type IN ('reminder', 'goal_alert')),
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_push_follows_fixture ON push_follows(fixture_id);
+CREATE INDEX IF NOT EXISTS idx_push_follows_sub ON push_follows(subscription_id);
+
+CREATE TABLE IF NOT EXISTS match_push_states (
+  fixture_id INTEGER PRIMARY KEY,
+  home_goals INTEGER DEFAULT 0,
+  away_goals INTEGER DEFAULT 0,
+  status TEXT DEFAULT 'NS',
+  events_count INTEGER DEFAULT 0,
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE push_subscriptions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE push_follows ENABLE ROW LEVEL SECURITY;
+ALTER TABLE match_push_states ENABLE ROW LEVEL SECURITY;
+
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Service role full access on push_subscriptions') THEN
+    CREATE POLICY "Service role full access on push_subscriptions" ON push_subscriptions FOR ALL USING (true) WITH CHECK (true);
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Service role full access on push_follows') THEN
+    CREATE POLICY "Service role full access on push_follows" ON push_follows FOR ALL USING (true) WITH CHECK (true);
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Service role full access on match_push_states') THEN
+    CREATE POLICY "Service role full access on match_push_states" ON match_push_states FOR ALL USING (true) WITH CHECK (true);
+  END IF;
+END $$;
+
+-- Fix: allow both reminder AND goal_alert for the same subscription+fixture
+ALTER TABLE push_follows DROP CONSTRAINT IF EXISTS push_follows_subscription_id_fixture_id_key;
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint WHERE conname = 'push_follows_sub_fixture_type_key'
+  ) THEN
+    ALTER TABLE push_follows ADD CONSTRAINT push_follows_sub_fixture_type_key UNIQUE(subscription_id, fixture_id, follow_type);
+  END IF;
+END $$;
 `;
 
 const PROJECT_REF = "kyxmmfelzwbsumalyoqs";

@@ -337,6 +337,9 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
               lastAwayGoals: f.goals.away,
               createdAt: Date.now(),
             });
+            if (pushEndpointRef.current) {
+              syncFollowToServer(pushEndpointRef.current, f.fixture.id, "goal_alert", "add");
+            }
           }
         }
         return next;

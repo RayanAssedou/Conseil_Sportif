@@ -8,7 +8,15 @@ const VAPID_PUBLIC = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || "";
 const VAPID_PRIVATE = process.env.VAPID_PRIVATE_KEY || "";
 const CRON_SECRET = process.env.CRON_SECRET || "";
 
-webpush.setVapidDetails("mailto:push@sporthamal.com", VAPID_PUBLIC, VAPID_PRIVATE);
+let vapidReady = false;
+if (VAPID_PUBLIC && VAPID_PRIVATE) {
+  try {
+    webpush.setVapidDetails("mailto:push@sporthamal.com", VAPID_PUBLIC, VAPID_PRIVATE);
+    vapidReady = true;
+  } catch (e) {
+    console.error("[Cron] VAPID init failed:", e);
+  }
+}
 
 interface FollowRow {
   fixture_id: number;
@@ -78,6 +86,11 @@ export async function GET(request: NextRequest) {
     }
   }
 
+  if (!vapidReady) {
+    console.error("[Cron] VAPID keys not configured — skipping push check");
+    return NextResponse.json({ error: "VAPID not configured", vapidPublic: !!VAPID_PUBLIC, vapidPrivate: !!VAPID_PRIVATE }, { status: 500 });
+  }
+
   let totalPushesSent = 0;
   let totalCleaned = 0;
   let totalChecked = 0;
@@ -112,9 +125,16 @@ async function runCheck() {
     .from("push_follows")
     .select("fixture_id, follow_type, push_subscriptions(id, endpoint, p256dh, auth, locale)");
 
-  if (followsErr || !follows || follows.length === 0) {
+  if (followsErr) {
+    console.error("[Cron] Failed to fetch follows:", followsErr.message, followsErr.hint);
     return { checked: 0, pushesSent: 0, cleaned: 0 };
   }
+
+  if (!follows || follows.length === 0) {
+    return { checked: 0, pushesSent: 0, cleaned: 0 };
+  }
+
+  console.log(`[Cron] Found ${follows.length} follows across fixtures`);
 
   const uniqueFixtureIds = [...new Set((follows as unknown as FollowRow[]).map((f) => f.fixture_id))];
 
@@ -269,15 +289,16 @@ async function sendPush(
       },
       JSON.stringify(payload)
     );
+    console.log(`[Push] Sent "${payload.title}" to ${sub.endpoint.slice(0, 50)}...`);
   } catch (err: unknown) {
-    if (err && typeof err === "object" && "statusCode" in err) {
-      const pushErr = err as { statusCode: number };
-      if (pushErr.statusCode === 404 || pushErr.statusCode === 410) {
-        await supabase
-          .from("push_subscriptions")
-          .delete()
-          .eq("endpoint", sub.endpoint);
-      }
+    const pushErr = err as { statusCode?: number; body?: string; message?: string };
+    console.error(`[Push] Failed to ${sub.endpoint.slice(0, 50)}... status=${pushErr.statusCode} body=${pushErr.body || pushErr.message}`);
+    if (pushErr.statusCode === 404 || pushErr.statusCode === 410) {
+      await supabase
+        .from("push_subscriptions")
+        .delete()
+        .eq("endpoint", sub.endpoint);
+      console.log(`[Push] Removed stale subscription ${sub.endpoint.slice(0, 50)}...`);
     }
   }
 }
