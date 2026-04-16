@@ -6,6 +6,7 @@ const he: Record<string, string> = {
   "nav.predictions": "המלצות",
   "nav.articles": "כתבות ספורט",
   "nav.watchLive": "שידור חי",
+  "nav.tutorial": "סרטון הדרכה",
   "nav.signInToWatch": "התחברו כדי לצפות בשידור חי",
   "nav.myNotifications": "ההתראות שלי",
   "nav.signOut": "התנתקות",
@@ -347,6 +348,24 @@ const he: Record<string, string> = {
   "footer.rights": "כל הזכויות שמורות.",
   "footer.madeWith": "נבנה עם",
   "footer.forFans": "לאוהדי הכדורגל",
+  "tutorial.subtitle": "למדו כיצד להשתמש באתר בצורה הטובה ביותר",
+  "tutorial.noSupport": "הדפדפן שלכם אינו תומך בהפעלת וידאו.",
+  "footer.terms": "תנאי שימוש",
+
+  // Terms
+  "terms.title": "תנאי שימוש",
+  "terms.subtitle": "הצהרת משתמש ואישור תנאי שימוש",
+  "terms.backHome": "חזרה לדף הבית",
+  "terms.intro": "גולש יקר, הכניסה והשימוש באתר מותנים באישור התנאים הבאים:",
+  "terms.ageTitle": "הצהרת גיל",
+  "terms.ageBody": "אני מצהיר/ה בזאת כי אני בן/בת 18 ומעלה. השימוש באתר ובתכניו אסור לקטינים.",
+  "terms.serviceTitle": "מהות השירות",
+  "terms.serviceBody": "האתר משמש כפלטפורמה לשיתוף מידע, סטטיסטיקות ודעות אישיות בתחום הספורט בלבד. אין לראות בתכנים אלו הבטחה לרווח, ייעוץ פיננסי או המלצה לביצוע פעולה כלשהי.",
+  "terms.disclaimerTitle": "העדר אחריות",
+  "terms.disclaimerBody": "כל התכנים וההמלצות מוגשים \"כמו שהם\" (As-Is). האחריות על השימוש במידע והשלכותיו מוטלת על המשתמש בלבד. האתר ומנהליו לא יישאו באחריות לכל נזק, ישיר או עקיף, שייגרם כתוצאה מהסתמכות על המידע המוצג.",
+  "terms.copyrightTitle": "זכויות יוצרים",
+  "terms.copyrightBody": "חל איסור מוחלט להעתיק, לשכפל או להפיץ את תוכן האתר ללא אישור מפורש בכתב.",
+  "terms.footer": "© {year} חמ״ל ספורט. כל הזכויות שמורות.",
 };
 
 export default he;

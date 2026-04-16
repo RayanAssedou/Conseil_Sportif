@@ -174,67 +174,67 @@ async function runCheck() {
 
       const prev = stateMap.get(fixtureId);
 
-      const goalAlertSubs = (follows as unknown as FollowRow[]).filter(
-        (f) => f.fixture_id === fixtureId && f.follow_type === "goal_alert"
-      );
-      const reminderSubs = (follows as unknown as FollowRow[]).filter(
-        (f) => f.fixture_id === fixtureId && f.follow_type === "reminder"
-      );
+      if (isFinished(currentStatus)) {
+        finishedFixtures.push(fixtureId);
+      } else {
+        const goalAlertSubs = (follows as unknown as FollowRow[]).filter(
+          (f) => f.fixture_id === fixtureId && f.follow_type === "goal_alert"
+        );
+        const reminderSubs = (follows as unknown as FollowRow[]).filter(
+          (f) => f.fixture_id === fixtureId && f.follow_type === "reminder"
+        );
 
-      const justStarted = (!prev && isLive(currentStatus)) ||
-        (prev && !isLive(prev.status) && isLive(currentStatus));
+        const justStarted = (!prev && isLive(currentStatus)) ||
+          (prev && !isLive(prev.status) && isLive(currentStatus));
 
-      if (justStarted) {
-        for (const sub of reminderSubs) {
-          const loc = sub.push_subscriptions.locale || "en";
-          await sendPush(sub.push_subscriptions, {
-            title: PUSH_TEXTS.matchStarting[loc] || PUSH_TEXTS.matchStarting.en,
-            body: matchLabel,
-            url: `/match/${fixtureId}`,
-            tag: `kickoff-${fixtureId}`,
-            fixtureId,
-          });
-          pushesSent++;
+        if (justStarted) {
+          for (const sub of reminderSubs) {
+            const loc = sub.push_subscriptions.locale || "en";
+            await sendPush(sub.push_subscriptions, {
+              title: PUSH_TEXTS.matchStarting[loc] || PUSH_TEXTS.matchStarting.en,
+              body: matchLabel,
+              url: `/match/${fixtureId}`,
+              tag: `kickoff-${fixtureId}`,
+              fixtureId,
+            });
+            pushesSent++;
+          }
         }
-      }
 
-      if (prev && (homeGoals !== prev.home_goals || awayGoals !== prev.away_goals)) {
-        for (const sub of goalAlertSubs) {
-          const goalLabel = PUSH_TEXTS.goalScored.en;
-          await sendPush(sub.push_subscriptions, {
-            title: `${goalLabel} — ${homeTeam} ${homeGoals}-${awayGoals} ${awayTeam}`,
-            body: `${homeTeam} ${homeGoals} - ${awayGoals} ${awayTeam}`,
-            url: `/match/${fixtureId}`,
-            tag: `goal-${fixtureId}-${homeGoals}-${awayGoals}`,
-            fixtureId,
-          });
-          pushesSent++;
+        if (prev && (homeGoals !== prev.home_goals || awayGoals !== prev.away_goals)) {
+          for (const sub of goalAlertSubs) {
+            const goalLabel = PUSH_TEXTS.goalScored.en;
+            await sendPush(sub.push_subscriptions, {
+              title: `${goalLabel} — ${homeTeam} ${homeGoals}-${awayGoals} ${awayTeam}`,
+              body: `${homeTeam} ${homeGoals} - ${awayGoals} ${awayTeam}`,
+              url: `/match/${fixtureId}`,
+              tag: `goal-${fixtureId}-${homeGoals}-${awayGoals}`,
+              fixtureId,
+            });
+            pushesSent++;
+          }
         }
-      }
 
-      const prevEventsCount = prev?.events_count ?? 0;
-      if (events.length > prevEventsCount && goalAlertSubs.length > 0) {
-        const newEvents = events.slice(prevEventsCount);
-        for (const evt of newEvents) {
-          if (evt.type === "Goal" && evt.detail === "Penalty") {
-            const body = `${evt.player?.name || "?"} — ${evt.team?.name || ""} (${evt.time?.elapsed || "?"}\')`;
-            for (const sub of goalAlertSubs) {
-              const label = PUSH_TEXTS.penalty.en;
-              await sendPush(sub.push_subscriptions, {
-                title: `${label} — ${matchLabel}`,
-                body,
-                url: `/match/${fixtureId}`,
-                tag: `penalty-${fixtureId}-${events.length}`,
-                fixtureId,
-              });
-              pushesSent++;
+        const prevEventsCount = prev?.events_count ?? 0;
+        if (events.length > prevEventsCount && goalAlertSubs.length > 0) {
+          const newEvents = events.slice(prevEventsCount);
+          for (const evt of newEvents) {
+            if (evt.type === "Goal" && evt.detail === "Penalty") {
+              const body = `${evt.player?.name || "?"} — ${evt.team?.name || ""} (${evt.time?.elapsed || "?"}\')`;
+              for (const sub of goalAlertSubs) {
+                const label = PUSH_TEXTS.penalty.en;
+                await sendPush(sub.push_subscriptions, {
+                  title: `${label} — ${matchLabel}`,
+                  body,
+                  url: `/match/${fixtureId}`,
+                  tag: `penalty-${fixtureId}-${events.length}`,
+                  fixtureId,
+                });
+                pushesSent++;
+              }
             }
           }
         }
-      }
-
-      if (isFinished(currentStatus)) {
-        finishedFixtures.push(fixtureId);
       }
 
       const newState: MatchState = {

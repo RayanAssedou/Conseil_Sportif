@@ -57,6 +57,7 @@ export default function Footer() {
     { href: "/scores", label: t("footer.liveScores") },
     { href: "/pronostics", label: t("footer.predictions") },
     { href: "/articles", label: t("footer.articles") },
+    { href: "/terms", label: t("footer.terms") },
   ];
 
 
@@ -326,6 +327,9 @@ export default function Footer() {
             <p className="text-xs text-text-muted">
               © {year} {t("footer.brand")}. {t("footer.rights")}
             </p>
+            <Link href="/terms" className="text-xs text-text-muted hover:text-primary transition-colors">
+              {t("footer.terms")}
+            </Link>
           </div>
         </div>
       </div>

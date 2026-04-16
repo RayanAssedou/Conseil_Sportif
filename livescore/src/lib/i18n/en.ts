@@ -6,6 +6,7 @@ const en: Record<string, string> = {
   "nav.predictions": "Predictions",
   "nav.articles": "Sport Articles",
   "nav.watchLive": "Watch Live",
+  "nav.tutorial": "Tutorial",
   "nav.signInToWatch": "Sign in to access Watch Live",
   "nav.myNotifications": "My Notifications",
   "nav.signOut": "Sign Out",
@@ -346,6 +347,24 @@ const en: Record<string, string> = {
   "footer.rights": "All rights reserved.",
   "footer.madeWith": "Made with",
   "footer.forFans": "for football fans",
+  "tutorial.subtitle": "Learn how to get the most out of our website",
+  "tutorial.noSupport": "Your browser does not support video playback.",
+  "footer.terms": "Terms of Use",
+
+  // Terms
+  "terms.title": "Terms of Use",
+  "terms.subtitle": "User Declaration & Terms of Use Agreement",
+  "terms.backHome": "Back to Home",
+  "terms.intro": "Dear visitor, access to and use of the website is subject to approval of the following terms:",
+  "terms.ageTitle": "Age Declaration",
+  "terms.ageBody": "I hereby declare that I am 18 years of age or older. Use of the website and its content is prohibited for minors.",
+  "terms.serviceTitle": "Nature of Service",
+  "terms.serviceBody": "The website serves as a platform for sharing information, statistics, and personal opinions in the field of sports only. The content should not be considered a guarantee of profit, financial advice, or a recommendation to take any action.",
+  "terms.disclaimerTitle": "Disclaimer",
+  "terms.disclaimerBody": "All content and recommendations are provided \"as is\" (As-Is). The responsibility for the use of the information and its consequences rests solely with the user. The website and its administrators shall not be held liable for any damage, direct or indirect, resulting from reliance on the information presented.",
+  "terms.copyrightTitle": "Copyright",
+  "terms.copyrightBody": "It is strictly prohibited to copy, reproduce, or distribute the content of the website without explicit written permission.",
+  "terms.footer": "© {year} Sport Hamal. All rights reserved.",
 };
 
 export default en;

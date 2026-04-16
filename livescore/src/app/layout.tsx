@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import NotificationToast from "@/components/NotificationToast";
 import ProPlusModal from "@/components/ProPlusModal";
+import AgeVerificationModal from "@/components/AgeVerificationModal";
 import PageTracker from "@/components/PageTracker";
 import TrackingScripts from "@/components/TrackingScripts";
 import { AuthProvider } from "@/contexts/AuthContext";
@@ -52,6 +53,7 @@ export default function RootLayout({
               <ProPlusModal />
               <PageTracker />
               <TrackingScripts />
+              <AgeVerificationModal />
               <Analytics />
               </ProPlusModalProvider>
             </NotificationProvider>

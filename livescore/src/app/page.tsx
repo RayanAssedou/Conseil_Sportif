@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Fixture } from "@/lib/types";
-import { isLive, getStatusDisplay, getDateOffset, sortFixturesByLeaguePriority } from "@/lib/utils";
+import { isLive, isFinished, getStatusDisplay, getDateOffset, sortFixturesByLeaguePriority } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNotifications } from "@/contexts/NotificationContext";
 import { useTranslation } from "@/contexts/LanguageContext";
@@ -337,6 +337,7 @@ export default function HomePage() {
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
             {previewMatches.map((fixture) => {
               const live = isLive(fixture.fixture.status.short);
+              const finished = isFinished(fixture.fixture.status.short);
               const statusText = getStatusDisplay(fixture, locale);
               const isFollowed = hasReminder(fixture.fixture.id) || hasGoalAlert(fixture.fixture.id);
               return (
@@ -379,7 +380,7 @@ export default function HomePage() {
                     ) : (
                       <span className="text-[10px] font-medium text-text-muted">{statusText}</span>
                     )}
-                    {user && (
+                    {user && !finished && (
                       <button
                         onClick={(e) => {
                           e.preventDefault();

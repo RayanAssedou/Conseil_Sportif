@@ -14,6 +14,7 @@ const navKeys = [
   { href: "/pronostics", labelKey: "nav.predictions", icon: "star", authRequired: true },
   { href: "/articles", labelKey: "nav.articles", icon: "article" },
   { href: "https://nextbet7.tv", labelKey: "nav.watchLive", icon: "watch", external: true, authRequired: true },
+  { href: "/tutorial", labelKey: "nav.tutorial", icon: "tutorial" },
 ];
 
 export default function Navbar() {
@@ -122,6 +123,11 @@ export default function Navbar() {
     if (icon === "watch") return (
       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" />
+      </svg>
+    );
+    if (icon === "tutorial") return (
+      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25z" />
       </svg>
     );
     return null;
