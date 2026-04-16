@@ -6,16 +6,23 @@ const BLOB_URL =
 
 export async function GET() {
   try {
-    const blob = await get(BLOB_URL, {
+    const result = await get(BLOB_URL, {
       access: "private",
       token: process.env.BLOB_READ_WRITE_TOKEN,
     });
 
-    if (!blob?.url) {
+    if (!result) {
       return NextResponse.json({ error: "Video not found" }, { status: 404 });
     }
 
-    return NextResponse.redirect(blob.url);
+    const headers = new Headers();
+    headers.set("Content-Type", result.blob.contentType || "video/quicktime");
+    if (result.blob.size) {
+      headers.set("Content-Length", String(result.blob.size));
+    }
+    headers.set("Cache-Control", "public, max-age=31536000, immutable");
+
+    return new NextResponse(result.stream, { status: 200, headers });
   } catch {
     return NextResponse.json(
       { error: "Video unavailable" },
