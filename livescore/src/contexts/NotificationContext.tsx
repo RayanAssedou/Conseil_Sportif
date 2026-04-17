@@ -138,7 +138,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const remindersLoaded = loadMap<ReminderData>(LS_REMINDERS);
     const now = Date.now();
-    const STALE_MS = 48 * 60 * 60 * 1000;
+    const STALE_MS = 4 * 60 * 60 * 1000;
     let remindersChanged = false;
     for (const [id, r] of remindersLoaded) {
       if (r.kickoffISO && now - new Date(r.kickoffISO).getTime() > STALE_MS) {
@@ -268,6 +268,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
 
         if (isFinished(f.fixture.status.short)) {
           next.delete(f.fixture.id);
+          eventsCountRef.current.delete(f.fixture.id);
           changed = true;
           if (pushEndpointRef.current) {
             syncFollowToServer(pushEndpointRef.current, f.fixture.id, "goal_alert", "remove");
@@ -320,6 +321,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
           changed = true;
         } else if (isFinished(f.fixture.status.short)) {
           next.delete(f.fixture.id);
+          eventsCountRef.current.delete(f.fixture.id);
           changed = true;
           if (pushEndpointRef.current) {
             syncFollowToServer(pushEndpointRef.current, f.fixture.id, "reminder", "remove");
@@ -355,11 +357,16 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
     }
   }, [addToast]);
 
-  const checkMatchEvents = useCallback(async () => {
+  const checkMatchEvents = useCallback(async (fixtures: Fixture[]) => {
     const followedIds = Array.from(goalAlertsRef.current.keys());
     if (followedIds.length === 0) return;
 
+    const fixtureMap = new Map(fixtures.map((f) => [f.fixture.id, f]));
+
     for (const fixtureId of followedIds) {
+      const fixtureData = fixtureMap.get(fixtureId);
+      if (fixtureData && isFinished(fixtureData.fixture.status.short)) continue;
+
       try {
         const res = await fetch(`/api/fixtures/${fixtureId}/events`);
         if (!res.ok) continue;
@@ -404,7 +411,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
           if (remindersRef.current.size > 0) checkReminders(data.response);
           if (goalAlertsRef.current.size > 0) {
             checkGoalUpdates(data.response);
-            checkMatchEvents();
+            checkMatchEvents(data.response);
           }
         }
       } catch { /* silent */ }

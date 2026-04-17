@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
+import { fetchFixtureById } from "@/lib/api";
+import { isFinished } from "@/lib/utils";
 
 export async function POST(request: NextRequest) {
   try {
@@ -8,6 +10,14 @@ export async function POST(request: NextRequest) {
     if (!endpoint || !fixtureId || !type) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
+
+    try {
+      const fixtureData = await fetchFixtureById(String(fixtureId));
+      const status = fixtureData?.response?.[0]?.fixture?.status?.short;
+      if (status && isFinished(status)) {
+        return NextResponse.json({ ok: true, skipped: "match_finished" });
+      }
+    } catch { /* allow follow if status check fails */ }
 
     const { data: sub } = await supabase
       .from("push_subscriptions")
