@@ -1,17 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useTranslation } from "@/contexts/LanguageContext";
+
+const YOUTUBE_ID = "5SmOIurMjho";
 
 export default function TutorialPage() {
   const { t, locale } = useTranslation();
   const isRtl = locale === "he" || locale === "ar";
-  const [videoUrl, setVideoUrl] = useState<string | null>(null);
-
-  useEffect(() => {
-    setVideoUrl("/api/tutorial-video");
-  }, []);
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-10" dir={isRtl ? "rtl" : "ltr"}>
@@ -36,18 +32,15 @@ export default function TutorialPage() {
       </div>
 
       <div className="bg-card rounded-2xl border border-border overflow-hidden shadow-lg">
-        {videoUrl && (
-          <video
-            className="w-full aspect-video bg-black"
-            controls
-            playsInline
-            preload="metadata"
-          >
-            <source src={videoUrl} type="video/quicktime" />
-            <source src={videoUrl} type="video/mp4" />
-            {t("tutorial.noSupport")}
-          </video>
-        )}
+        <div className="relative w-full" style={{ paddingBottom: "177.78%" }}>
+          <iframe
+            className="absolute inset-0 w-full h-full"
+            src={`https://www.youtube.com/embed/${YOUTUBE_ID}`}
+            title={t("nav.tutorial")}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        </div>
       </div>
     </div>
   );
