@@ -76,6 +76,7 @@ export default function HomePage() {
   const [section, setSection] = useState<SectionConfig>({});
   const [telegramLink, setTelegramLink] = useState("");
   const [whatsappLink, setWhatsappLink] = useState("");
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [instagramLink, setInstagramLink] = useState("");
   const [youtubeLink, setYoutubeLink] = useState("");
   const [tiktokLink, setTiktokLink] = useState("");
@@ -776,6 +777,69 @@ export default function HomePage() {
         ) : (
           <p className="text-text-muted text-sm">{t("home.noNews")}</p>
         )}
+      </section>
+
+      <div className="h-8" />
+
+      {/* FAQ Section */}
+      <section>
+        <h2 className="text-xl font-bold text-text mb-4">{t("faq.title")}</h2>
+        <div className="space-y-2">
+          {([1,2,3,4,5,6,7,8,9,10,11,12] as const).map((n) => {
+            const qKey = `faq.q${n}`;
+            const aKey = `faq.a${n}`;
+            const isOpen = openFaq === n;
+            return (
+              <div
+                key={n}
+                className="bg-card border border-border rounded-xl overflow-hidden"
+              >
+                <button
+                  onClick={() => setOpenFaq(isOpen ? null : n)}
+                  className="flex items-center justify-between gap-3 px-5 py-4 w-full text-start cursor-pointer select-none"
+                >
+                  <span className="text-sm font-semibold text-text">{t(qKey)}</span>
+                  <svg
+                    className={`w-4 h-4 shrink-0 text-text-muted transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2.5}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                  </svg>
+                </button>
+                <div
+                  className={`grid transition-all duration-200 ${isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}
+                >
+                  <div className="overflow-hidden">
+                    <div className="px-5 pb-4 text-sm text-text-muted leading-relaxed whitespace-pre-line">
+                      {t(aKey)}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="mt-4 bg-card border border-border rounded-xl px-5 py-4 flex flex-col sm:flex-row items-start sm:items-center gap-3">
+          <div className="flex items-center gap-2 text-primary">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+            </svg>
+            <span className="text-sm font-medium text-text">{t("faq.contact")}</span>
+          </div>
+          <a
+            href="https://wa.me/9720504593270"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-[#25D366] hover:bg-[#1ebe57] text-white text-sm font-semibold rounded-lg transition-colors"
+          >
+            <span>{t("faq.contactChannels")}</span>
+            <span className="font-bold">{t("faq.contactPhone")}</span>
+          </a>
+        </div>
       </section>
 
       <div className="h-8" />
