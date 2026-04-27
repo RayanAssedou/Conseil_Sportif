@@ -80,6 +80,7 @@ export default function HomePage() {
   const [instagramLink, setInstagramLink] = useState("");
   const [youtubeLink, setYoutubeLink] = useState("");
   const [tiktokLink, setTiktokLink] = useState("");
+  const [facebookLink, setFacebookLink] = useState("");
   const [vipLink, setVipLink] = useState("");
   const [articles, setArticles] = useState<Article[]>([]);
   const [fixtures, setFixtures] = useState<Fixture[]>([]);
@@ -210,6 +211,11 @@ export default function HomePage() {
     fetch("/api/content/section?key=tiktok")
       .then((r) => r.json())
       .then((data) => { const v = data?.view_all_link; setTiktokLink(v && v.startsWith("http") ? v : ""); })
+      .catch(console.error);
+
+    fetch("/api/content/section?key=facebook")
+      .then((r) => r.json())
+      .then((data) => { const v = data?.view_all_link; setFacebookLink(v && v.startsWith("http") ? v : ""); })
       .catch(console.error);
 
     fetch("/api/content/section?key=whatsapp_vip")
@@ -784,7 +790,7 @@ export default function HomePage() {
       {/* FAQ Section */}
       <section>
         <h2 className="text-xl font-bold text-text mb-4">{t("faq.title")}</h2>
-        <div className="space-y-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 items-start">
           {([1,2,3,4,5,6,7,8,9,10,11,12] as const).map((n) => {
             const qKey = `faq.q${n}`;
             const aKey = `faq.a${n}`;
@@ -845,12 +851,12 @@ export default function HomePage() {
       <div className="h-8" />
 
       {/* Social Links - Desktop Grid */}
-      <section className="hidden md:grid gap-4 grid-cols-2 lg:grid-cols-4 xl:grid-cols-7">
+      <section className="hidden md:grid gap-4 grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 auto-rows-fr">
         <a
           href={telegramLink || "https://t.me/Niv_grafica"}
           target="_blank"
           rel="noopener noreferrer"
-          className="bg-gradient-to-br from-[#0088cc] to-[#0077b5] rounded-2xl p-5 text-white hover:shadow-lg hover:scale-[1.02] transition-all group"
+          className="bg-gradient-to-br from-[#0088cc] to-[#0077b5] rounded-2xl p-5 text-white hover:shadow-lg hover:scale-[1.02] transition-all group flex flex-col h-full"
         >
           <div className="flex items-center gap-3 mb-3">
             <div className="w-12 h-12 bg-white/15 rounded-xl flex items-center justify-center">
@@ -863,7 +869,7 @@ export default function HomePage() {
               <p className="text-white/70 text-xs">{t("home.telegramDesc")}</p>
             </div>
           </div>
-          <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-white/20 rounded-lg text-sm font-semibold group-hover:bg-white/30 transition-colors">
+          <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-white/20 rounded-lg text-sm font-semibold group-hover:bg-white/30 transition-colors mt-auto self-start">
             {t("home.joinTelegram")}
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
@@ -875,7 +881,7 @@ export default function HomePage() {
           href={whatsappLink || "https://wa.me/972504593270"}
           target="_blank"
           rel="noopener noreferrer"
-          className="bg-gradient-to-br from-[#25D366] to-[#128C7E] rounded-2xl p-5 text-white hover:shadow-lg hover:scale-[1.02] transition-all group"
+          className="bg-gradient-to-br from-[#25D366] to-[#128C7E] rounded-2xl p-5 text-white hover:shadow-lg hover:scale-[1.02] transition-all group flex flex-col h-full"
         >
           <div className="flex items-center gap-3 mb-3">
             <div className="w-12 h-12 bg-white/15 rounded-xl flex items-center justify-center">
@@ -888,7 +894,7 @@ export default function HomePage() {
               <p className="text-white/70 text-xs">{t("home.whatsappDesc")}</p>
             </div>
           </div>
-          <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-white/20 rounded-lg text-sm font-semibold group-hover:bg-white/30 transition-colors">
+          <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-white/20 rounded-lg text-sm font-semibold group-hover:bg-white/30 transition-colors mt-auto self-start">
             {t("home.contactWhatsapp")}
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
@@ -900,7 +906,7 @@ export default function HomePage() {
           href={instagramLink || "https://www.instagram.com/nivphotografi?igsh=MTVuMG90bG1kZGkzcw=="}
           target="_blank"
           rel="noopener noreferrer"
-          className="bg-gradient-to-br from-[#f09433] via-[#e6683c] to-[#bc1888] rounded-2xl p-5 text-white hover:shadow-lg hover:scale-[1.02] transition-all group"
+          className="bg-gradient-to-br from-[#f09433] via-[#e6683c] to-[#bc1888] rounded-2xl p-5 text-white hover:shadow-lg hover:scale-[1.02] transition-all group flex flex-col h-full"
         >
           <div className="flex items-center gap-3 mb-3">
             <div className="w-12 h-12 bg-white/15 rounded-xl flex items-center justify-center">
@@ -913,7 +919,7 @@ export default function HomePage() {
               <p className="text-white/70 text-xs">{t("home.instagramDesc")}</p>
             </div>
           </div>
-          <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-white/20 rounded-lg text-sm font-semibold group-hover:bg-white/30 transition-colors">
+          <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-white/20 rounded-lg text-sm font-semibold group-hover:bg-white/30 transition-colors mt-auto self-start">
             {t("home.followInstagram")}
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
@@ -925,7 +931,7 @@ export default function HomePage() {
           href={youtubeLink || "https://youtube.com/channel/UCSiVU6MH4GCS9-68ClAsyEQ?si=e7blRdgdbT1CT8mD"}
           target="_blank"
           rel="noopener noreferrer"
-          className="bg-gradient-to-br from-[#FF0000] to-[#cc0000] rounded-2xl p-5 text-white hover:shadow-lg hover:scale-[1.02] transition-all group"
+          className="bg-gradient-to-br from-[#FF0000] to-[#cc0000] rounded-2xl p-5 text-white hover:shadow-lg hover:scale-[1.02] transition-all group flex flex-col h-full"
         >
           <div className="flex items-center gap-3 mb-3">
             <div className="w-12 h-12 bg-white/15 rounded-xl flex items-center justify-center">
@@ -938,7 +944,7 @@ export default function HomePage() {
               <p className="text-white/70 text-xs">{t("home.youtubeDesc")}</p>
             </div>
           </div>
-          <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-white/20 rounded-lg text-sm font-semibold group-hover:bg-white/30 transition-colors">
+          <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-white/20 rounded-lg text-sm font-semibold group-hover:bg-white/30 transition-colors mt-auto self-start">
             {t("home.subscribeYoutube")}
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
@@ -950,7 +956,7 @@ export default function HomePage() {
           href={tiktokLink || "https://www.tiktok.com/@niv_winner_tips?_r=1&_t=ZS-958O1XrBfQC"}
           target="_blank"
           rel="noopener noreferrer"
-          className="bg-gradient-to-br from-[#010101] to-[#333333] rounded-2xl p-5 text-white hover:shadow-lg hover:scale-[1.02] transition-all group"
+          className="bg-gradient-to-br from-[#010101] to-[#333333] rounded-2xl p-5 text-white hover:shadow-lg hover:scale-[1.02] transition-all group flex flex-col h-full"
         >
           <div className="flex items-center gap-3 mb-3">
             <div className="w-12 h-12 bg-white/15 rounded-xl flex items-center justify-center">
@@ -963,8 +969,33 @@ export default function HomePage() {
               <p className="text-white/70 text-xs">{t("home.tiktokDesc")}</p>
             </div>
           </div>
-          <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-white/20 rounded-lg text-sm font-semibold group-hover:bg-white/30 transition-colors">
+          <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-white/20 rounded-lg text-sm font-semibold group-hover:bg-white/30 transition-colors mt-auto self-start">
             {t("home.followTiktok")}
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+            </svg>
+          </span>
+        </a>
+
+        <a
+          href={facebookLink || "https://www.facebook.com/share/g/1FjxBVg48G/"}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="bg-gradient-to-br from-[#1877F2] to-[#0a4eb1] rounded-2xl p-5 text-white hover:shadow-lg hover:scale-[1.02] transition-all group flex flex-col h-full"
+        >
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-12 h-12 bg-white/15 rounded-xl flex items-center justify-center">
+              <svg className="w-7 h-7 text-white" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+              </svg>
+            </div>
+            <div>
+              <h3 className="text-lg font-bold">{t("home.facebookTitle")}</h3>
+              <p className="text-white/70 text-xs">{t("home.facebookDesc")}</p>
+            </div>
+          </div>
+          <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-white/20 rounded-lg text-sm font-semibold group-hover:bg-white/30 transition-colors mt-auto self-start">
+            {t("home.followFacebook")}
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
             </svg>
@@ -973,7 +1004,7 @@ export default function HomePage() {
 
         <button
           onClick={() => setBonusModalOpen(true)}
-          className="bg-gradient-to-br from-amber-500 to-amber-700 rounded-2xl p-5 text-white hover:shadow-[0_0_24px_rgba(245,158,11,0.5)] hover:scale-[1.02] transition-all group shadow-[0_0_16px_rgba(245,158,11,0.2)] text-left w-full"
+          className="bg-gradient-to-br from-amber-500 to-amber-700 rounded-2xl p-5 text-white hover:shadow-[0_0_24px_rgba(245,158,11,0.5)] hover:scale-[1.02] transition-all group shadow-[0_0_16px_rgba(245,158,11,0.2)] text-left w-full flex flex-col h-full"
         >
           <div className="flex items-center gap-3 mb-3">
             <div className="w-12 h-12 bg-white/15 rounded-xl flex items-center justify-center">
@@ -986,7 +1017,7 @@ export default function HomePage() {
               <p className="text-white/70 text-xs">{t("home.bonusDesc")}</p>
             </div>
           </div>
-          <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-white/20 rounded-lg text-sm font-semibold group-hover:bg-white/30 transition-colors">
+          <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-white/20 rounded-lg text-sm font-semibold group-hover:bg-white/30 transition-colors mt-auto self-start">
             {t("home.getBonus")}
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
@@ -996,7 +1027,7 @@ export default function HomePage() {
 
         <button
           onClick={() => openProPlus(vipLink || whatsappLink || "https://wa.me/972504593270")}
-          className="bg-gradient-to-br from-violet-500 to-blue-600 rounded-2xl p-5 text-white hover:shadow-[0_0_24px_rgba(139,92,246,0.5)] hover:scale-[1.02] transition-all group shadow-[0_0_16px_rgba(139,92,246,0.3)] text-left w-full"
+          className="bg-gradient-to-br from-violet-500 to-blue-600 rounded-2xl p-5 text-white hover:shadow-[0_0_24px_rgba(139,92,246,0.5)] hover:scale-[1.02] transition-all group shadow-[0_0_16px_rgba(139,92,246,0.3)] text-left w-full flex flex-col h-full"
         >
           <div className="flex items-center gap-3 mb-3">
             <div className="w-12 h-12 bg-white/15 rounded-xl flex items-center justify-center">
@@ -1019,7 +1050,7 @@ export default function HomePage() {
               </span>
             ))}
           </div>
-          <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-white/20 rounded-lg text-sm font-semibold group-hover:bg-white/30 transition-colors">
+          <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-white/20 rounded-lg text-sm font-semibold group-hover:bg-white/30 transition-colors mt-auto self-start">
             {t("vip.joinNow")}
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
