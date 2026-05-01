@@ -162,9 +162,10 @@ export default function PredictionDetailPage({ params }: { params: Promise<{ id:
   const kickoff = new Date(fixture.fixture.date);
   const comparisonKeys = prediction.comparison ? Object.keys(prediction.comparison) : [];
 
-  const pHome = adminPred?.prob_home || pred.percent.home;
-  const pDraw = adminPred?.prob_draw || pred.percent.draw;
-  const pAway = adminPred?.prob_away || pred.percent.away;
+  const hasAdminProbs = !!(adminPred?.prob_home && adminPred?.prob_draw && adminPred?.prob_away);
+  const pHome = adminPred?.prob_home || "";
+  const pDraw = adminPred?.prob_draw || "";
+  const pAway = adminPred?.prob_away || "";
 
   const homeGoalsFor = prediction.teams.home.last_5?.goals?.for;
   const homeGoalsAgainst = prediction.teams.home.last_5?.goals?.against;
@@ -278,23 +279,25 @@ export default function PredictionDetailPage({ params }: { params: Promise<{ id:
 
         {/* Probability + Quick Stats (1/3) */}
         <div className="space-y-4">
-          {/* Win probability */}
-          <div className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm p-5">
-            <div className="flex items-center gap-2 mb-4">
-              <span className="text-xs font-semibold text-text-muted uppercase tracking-wider">{t("predictionDetail.winProbability")}</span>
-              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-violet-500/10 border border-violet-500/20">
-                <svg className="w-2 h-2 text-violet-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
-                </svg>
-                <span className="text-[8px] font-bold text-violet-500">AI</span>
-              </span>
+          {/* Win probability — only when admin sets all three values */}
+          {hasAdminProbs && (
+            <div className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm p-5">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-xs font-semibold text-text-muted uppercase tracking-wider">{t("predictionDetail.winProbability")}</span>
+                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-violet-500/10 border border-violet-500/20">
+                  <svg className="w-2 h-2 text-violet-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+                  </svg>
+                  <span className="text-[8px] font-bold text-violet-500">AI</span>
+                </span>
+              </div>
+              <div className="space-y-3">
+                <ProbBar label={t("predictionDetail.home")} value={pHome} color="bg-primary" />
+                <ProbBar label={t("predictionDetail.draw")} value={pDraw} color="bg-text-muted/40" />
+                <ProbBar label={t("predictionDetail.away")} value={pAway} color="bg-score" />
+              </div>
             </div>
-            <div className="space-y-3">
-              <ProbBar label={t("predictionDetail.home")} value={pHome} color="bg-primary" />
-              <ProbBar label={t("predictionDetail.draw")} value={pDraw} color="bg-text-muted/40" />
-              <ProbBar label={t("predictionDetail.away")} value={pAway} color="bg-score" />
-            </div>
-          </div>
+          )}
 
           {/* Goal stats */}
           {homeGoalsFor && awayGoalsFor && (

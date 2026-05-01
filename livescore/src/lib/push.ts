@@ -2,6 +2,12 @@ function getVapidKey(): string {
   return process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || "";
 }
 
+let pushServiceUnavailable = false;
+
+export function isPushServiceUnavailable(): boolean {
+  return pushServiceUnavailable;
+}
+
 function urlBase64ToUint8Array(base64String: string): Uint8Array {
   const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
   const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
@@ -36,6 +42,8 @@ export async function subscribeToPush(
     return null;
   }
 
+  if (pushServiceUnavailable) return null;
+
   const vapidKey = getVapidKey();
   if (!vapidKey) {
     console.warn("[Push] NEXT_PUBLIC_VAPID_PUBLIC_KEY not configured");
@@ -44,20 +52,24 @@ export async function subscribeToPush(
 
   try {
     const existing = await registration.pushManager.getSubscription();
-    if (existing) {
-      console.log("[Push] Using existing subscription");
-      return existing;
-    }
+    if (existing) return existing;
 
-    console.log("[Push] Creating new push subscription...");
     const subscription = await registration.pushManager.subscribe({
       userVisibleOnly: true,
       applicationServerKey: urlBase64ToUint8Array(vapidKey).buffer as ArrayBuffer,
     });
-    console.log("[Push] New subscription created");
     return subscription;
   } catch (err) {
-    console.error("[Push] Subscribe failed:", err);
+    const e = err as Error;
+    const isPushUnavailable =
+      e?.name === "AbortError" ||
+      /push service|not available|registration failed/i.test(e?.message || "");
+    if (isPushUnavailable) {
+      pushServiceUnavailable = true;
+      console.warn("[Push] Push service unavailable in this browser/environment — notifications disabled for this session");
+    } else {
+      console.warn("[Push] Subscribe failed:", e?.message || err);
+    }
     return null;
   }
 }

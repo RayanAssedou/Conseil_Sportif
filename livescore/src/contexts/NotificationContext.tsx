@@ -5,7 +5,7 @@ import { Fixture } from "@/lib/types";
 import { translate } from "@/lib/i18n";
 import { isLive, isFinished, getDateOffset } from "@/lib/utils";
 import { useTranslation } from "@/contexts/LanguageContext";
-import { registerServiceWorker, subscribeToPush, sendSubscriptionToServer, syncFollowToServer } from "@/lib/push";
+import { registerServiceWorker, subscribeToPush, sendSubscriptionToServer, syncFollowToServer, isPushServiceUnavailable } from "@/lib/push";
 
 interface ReminderData {
   fixtureId: number;
@@ -109,28 +109,29 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
 
   const ensurePushSubscription = useCallback(async (): Promise<string | null> => {
     if (pushEndpointRef.current) return pushEndpointRef.current;
+    if (isPushServiceUnavailable()) return null;
 
     try {
       let reg = swRegistrationRef.current;
       if (!reg) {
         reg = await registerServiceWorker();
-        if (!reg) { console.warn("[Push] Service Worker registration failed"); return null; }
+        if (!reg) return null;
         swRegistrationRef.current = reg;
       }
 
       const permission = await requestPermission();
-      if (!permission) { console.warn("[Push] Notification permission denied"); return null; }
+      if (!permission) return null;
 
       const sub = await subscribeToPush(reg);
-      if (!sub) { console.warn("[Push] Push subscription failed"); return null; }
+      if (!sub) return null;
 
       pushEndpointRef.current = sub.endpoint;
-      const sent = await sendSubscriptionToServer(sub, undefined, localeRef.current);
-      if (!sent) console.warn("[Push] Failed to sync subscription to server");
+      sendSubscriptionToServer(sub, undefined, localeRef.current).catch(() => {});
 
       return sub.endpoint;
     } catch (err) {
-      console.error("[Push] Setup error:", err);
+      const e = err as Error;
+      console.warn("[Push] Setup skipped:", e?.message || err);
       return null;
     }
   }, []);

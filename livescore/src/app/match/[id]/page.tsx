@@ -261,7 +261,6 @@ function AnalysisSection({
 }) {
   if (!prediction) return null;
 
-  const pred = prediction.predictions;
   const comparisonKeys = prediction.comparison ? Object.keys(prediction.comparison) : [];
   const homeGoalsFor = prediction.teams.home.last_5?.goals?.for;
   const homeGoalsAgainst = prediction.teams.home.last_5?.goals?.against;
@@ -276,22 +275,6 @@ function AnalysisSection({
 
   return (
     <div className="space-y-4">
-      {/* Win Probability */}
-      <div className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm p-5">
-        <h3 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-4">{t("predictionDetail.winProbability")}</h3>
-        <div className="space-y-3">
-          <ProbBar label={t("predictionDetail.home")} value={pred.percent.home} color="bg-primary" />
-          <ProbBar label={t("predictionDetail.draw")} value={pred.percent.draw} color="bg-text-muted/40" />
-          <ProbBar label={t("predictionDetail.away")} value={pred.percent.away} color="bg-score" />
-        </div>
-        {pred.advice && (
-          <div className="mt-4 bg-primary/5 border border-primary/20 rounded-xl p-3 text-center">
-            <span className="text-xs font-bold text-primary uppercase tracking-wider block mb-0.5">{t("predictionDetail.expertAdvice")}</span>
-            <p className="text-sm font-semibold text-text">{pred.advice}</p>
-          </div>
-        )}
-      </div>
-
       {/* Recent Form + Comparison side by side */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Recent form */}
@@ -418,21 +401,6 @@ function AnalysisSection({
 }
 
 /* ─── Shared sub-components ───────────────────────────────────── */
-
-function ProbBar({ label, value, color }: { label: string; value: string; color: string }) {
-  const numVal = parseInt(value) || 0;
-  return (
-    <div>
-      <div className="flex items-center justify-between mb-1">
-        <span className="text-xs font-medium text-text-secondary">{label}</span>
-        <span className="text-sm font-bold text-text">{value}</span>
-      </div>
-      <div className="h-2 bg-surface rounded-full overflow-hidden">
-        <div className={`h-full rounded-full transition-all ${color}`} style={{ width: `${numVal}%` }} />
-      </div>
-    </div>
-  );
-}
 
 function GoalStatCard({ label, subLabel, value, avg, perMatch }: { label: string; subLabel: string; value: number; avg: string; perMatch: string }) {
   return (
