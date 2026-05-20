@@ -21,13 +21,15 @@ if (VAPID_PUBLIC && VAPID_PRIVATE) {
 interface FollowRow {
   fixture_id: number;
   follow_type: string;
-  push_subscriptions: {
-    id: string;
-    endpoint: string;
-    p256dh: string;
-    auth: string;
-    locale: string;
-  };
+  push_subscriptions: PushSubscriptionRow;
+}
+
+interface PushSubscriptionRow {
+  id: string;
+  endpoint: string;
+  p256dh: string;
+  auth: string;
+  locale: string;
 }
 
 interface MatchState {
@@ -112,6 +114,21 @@ export async function GET(request: NextRequest) {
     }
   }
 
+  // Prune dedup-log rows older than 24h so the table doesn't grow without bound.
+  // Failure here is non-critical — only logged.
+  try {
+    const cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+    const { error } = await supabase
+      .from("push_sent_log")
+      .delete()
+      .lt("sent_at", cutoff);
+    if (error && error.code !== "42P01") {
+      console.warn("[Cron] push_sent_log prune failed:", error.code, error.message);
+    }
+  } catch (e) {
+    console.warn("[Cron] push_sent_log prune error:", e);
+  }
+
   return NextResponse.json({
     rounds,
     checked: totalChecked,
@@ -190,47 +207,51 @@ async function runCheck() {
         if (justStarted) {
           for (const sub of reminderSubs) {
             const loc = sub.push_subscriptions.locale || "en";
-            await sendPush(sub.push_subscriptions, {
+            const sent = await sendPush(sub.push_subscriptions, {
               title: PUSH_TEXTS.matchStarting[loc] || PUSH_TEXTS.matchStarting.en,
               body: matchLabel,
               url: `/match/${fixtureId}`,
               tag: `kickoff-${fixtureId}`,
               fixtureId,
             });
-            pushesSent++;
+            if (sent) pushesSent++;
           }
         }
 
         if (prev && (homeGoals !== prev.home_goals || awayGoals !== prev.away_goals)) {
           for (const sub of goalAlertSubs) {
             const goalLabel = PUSH_TEXTS.goalScored.en;
-            await sendPush(sub.push_subscriptions, {
+            const sent = await sendPush(sub.push_subscriptions, {
               title: `${goalLabel} — ${homeTeam} ${homeGoals}-${awayGoals} ${awayTeam}`,
               body: `${homeTeam} ${homeGoals} - ${awayGoals} ${awayTeam}`,
               url: `/match/${fixtureId}`,
               tag: `goal-${fixtureId}-${homeGoals}-${awayGoals}`,
               fixtureId,
             });
-            pushesSent++;
+            if (sent) pushesSent++;
           }
         }
 
         const prevEventsCount = prev?.events_count ?? 0;
         if (events.length > prevEventsCount && goalAlertSubs.length > 0) {
           const newEvents = events.slice(prevEventsCount);
-          for (const evt of newEvents) {
+          for (let i = 0; i < newEvents.length; i++) {
+            const evt = newEvents[i];
             if (evt.type === "Goal" && evt.detail === "Penalty") {
               const body = `${evt.player?.name || "?"} — ${evt.team?.name || ""} (${evt.time?.elapsed || "?"}\')`;
+              // Tag by event index (prevEventsCount + i) so each penalty has a stable, unique tag
+              // and the same penalty cannot be re-sent if events.length is the same in a later round.
+              const eventIndex = prevEventsCount + i;
               for (const sub of goalAlertSubs) {
                 const label = PUSH_TEXTS.penalty.en;
-                await sendPush(sub.push_subscriptions, {
+                const sent = await sendPush(sub.push_subscriptions, {
                   title: `${label} — ${matchLabel}`,
                   body,
                   url: `/match/${fixtureId}`,
-                  tag: `penalty-${fixtureId}-${events.length}`,
+                  tag: `penalty-${fixtureId}-${eventIndex}`,
                   fixtureId,
                 });
-                pushesSent++;
+                if (sent) pushesSent++;
               }
             }
           }
@@ -278,9 +299,31 @@ async function runCheck() {
 }
 
 async function sendPush(
-  sub: { endpoint: string; p256dh: string; auth: string },
+  sub: PushSubscriptionRow,
   payload: { title: string; body: string; url: string; tag: string; fixtureId: number }
-) {
+): Promise<boolean> {
+  // Atomic dedup: try to claim this (subscription, tag) pair. If another
+  // concurrent worker (overlapping cron invocation) already claimed it,
+  // the unique-PK insert fails with 23505 and we skip the actual push.
+  const { error: claimErr } = await supabase
+    .from("push_sent_log")
+    .insert({ subscription_id: sub.id, tag: payload.tag });
+
+  if (claimErr) {
+    if (claimErr.code === "23505") {
+      // Already sent by another worker — skip silently.
+      return false;
+    }
+    if (claimErr.code === "42P01") {
+      // push_sent_log table doesn't exist yet (migration not applied).
+      // Fall through and send the push — preserves existing behavior.
+      console.warn("[Push] push_sent_log table missing — apply migration 008 to enable dedup");
+    } else {
+      // Some other DB error. Log and proceed — dropping the push is worse than a possible dupe.
+      console.warn("[Push] Dedup claim error:", claimErr.code, claimErr.message);
+    }
+  }
+
   try {
     await webpush.sendNotification(
       {
@@ -290,6 +333,7 @@ async function sendPush(
       JSON.stringify(payload)
     );
     console.log(`[Push] Sent "${payload.title}" to ${sub.endpoint.slice(0, 50)}...`);
+    return true;
   } catch (err: unknown) {
     const pushErr = err as { statusCode?: number; body?: string; message?: string };
     console.error(`[Push] Failed to ${sub.endpoint.slice(0, 50)}... status=${pushErr.statusCode} body=${pushErr.body || pushErr.message}`);
@@ -300,5 +344,6 @@ async function sendPush(
         .eq("endpoint", sub.endpoint);
       console.log(`[Push] Removed stale subscription ${sub.endpoint.slice(0, 50)}...`);
     }
+    return false;
   }
 }
