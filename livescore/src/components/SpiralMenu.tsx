@@ -6,13 +6,23 @@ import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "@/contexts/LanguageContext";
 import { useProPlusModal } from "@/contexts/ProPlusModalContext";
+import WatchLiveModal from "./WatchLiveModal";
 
-const menuItems = [
+interface MenuItem {
+  href: string;
+  labelKey: string;
+  icon: string;
+  authRequired: boolean;
+  external?: boolean;
+  modal?: boolean;
+}
+
+const menuItems: MenuItem[] = [
   { href: "https://chat.whatsapp.com/F8XeC3mbQfQ0vdUZoNbeqT", labelKey: "nav.liveTicker", icon: "ticker", authRequired: false, external: true },
   { href: "/scores", labelKey: "nav.liveScores", icon: "live", authRequired: false },
   { href: "/pronostics", labelKey: "nav.predictions", icon: "star", authRequired: true },
   { href: "/articles", labelKey: "nav.articles", icon: "article", authRequired: false },
-  { href: "https://nextbet7.tv", labelKey: "nav.watchLive", icon: "watch", authRequired: true, external: true },
+  { href: "#watch-live", labelKey: "nav.watchLive", icon: "watch", authRequired: false, modal: true },
   { href: "__vip__", labelKey: "vip.short", icon: "vip", authRequired: false, external: true },
 ];
 
@@ -108,6 +118,7 @@ export default function SpiralMenu() {
   const { openProPlus } = useProPlusModal();
   const [mounted, setMounted] = useState(false);
   const [vipLink, setVipLink] = useState("");
+  const [showWatchLiveModal, setShowWatchLiveModal] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => setMounted(true), 100);
@@ -126,10 +137,10 @@ export default function SpiralMenu() {
     return pathname.startsWith(href) || (href === "/scores" && pathname.startsWith("/match"));
   }
 
-  function renderItem(item: typeof menuItems[number], index: number, desktop: boolean) {
+  function renderItem(item: MenuItem, index: number, desktop: boolean) {
     const isVip = item.icon === "vip";
     const resolvedHref = isVip ? (vipLink || "#") : item.href;
-    const active = !item.external && isActive(item.href);
+    const active = !item.external && !item.modal && isActive(item.href);
     const locked = item.authRequired && !user;
 
     const hexSize = desktop ? "w-[72px] h-[72px]" : "w-12 h-12";
@@ -205,6 +216,19 @@ export default function SpiralMenu() {
       );
     }
 
+    if (item.modal) {
+      return (
+        <button
+          key={item.href}
+          type="button"
+          onClick={() => setShowWatchLiveModal(true)}
+          className="appearance-none bg-transparent border-none cursor-pointer"
+        >
+          {hexContent}
+        </button>
+      );
+    }
+
     if (isVip) {
       return (
         <button
@@ -251,6 +275,8 @@ export default function SpiralMenu() {
           </div>
         </div>
       </div>
+
+      <WatchLiveModal open={showWatchLiveModal} onClose={() => setShowWatchLiveModal(false)} />
     </>
   );
 }

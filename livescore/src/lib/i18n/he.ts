@@ -184,6 +184,9 @@ const he: Record<string, string> = {
   "auth.haveAccount": "כבר יש לכם חשבון?",
   "auth.signUpLink": "הרשמה",
   "auth.signInLink": "התחברות",
+  "auth.signupHelpTitle": "לא הצלחתם להירשם לאתר?",
+  "auth.signupHelpButton": "פנו אלינו לתמיכה בווטסאפ",
+  "auth.signupHelpNote": "ונאשר את הצטרפותכם תוך מספר דקות!",
 
   // Match detail page
   "matchDetail.notFound": "המשחק לא נמצא",

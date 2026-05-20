@@ -184,6 +184,9 @@ const en: Record<string, string> = {
   "auth.haveAccount": "Already have an account?",
   "auth.signUpLink": "Sign Up",
   "auth.signInLink": "Sign In",
+  "auth.signupHelpTitle": "Couldn't register?",
+  "auth.signupHelpButton": "Contact us on WhatsApp",
+  "auth.signupHelpNote": "We'll approve your account within minutes!",
 
   // Match detail page
   "matchDetail.notFound": "Match not found",

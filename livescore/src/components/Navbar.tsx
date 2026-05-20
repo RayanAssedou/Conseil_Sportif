@@ -8,13 +8,23 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useNotifications } from "@/contexts/NotificationContext";
 import { useTranslation } from "@/contexts/LanguageContext";
 import { useTheme } from "@/contexts/ThemeContext";
+import WatchLiveModal from "./WatchLiveModal";
 
-const navKeys = [
+interface NavItem {
+  href: string;
+  labelKey: string;
+  icon: string;
+  external?: boolean;
+  authRequired?: boolean;
+  modal?: boolean;
+}
+
+const navKeys: NavItem[] = [
   { href: "/", labelKey: "nav.home", icon: "home" },
   { href: "/scores", labelKey: "nav.liveScores", icon: "live" },
   { href: "/pronostics", labelKey: "nav.predictions", icon: "star", authRequired: true },
   { href: "/articles", labelKey: "nav.articles", icon: "article" },
-  { href: "https://nextbet7.tv", labelKey: "nav.watchLive", icon: "watch", external: true, authRequired: true },
+  { href: "#watch-live", labelKey: "nav.watchLive", icon: "watch", modal: true },
   { href: "/tutorial", labelKey: "nav.tutorial", icon: "tutorial" },
 ];
 
@@ -28,6 +38,7 @@ export default function Navbar() {
   const [showMenu, setShowMenu] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [showLangMenu, setShowLangMenu] = useState(false);
+  const [showWatchLiveModal, setShowWatchLiveModal] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const langRef = useRef<HTMLDivElement>(null);
   const langRefMobile = useRef<HTMLDivElement>(null);
@@ -156,8 +167,8 @@ export default function Navbar() {
     return null;
   }
 
-  function renderNavItem({ href, labelKey, icon, external, authRequired }: typeof navKeys[number], mobile = false) {
-    const active = !external && isActive(href);
+  function renderNavItem({ href, labelKey, icon, external, authRequired, modal }: NavItem, mobile = false) {
+    const active = !external && !modal && isActive(href);
     const locked = authRequired && !user;
 
     const baseClass = mobile
@@ -195,6 +206,19 @@ export default function Navbar() {
           onClick={() => { router.push("/auth/signin"); setMobileOpen(false); }}
           className={baseClass}
           title={t("nav.signInToWatch")}
+        >
+          {content}
+        </button>
+      );
+    }
+
+    if (modal) {
+      return (
+        <button
+          key={href}
+          type="button"
+          onClick={() => { setShowWatchLiveModal(true); setMobileOpen(false); }}
+          className={baseClass}
         >
           {content}
         </button>
@@ -555,6 +579,8 @@ export default function Navbar() {
           </div>
         </div>
       )}
+
+      <WatchLiveModal open={showWatchLiveModal} onClose={() => setShowWatchLiveModal(false)} />
     </nav>
   );
 }

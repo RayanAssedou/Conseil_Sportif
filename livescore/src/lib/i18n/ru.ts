@@ -184,6 +184,9 @@ const ru: Record<string, string> = {
   "auth.haveAccount": "Уже есть аккаунт?",
   "auth.signUpLink": "Зарегистрироваться",
   "auth.signInLink": "Войти",
+  "auth.signupHelpTitle": "Не удалось зарегистрироваться?",
+  "auth.signupHelpButton": "Напишите нам в WhatsApp",
+  "auth.signupHelpNote": "Мы подтвердим ваш аккаунт за несколько минут!",
 
   // Match detail page
   "matchDetail.notFound": "Матч не найден",

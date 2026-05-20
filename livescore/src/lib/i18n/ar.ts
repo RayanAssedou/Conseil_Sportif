@@ -184,6 +184,9 @@ const ar: Record<string, string> = {
   "auth.haveAccount": "لديك حساب بالفعل؟",
   "auth.signUpLink": "سجّل الآن",
   "auth.signInLink": "تسجيل الدخول",
+  "auth.signupHelpTitle": "هل واجهت مشكلة في التسجيل؟",
+  "auth.signupHelpButton": "تواصل معنا عبر واتساب",
+  "auth.signupHelpNote": "وسنوافق على حسابك خلال دقائق!",
 
   // Match detail page
   "matchDetail.notFound": "المباراة غير موجودة",
