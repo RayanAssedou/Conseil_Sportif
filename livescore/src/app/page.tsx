@@ -511,23 +511,6 @@ export default function HomePage() {
                   </span>
                 </div>
               </a>
-              <button onClick={() => setBonusModalOpen(true)} className="flex-shrink-0 bg-gradient-to-br from-amber-500 to-amber-700 rounded-xl p-3.5 text-white shadow-[0_0_20px_rgba(245,158,11,0.3)] text-left" style={{ width: "80vw", scrollSnapAlign: "start" }}>
-                <div className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 bg-white/15 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M21 11.25v8.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5v-8.25M12 4.875A2.625 2.625 0 109.375 7.5H12m0-2.625V7.5m0-2.625A2.625 2.625 0 1114.625 7.5H12m0 0V21m-8.625-9.75h18c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125h-18c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
-                    </svg>
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <h3 className="text-sm font-bold">{t("home.bonusTitle")}</h3>
-                    <p className="text-white/70 text-[11px] leading-tight">{t("home.bonusDesc")}</p>
-                  </div>
-                  <span className="flex-shrink-0 inline-flex items-center gap-1 px-2.5 py-1.5 bg-white/20 rounded-lg text-[11px] font-semibold">
-                    {t("home.getBonus")}
-                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
-                  </span>
-                </div>
-              </button>
               <button onClick={() => openProPlus(vipLink || whatsappLink || "https://wa.me/972504593270")} className="flex-shrink-0 bg-gradient-to-br from-violet-500 to-blue-600 rounded-xl p-3.5 text-white shadow-[0_0_20px_rgba(139,92,246,0.4)] text-left" style={{ width: "80vw", scrollSnapAlign: "start" }}>
                 <div className="flex items-center gap-2.5">
                   <div className="w-9 h-9 bg-white/15 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -1001,29 +984,6 @@ export default function HomePage() {
             </svg>
           </span>
         </a>
-
-        <button
-          onClick={() => setBonusModalOpen(true)}
-          className="bg-gradient-to-br from-amber-500 to-amber-700 rounded-2xl p-5 text-white hover:shadow-[0_0_24px_rgba(245,158,11,0.5)] hover:scale-[1.02] transition-all group shadow-[0_0_16px_rgba(245,158,11,0.2)] text-left w-full flex flex-col h-full"
-        >
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-12 h-12 bg-white/15 rounded-xl flex items-center justify-center">
-              <svg className="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M21 11.25v8.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5v-8.25M12 4.875A2.625 2.625 0 109.375 7.5H12m0-2.625V7.5m0-2.625A2.625 2.625 0 1114.625 7.5H12m0 0V21m-8.625-9.75h18c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125h-18c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
-              </svg>
-            </div>
-            <div>
-              <h3 className="text-lg font-bold">{t("home.bonusTitle")}</h3>
-              <p className="text-white/70 text-xs">{t("home.bonusDesc")}</p>
-            </div>
-          </div>
-          <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-white/20 rounded-lg text-sm font-semibold group-hover:bg-white/30 transition-colors mt-auto self-start">
-            {t("home.getBonus")}
-            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
-            </svg>
-          </span>
-        </button>
 
         <button
           onClick={() => openProPlus(vipLink || whatsappLink || "https://wa.me/972504593270")}

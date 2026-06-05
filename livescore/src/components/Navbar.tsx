@@ -24,7 +24,7 @@ const navKeys: NavItem[] = [
   { href: "/scores", labelKey: "nav.liveScores", icon: "live" },
   { href: "/pronostics", labelKey: "nav.predictions", icon: "star", authRequired: true },
   { href: "/articles", labelKey: "nav.articles", icon: "article" },
-  { href: "#watch-live", labelKey: "nav.watchLive", icon: "watch", modal: true },
+  { href: "https://hamalsport.tv/", labelKey: "nav.watchLive", icon: "watch", external: true },
   { href: "/tutorial", labelKey: "nav.tutorial", icon: "tutorial" },
 ];
 

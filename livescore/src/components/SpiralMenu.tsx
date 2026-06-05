@@ -22,7 +22,7 @@ const menuItems: MenuItem[] = [
   { href: "/scores", labelKey: "nav.liveScores", icon: "live", authRequired: false },
   { href: "/pronostics", labelKey: "nav.predictions", icon: "star", authRequired: true },
   { href: "/articles", labelKey: "nav.articles", icon: "article", authRequired: false },
-  { href: "#watch-live", labelKey: "nav.watchLive", icon: "watch", authRequired: false, modal: true },
+  { href: "https://hamalsport.tv/", labelKey: "nav.watchLive", icon: "watch", authRequired: false, external: true },
   { href: "__vip__", labelKey: "vip.short", icon: "vip", authRequired: false, external: true },
 ];
 
