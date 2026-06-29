@@ -18,7 +18,7 @@ interface MenuItem {
 }
 
 const menuItems: MenuItem[] = [
-  { href: "https://chat.whatsapp.com/F8XeC3mbQfQ0vdUZoNbeqT", labelKey: "nav.liveTicker", icon: "ticker", authRequired: false, external: true },
+  { href: "https://chat.whatsapp.com/EiEdeBPSi3R2YTBvFyIn9I", labelKey: "nav.liveTicker", icon: "ticker", authRequired: false, external: true },
   { href: "/scores", labelKey: "nav.liveScores", icon: "live", authRequired: false },
   { href: "/pronostics", labelKey: "nav.predictions", icon: "star", authRequired: true },
   { href: "/articles", labelKey: "nav.articles", icon: "article", authRequired: false },
