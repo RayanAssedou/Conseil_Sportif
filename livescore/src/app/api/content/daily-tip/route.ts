@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 
-// Returns the featured prediction (the "Tip of the Day") ONLY to authenticated
+// Returns the Daily Tip (a manually entered prediction) ONLY to authenticated
 // users whose profile is active (i.e. users the admin has marked as paid).
-// Non-active users never receive the prediction, even by calling this route.
+// Non-active users never receive it, even by calling this route.
 export async function GET(req: NextRequest) {
   const authHeader = req.headers.get("authorization") || "";
   const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : null;
@@ -27,18 +27,10 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ active: false });
   }
 
-  const { data: tip } = await supabase.from("daily_tip").select("featured_fixture_id").limit(1).single();
-  const fixtureId = tip?.featured_fixture_id ?? null;
+  const { data: tip } = await supabase.from("daily_tip").select("*").limit(1).single();
 
-  if (!fixtureId) {
-    return NextResponse.json({ active: true, prediction: null });
-  }
+  // Only expose a tip once a match with a score has actually been set.
+  const hasTip = tip && tip.home_team && tip.away_team;
 
-  const { data: prediction } = await supabase
-    .from("predictions")
-    .select("*")
-    .eq("fixture_id", fixtureId)
-    .single();
-
-  return NextResponse.json({ active: true, prediction: prediction || null });
+  return NextResponse.json({ active: true, prediction: hasTip ? tip : null });
 }

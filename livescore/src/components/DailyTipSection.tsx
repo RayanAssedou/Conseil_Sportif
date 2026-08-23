@@ -7,7 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "@/contexts/LanguageContext";
 
 interface Prediction {
-  fixture_id: number;
+  featured_fixture_id: number | null;
   home_team: string;
   away_team: string;
   home_logo: string | null;
@@ -56,8 +56,76 @@ export default function DailyTipSection() {
   const kickoff = prediction.match_date ? new Date(prediction.match_date) : null;
   const timeStr = kickoff ? kickoff.toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit", hour12: false }) : "";
   const dateStr = kickoff ? kickoff.toLocaleDateString(locale, { day: "2-digit", month: "short" }) : "";
-
   const hasProb = prediction.prob_home || prediction.prob_draw || prediction.prob_away;
+  const fixtureId = prediction.featured_fixture_id;
+
+  const cardBody = (
+    <>
+      {(prediction.league_name || timeStr) && (
+        <div className="flex items-center justify-between mb-2.5">
+          <span className="text-xs font-semibold text-slate-500 truncate">{prediction.league_name}</span>
+          {timeStr && (
+            <span className="text-[11px] font-medium text-slate-500 flex-shrink-0">
+              {dateStr} · {timeStr}
+            </span>
+          )}
+        </div>
+      )}
+
+      <div className="flex items-center gap-3">
+        <div className="flex-1 min-w-0 space-y-1.5">
+          <div className="flex items-center gap-2">
+            {prediction.home_logo && (
+              <div className="relative w-5 h-5 flex-shrink-0">
+                <Image src={prediction.home_logo} alt={prediction.home_team} fill className="object-contain" sizes="20px" unoptimized />
+              </div>
+            )}
+            <span className="text-sm font-semibold text-slate-900 truncate">{prediction.home_team}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            {prediction.away_logo && (
+              <div className="relative w-5 h-5 flex-shrink-0">
+                <Image src={prediction.away_logo} alt={prediction.away_team} fill className="object-contain" sizes="20px" unoptimized />
+              </div>
+            )}
+            <span className="text-sm font-semibold text-slate-900 truncate">{prediction.away_team}</span>
+          </div>
+        </div>
+
+        <div className="flex flex-col items-center flex-shrink-0">
+          <span className="text-lg font-black text-amber-600 bg-amber-50 px-3 py-1 rounded-lg border border-amber-200">
+            {prediction.predicted_home} - {prediction.predicted_away}
+          </span>
+        </div>
+      </div>
+
+      {prediction.advice && (
+        <div className="mt-3 pt-3 border-t border-slate-100 flex items-start gap-2">
+          <svg className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+          </svg>
+          <p className="text-sm font-medium text-slate-700 leading-snug">{prediction.advice}</p>
+        </div>
+      )}
+
+      {hasProb && (
+        <div className="mt-3 grid grid-cols-3 gap-2">
+          {[
+            { label: "1", value: prediction.prob_home },
+            { label: "X", value: prediction.prob_draw },
+            { label: "2", value: prediction.prob_away },
+          ].map((p) => (
+            <div key={p.label} className="rounded-lg bg-slate-50 border border-slate-100 py-1.5 text-center">
+              <span className="block text-[10px] font-semibold text-slate-400">{p.label}</span>
+              <span className="block text-sm font-bold text-slate-700">{p.value || "—"}</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </>
+  );
+
+  const cardClass = "relative block rounded-xl bg-white/95 text-slate-900 p-3.5";
 
   return (
     <section className="relative overflow-hidden rounded-2xl border border-amber-400/50 bg-gradient-to-br from-amber-500 to-amber-600 p-4 sm:p-5 text-white shadow-[0_0_24px_rgba(245,158,11,0.25)]">
@@ -79,72 +147,13 @@ export default function DailyTipSection() {
       </div>
 
       {/* Prediction card */}
-      <Link
-        href={`/pronostics/${prediction.fixture_id}`}
-        className="relative block rounded-xl bg-white/95 dark:bg-white/95 text-slate-900 p-3.5 hover:bg-white transition-colors"
-      >
-        {(prediction.league_name || timeStr) && (
-          <div className="flex items-center justify-between mb-2.5">
-            <span className="text-xs font-semibold text-slate-500 truncate">{prediction.league_name}</span>
-            {timeStr && (
-              <span className="text-[11px] font-medium text-slate-500 flex-shrink-0">
-                {dateStr} · {timeStr}
-              </span>
-            )}
-          </div>
-        )}
-
-        <div className="flex items-center gap-3">
-          <div className="flex-1 min-w-0 space-y-1.5">
-            <div className="flex items-center gap-2">
-              {prediction.home_logo && (
-                <div className="relative w-5 h-5 flex-shrink-0">
-                  <Image src={prediction.home_logo} alt={prediction.home_team} fill className="object-contain" sizes="20px" unoptimized />
-                </div>
-              )}
-              <span className="text-sm font-semibold text-slate-900 truncate">{prediction.home_team}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              {prediction.away_logo && (
-                <div className="relative w-5 h-5 flex-shrink-0">
-                  <Image src={prediction.away_logo} alt={prediction.away_team} fill className="object-contain" sizes="20px" unoptimized />
-                </div>
-              )}
-              <span className="text-sm font-semibold text-slate-900 truncate">{prediction.away_team}</span>
-            </div>
-          </div>
-
-          <div className="flex flex-col items-center flex-shrink-0">
-            <span className="text-lg font-black text-amber-600 bg-amber-50 px-3 py-1 rounded-lg border border-amber-200">
-              {prediction.predicted_home} - {prediction.predicted_away}
-            </span>
-          </div>
-        </div>
-
-        {prediction.advice && (
-          <div className="mt-3 pt-3 border-t border-slate-100 flex items-start gap-2">
-            <svg className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
-            </svg>
-            <p className="text-sm font-medium text-slate-700 leading-snug">{prediction.advice}</p>
-          </div>
-        )}
-
-        {hasProb && (
-          <div className="mt-3 grid grid-cols-3 gap-2">
-            {[
-              { label: "1", value: prediction.prob_home },
-              { label: "X", value: prediction.prob_draw },
-              { label: "2", value: prediction.prob_away },
-            ].map((p) => (
-              <div key={p.label} className="rounded-lg bg-slate-50 border border-slate-100 py-1.5 text-center">
-                <span className="block text-[10px] font-semibold text-slate-400">{p.label}</span>
-                <span className="block text-sm font-bold text-slate-700">{p.value || "—"}</span>
-              </div>
-            ))}
-          </div>
-        )}
-      </Link>
+      {fixtureId ? (
+        <Link href={`/match/${fixtureId}`} className={`${cardClass} hover:bg-white transition-colors`}>
+          {cardBody}
+        </Link>
+      ) : (
+        <div className={cardClass}>{cardBody}</div>
+      )}
     </section>
   );
 }

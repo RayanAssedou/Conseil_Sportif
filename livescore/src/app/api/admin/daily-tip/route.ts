@@ -12,15 +12,7 @@ export async function GET(req: NextRequest) {
   if (err) return err;
 
   const row = await getTipRow();
-  const fixtureId = row?.featured_fixture_id ?? null;
-
-  let prediction = null;
-  if (fixtureId) {
-    const { data } = await supabase.from("predictions").select("*").eq("fixture_id", fixtureId).single();
-    prediction = data || null;
-  }
-
-  return NextResponse.json({ featured_fixture_id: fixtureId, prediction });
+  return NextResponse.json(row || {});
 }
 
 export async function PUT(req: NextRequest) {
@@ -28,12 +20,35 @@ export async function PUT(req: NextRequest) {
   if (err) return err;
 
   const body = await req.json();
-  const featured_fixture_id =
-    body.featured_fixture_id === null || body.featured_fixture_id === undefined || body.featured_fixture_id === ""
-      ? null
-      : Number(body.featured_fixture_id);
 
-  const payload = { featured_fixture_id, updated_at: new Date().toISOString() };
+  // Clearing the tip: wipe all fields.
+  const clear = body.clear === true;
+
+  const payload = clear
+    ? {
+        featured_fixture_id: null,
+        home_team: null, away_team: null, home_logo: null, away_logo: null,
+        league_name: null, match_date: null,
+        predicted_home: null, predicted_away: null, advice: null,
+        prob_home: null, prob_draw: null, prob_away: null,
+        updated_at: new Date().toISOString(),
+      }
+    : {
+        featured_fixture_id: body.fixture_id ? Number(body.fixture_id) : null,
+        home_team: body.home_team || null,
+        away_team: body.away_team || null,
+        home_logo: body.home_logo || null,
+        away_logo: body.away_logo || null,
+        league_name: body.league_name || null,
+        match_date: body.match_date || null,
+        predicted_home: body.predicted_home ?? "0",
+        predicted_away: body.predicted_away ?? "0",
+        advice: body.advice || null,
+        prob_home: body.prob_home || null,
+        prob_draw: body.prob_draw || null,
+        prob_away: body.prob_away || null,
+        updated_at: new Date().toISOString(),
+      };
 
   const existing = await getTipRow();
   if (existing?.id) {
