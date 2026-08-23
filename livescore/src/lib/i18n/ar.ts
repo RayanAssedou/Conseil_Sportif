@@ -1,4 +1,8 @@
 const ar: Record<string, string> = {
+  // Daily Tip
+  "dailyTip.title": "نصيحة اليوم",
+  "dailyTip.badge": "حصري",
+
   // Navbar
   "nav.home": "الرئيسية",
   "nav.liveTicker": "توصيات مباشرة",

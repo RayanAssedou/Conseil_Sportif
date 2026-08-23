@@ -10,6 +10,7 @@ import { useNotifications } from "@/contexts/NotificationContext";
 import { useTranslation } from "@/contexts/LanguageContext";
 import { useProPlusModal } from "@/contexts/ProPlusModalContext";
 import SpiralMenu from "@/components/SpiralMenu";
+import DailyTipSection from "@/components/DailyTipSection";
 import BonusModal from "@/components/BonusModal";
 
 interface BeforeInstallPromptEvent extends Event {
@@ -285,6 +286,9 @@ export default function HomePage() {
 
       {/* Mobile Hexagonal Nav */}
       <SpiralMenu />
+
+      {/* Daily Tip — only visible to active (paid) users */}
+      <DailyTipSection />
 
       {/* Install App Button */}
       {!isAppInstalled && (

@@ -1,4 +1,8 @@
 const en: Record<string, string> = {
+  // Daily Tip
+  "dailyTip.title": "Tip of the Day",
+  "dailyTip.badge": "Exclusive",
+
   // Navbar
   "nav.home": "Home",
   "nav.liveTicker": "Live Tips",

@@ -1,4 +1,8 @@
 const ru: Record<string, string> = {
+  // Daily Tip
+  "dailyTip.title": "Совет дня",
+  "dailyTip.badge": "Эксклюзив",
+
   // Navbar
   "nav.home": "Главная",
   "nav.liveTicker": "Live Советы",

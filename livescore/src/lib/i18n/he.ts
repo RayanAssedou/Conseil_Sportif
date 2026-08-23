@@ -1,4 +1,8 @@
 const he: Record<string, string> = {
+  // Daily Tip
+  "dailyTip.title": "טיפ היום",
+  "dailyTip.badge": "בלעדי",
+
   // Navbar
   "nav.home": "ראשי",
   "nav.liveTicker": "המלצות ליין רץ",

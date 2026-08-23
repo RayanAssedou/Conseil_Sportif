@@ -13,6 +13,7 @@ interface UserProfile {
   avatar_url: string | null;
   phone: string | null;
   provider: string;
+  is_active?: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -22,6 +23,26 @@ export default function AdminUsersPage() {
   const [loading, setLoading] = useState(true);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
+  const [savingId, setSavingId] = useState<string | null>(null);
+
+  const toggleActive = async (id: string, current: boolean) => {
+    setSavingId(id);
+    try {
+      const res = await fetch(API("/admin/users"), {
+        ...fetchOpts,
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, is_active: !current }),
+      });
+      if (!res.ok) throw new Error("Failed to update");
+      setUsers((prev) => prev.map((u) => (u.id === id ? { ...u, is_active: !current } : u)));
+    } catch (e) {
+      console.error(e);
+      alert("Could not update the user. Please try again.");
+    } finally {
+      setSavingId(null);
+    }
+  };
 
   useEffect(() => {
     fetch(API("/admin/users"), fetchOpts)
@@ -138,6 +159,12 @@ export default function AdminUsersPage() {
                     <div className="flex items-center gap-2 flex-wrap">
                       <p className="text-sm font-semibold text-slate-900 truncate">{u.full_name || "No name"}</p>
                       {providerBadge(u.provider)}
+                      {u.is_active && (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-semibold rounded-full bg-emerald-50 text-emerald-700">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                          Active
+                        </span>
+                      )}
                     </div>
                     <p className="text-xs text-slate-500 truncate mt-0.5">{u.email || "No email"}</p>
                   </div>
@@ -154,6 +181,32 @@ export default function AdminUsersPage() {
 
                 {expanded && (
                   <div className="border-t border-slate-100 bg-slate-50/50 p-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 p-3 rounded-lg bg-white border border-slate-200">
+                      <div>
+                        <p className="text-sm font-semibold text-slate-900">Paid access</p>
+                        <p className="text-xs text-slate-500">
+                          {u.is_active
+                            ? "This user is active and can see the Daily Tip."
+                            : "Activate to unlock the Daily Tip for this paid user."}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => toggleActive(u.id, !!u.is_active)}
+                        disabled={savingId === u.id}
+                        className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-colors disabled:opacity-60 flex-shrink-0 ${
+                          u.is_active
+                            ? "bg-emerald-600 text-white hover:bg-emerald-700"
+                            : "bg-slate-200 text-slate-700 hover:bg-slate-300"
+                        }`}
+                      >
+                        {savingId === u.id ? (
+                          <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                        ) : (
+                          <span className={`w-2 h-2 rounded-full ${u.is_active ? "bg-white" : "bg-slate-500"}`} />
+                        )}
+                        {u.is_active ? "Active" : "Activate"}
+                      </button>
+                    </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                       <DetailField label="User ID" value={u.id} mono />
                       <DetailField label="Full Name" value={u.full_name || "—"} />
