@@ -302,9 +302,9 @@ export default function HomePage() {
       {/* Mobile Hexagonal Nav */}
       <SpiralMenu />
 
-      {/* VIP single purchase banner → WhatsApp */}
+      {/* VIP single purchase banner → WhatsApp VIP number */}
       <a
-        href={vipLink || whatsappLink || "https://wa.me/972504593270"}
+        href="https://wa.me/972504593270"
         target="_blank"
         rel="noopener noreferrer"
         dir={locale === "he" || locale === "ar" ? "rtl" : "ltr"}
