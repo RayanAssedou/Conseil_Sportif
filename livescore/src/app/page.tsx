@@ -859,7 +859,7 @@ export default function HomePage() {
             <span className="text-sm font-medium text-text">{t("faq.contact")}</span>
           </div>
           <a
-            href="https://wa.me/9720504593270"
+            href="https://wa.me/972504593270"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-4 py-2 bg-[#25D366] hover:bg-[#1ebe57] text-white text-sm font-semibold rounded-lg transition-colors"
