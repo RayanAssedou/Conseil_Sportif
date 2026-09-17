@@ -45,7 +45,7 @@ const he: Record<string, string> = {
   "home.whatsappTitle": "וואטסאפ",
   "home.whatsappDesc": "דברו איתנו ישירות – ייעוץ מותאם אישית.",
   "home.contactWhatsapp": "שלחו הודעה",
-  "home.joinHamalCommunity": "להצטרפות לקהילה של חמ\"ל בווצאפ לחץ כאן",
+  "home.joinHamalCommunity": "הצטרפו לקהילת חמ\"ל",
   "home.instagramTitle": "אינסטגרם",
   "home.instagramDesc": "תוכן יומי, דגשים וסיקורים מאחורי הקלעים.",
   "home.followInstagram": "עקבו אחרינו",
