@@ -128,7 +128,7 @@ CREATE TABLE IF NOT EXISTS admin_users (
 );
 ALTER TABLE admin_users ENABLE ROW LEVEL SECURITY;
 INSERT INTO admin_users (username, password_hash)
-VALUES ('admin', '$2b$10$tJRqf/ulKIuJr3J1CModW.EAuBGDv7FIACrqqE4uhlTJVKsg4kWfy')
+VALUES ('admin', '$2b$10$xsj.7Z2dO0qvuD4O8i1JV.VVIZYdWfO8aRIbAnRAMrqVUJ3ciTn7O')
 ON CONFLICT (username) DO NOTHING;
 
 -- Push notification tables

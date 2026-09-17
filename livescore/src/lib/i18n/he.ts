@@ -2,6 +2,7 @@ const he: Record<string, string> = {
   // Daily Tip
   "dailyTip.title": "טיפ היום",
   "dailyTip.badge": "בלעדי",
+  "home.vipSingle": "סינגל VIP לרכישה",
 
   // Navbar
   "nav.home": "ראשי",
@@ -44,6 +45,7 @@ const he: Record<string, string> = {
   "home.whatsappTitle": "וואטסאפ",
   "home.whatsappDesc": "דברו איתנו ישירות – ייעוץ מותאם אישית.",
   "home.contactWhatsapp": "שלחו הודעה",
+  "home.joinHamalCommunity": "להצטרפות לקהילה של חמ\"ל בווצאפ לחץ כאן",
   "home.instagramTitle": "אינסטגרם",
   "home.instagramDesc": "תוכן יומי, דגשים וסיקורים מאחורי הקלעים.",
   "home.followInstagram": "עקבו אחרינו",
