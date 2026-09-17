@@ -45,7 +45,7 @@ const en: Record<string, string> = {
   "home.whatsappTitle": "WhatsApp",
   "home.whatsappDesc": "Contact us directly for personalized advice.",
   "home.contactWhatsapp": "Contact Us",
-  "home.joinHamalCommunity": "Join the Hamal community",
+  "home.joinHamalCommunity": "Join the Hamal WhatsApp community — click here",
   "home.instagramTitle": "Instagram",
   "home.instagramDesc": "Follow us for daily content and highlights.",
   "home.followInstagram": "Follow Us",
